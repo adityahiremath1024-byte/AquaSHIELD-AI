@@ -1,0 +1,729 @@
+/* ============================================================
+   AquaShield AI — Module 7: Decision Intelligence Engine CSS
+   Theme: Glassmorphism Dark Mode
+   Ref:   aquashield_ui_ux_blueprint.md & Module_7.pdf
+   ============================================================ */
+
+/* Page Container */
+.dioe-page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  font-family: var(--font-body);
+  color: var(--text-primary);
+}
+
+/* ---------- STAGE 1: Situation Grid ---------- */
+.situation-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 18px 20px;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.stat-value-group {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.stat-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* ---------- STAGE 2: Resource Grid ---------- */
+.resource-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.resource-card {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.resource-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.resource-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--cyan-15);
+  color: var(--accent-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.resource-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+.resource-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.resource-value-group {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.resource-value {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.resource-unit {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.resource-formula,
+.formula-sublabel {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent-green);
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+/* ---------- STAGE 3: Gap Grid ---------- */
+.gap-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.gap-card,
+.shortage-card {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.04);
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
+}
+
+.gap-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.gap-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--red-15);
+  color: var(--accent-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.gap-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+.gap-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.gap-value-group {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.gap-value {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.gap-unit {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.gap-badge-wrap {
+  margin-bottom: 8px;
+}
+
+.gap-subtext {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+/* ---------- STAGE 4 & 5: Impact Simulator Hero ---------- */
+.impact-hero,
+.impact-simulator-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 36px;
+  background: linear-gradient(135deg, rgba(14, 22, 40, 0.95) 0%, rgba(6, 8, 15, 0.95) 100%);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(12px);
+  margin-bottom: 20px;
+}
+
+.impact-col,
+.risk-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.impact-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.impact-value,
+.risk-value {
+  font-family: var(--font-heading);
+  font-size: 3.4rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.impact-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+.arrow-col {
+  flex: 1;
+  max-width: 320px;
+  margin: 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.arrow-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--accent-green);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+
+.arrow-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 10px 24px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+  width: 100%;
+}
+
+.arrow-value,
+.efficacy-value {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--accent-green);
+}
+
+.arrow-svg-wrap svg,
+.arrow-box svg {
+  width: 24px;
+  height: 24px;
+  color: var(--accent-green);
+  fill: none;
+}
+
+.arrow-sub {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+/* ---------- Interventions List ---------- */
+.interventions-panel {
+  padding: 24px;
+}
+
+.panel-header-simple {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  letter-spacing: 0.02em;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: var(--border-subtle);
+}
+
+.interventions-list,
+.intervention-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.intervention-row,
+.intervention-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  background: rgba(6, 8, 15, 0.5);
+  border: var(--border-subtle);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast);
+}
+
+.intervention-row:hover,
+.intervention-card:hover {
+  border-color: rgba(0, 242, 254, 0.25);
+}
+
+.intervention-rank,
+.rank {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--cyan-15);
+  color: var(--accent-cyan);
+  border: 1px solid var(--accent-cyan);
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.intervention-info,
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.intervention-action-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-bright);
+}
+
+.intervention-target-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.intervention-efficacy,
+.efficacy-tag {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent-green);
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+/* ---------- STAGE 6: Operational Timeline ---------- */
+.timeline-wrapper {
+  padding: 24px;
+}
+
+.timeline-grid,
+.timeline-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+.timeline-col {
+  display: flex;
+  flex-direction: column;
+  background: rgba(6, 8, 15, 0.5);
+  border: var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.timeline-time-badge,
+.time-bracket {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  background: var(--cyan-15);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  align-self: flex-start;
+  margin-bottom: 8px;
+}
+
+.timeline-time-badge svg,
+.time-bracket svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+}
+
+.timeline-stage-title,
+.stage-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+
+.timeline-task-list,
+.checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  margin-bottom: 14px;
+}
+
+.timeline-task-item,
+.checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.timeline-task-item svg,
+.checklist li::before {
+  width: 14px;
+  height: 14px;
+  stroke: var(--accent-green);
+  fill: none;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.timeline-priority-tag,
+.priority-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  align-self: flex-start;
+}
+
+.priority-critical,
+.priority-tag.critical {
+  background: var(--red-15);
+  color: var(--accent-red);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.priority-high,
+.priority-tag.high {
+  background: rgba(249, 115, 22, 0.15);
+  color: #f97316;
+  border: 1px solid rgba(249, 115, 22, 0.25);
+}
+
+.priority-moderate,
+.priority-tag.moderate {
+  background: var(--amber-15);
+  color: var(--accent-amber);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+/* ---------- STAGE 7: Briefing Accordion ---------- */
+.narrative-panel {
+  padding: 24px;
+}
+
+.powered-by-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border-radius: var(--radius-full);
+  background: var(--cyan-10);
+  border: 1px solid rgba(0, 242, 254, 0.25);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent-cyan);
+}
+
+.briefing-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.briefing-item {
+  background: rgba(6, 8, 15, 0.5);
+  border: var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color var(--transition-fast);
+}
+
+.briefing-item:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.briefing-item.active {
+  border-color: rgba(0, 242, 254, 0.3);
+  background: rgba(14, 22, 40, 0.9);
+}
+
+.briefing-trigger {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  color: var(--text-bright);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.briefing-num {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  background: var(--cyan-15);
+  color: var(--accent-cyan);
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.briefing-title-text {
+  flex: 1;
+}
+
+.briefing-arrow {
+  color: var(--text-muted);
+  transition: transform var(--transition-base);
+  width: 18px;
+  height: 18px;
+}
+
+.briefing-item.active .briefing-arrow {
+  transform: rotate(180deg);
+  color: var(--accent-cyan);
+}
+
+.briefing-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+  padding: 0 20px;
+}
+
+.briefing-item.active .briefing-content {
+  max-height: 600px;
+  padding: 0 20px 20px 20px;
+}
+
+.briefing-content-inner,
+.briefing-text {
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+/* ---------- Loading Overlay ---------- */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(6, 8, 15, 0.92);
+  backdrop-filter: var(--glass-blur);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease;
+}
+
+.loading-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading-spinner,
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--accent-cyan);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 16px;
+  letter-spacing: 0.05em;
+}
+
+/* ---------- Responsive Breakpoints ---------- */
+@media (max-width: 1024px) {
+  .situation-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .resource-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gap-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .impact-hero,
+  .impact-simulator-hero {
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px;
+  }
+
+  .arrow-col {
+    max-width: 100%;
+    margin: 10px 0;
+  }
+
+  .timeline-grid,
+  .timeline-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .situation-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .resource-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-value, .resource-value, .gap-value, .risk-value {
+    font-size: 1.7rem;
+  }
+
+  .impact-value {
+    font-size: 2.5rem;
+  }
+
+  .arrow-value, .efficacy-value {
+    font-size: 1.4rem;
+  }
+}

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Decision Intelligence Engine — AquaShield AI</title>
+  <meta name="description" content="Module 7: Decision Intelligence & Intervention Optimisation Engine - DIOE" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/dioe.css" />
+
+  <!-- Favicon (shield icon inline) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300f2fe' stroke-width='2'><path d='M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z'/></svg>" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════
+       LOADING OVERLAY
+       ═══════════════════════════════════════════════════ -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Optimizing decision intelligence & resource allocation…</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       APP SHELL
+       ═══════════════════════════════════════════════════ -->
+  <div class="app-shell">
+    <!-- Sidebar + Header injected by JS components -->
+
+    <main class="main-content">
+      <div class="page-body dioe-page">
+
+        <!-- ─────────────────────────────────────────────
+             SECTION 1: SITUATION ASSESSMENT
+             ───────────────────────────────────────────── -->
+        <section id="section-situation" aria-labelledby="situation-heading">
+          <h2 class="section-heading" id="situation-heading">
+            <span class="dot"></span>
+            Situation Assessment
+          </h2>
+
+          <div class="situation-grid">
+            <!-- Card 1 -->
+            <div class="glass-card">
+              <p class="metric-label">Risk</p>
+              <div class="metric-value text-red" style="font-size: 2.5rem; font-weight: 700;">84%</div>
+              <p class="metric-sublabel" style="margin-bottom: 8px;">Outbreak Probability</p>
+              <div class="badge badge-critical" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;">CRITICAL</div>
+            </div>
+            
+            <!-- Card 2 -->
+            <div class="glass-card">
+              <p class="metric-label">Threat Level</p>
+              <div class="metric-value text-red" style="font-size: 2rem; font-weight: 700; text-transform: uppercase;">CRITICAL</div>
+              <p class="metric-sublabel" style="margin-bottom: 8px;">Risk Level</p>
+              <div class="badge badge-critical" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;">CRITICAL</div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="glass-card">
+              <p class="metric-label">Disease</p>
+              <div class="metric-value text-cyan" style="font-size: 2rem; font-weight: 700;">Cholera</div>
+              <p class="metric-sublabel">Predominant Threat</p>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="glass-card">
+              <p class="metric-label">Horizon</p>
+              <div class="metric-value text-amber" style="font-size: 2rem; font-weight: 700;">5 Days</div>
+              <p class="metric-sublabel">Forecast Window (WHO Attack Rate: 8.0%)</p>
+            </div>
+
+            <!-- Card 5 -->
+            <div class="glass-card">
+              <p class="metric-label">Confidence</p>
+              <div class="metric-value text-green" style="font-size: 2.5rem; font-weight: 700;">91%</div>
+              <p class="metric-sublabel">Model Confidence</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────
+             SECTION 2: WHO RESOURCE ESTIMATOR
+             ───────────────────────────────────────────── -->
+        <section id="section-resources" aria-labelledby="resources-heading" style="margin-top: 32px;">
+          <h2 class="section-heading" id="resources-heading">
+            <span class="dot"></span>
+            WHO Resource Estimator
+          </h2>
+
+          <div class="resource-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+            <div class="glass-card">
+              <p class="metric-label">Expected Patients</p>
+              <div class="metric-value" style="font-size: 2rem; font-weight: 700;">1,299 <span class="metric-unit" style="font-size: 1rem; color: var(--text-muted);">people</span></div>
+              <p class="metric-sublabel mono" style="font-family: var(--font-mono); color: var(--accent-cyan); font-size: 0.85rem; margin-top: 8px;">EP = P × AR × D</p>
+            </div>
+            <div class="glass-card">
+              <p class="metric-label">ORS Packets</p>
+              <div class="metric-value" style="font-size: 2rem; font-weight: 700;">9,093 <span class="metric-unit" style="font-size: 1rem; color: var(--text-muted);">packets</span></div>
+              <p class="metric-sublabel mono" style="font-family: var(--font-mono); color: var(--accent-cyan); font-size: 0.85rem; margin-top: 8px;">ORS = EP × 7</p>
+            </div>
+            <div class="glass-card">
+              <p class="metric-label">Chlorine Tablets</p>
+              <div class="metric-value" style="font-size: 2rem; font-weight: 700;">15,000 <span class="metric-unit" style="font-size: 1rem; color: var(--text-muted);">tablets</span></div>
+              <p class="metric-sublabel mono" style="font-family: var(--font-mono); color: var(--accent-cyan); font-size: 0.85rem; margin-top: 8px;">CT = P × 30 × D</p>
+            </div>
+            <div class="glass-card">
+              <p class="metric-label">Doctors Needed</p>
+              <div class="metric-value" style="font-size: 2rem; font-weight: 700;">17 <span class="metric-unit" style="font-size: 1rem; color: var(--text-muted);">doctors</span></div>
+              <p class="metric-sublabel mono" style="font-family: var(--font-mono); color: var(--accent-cyan); font-size: 0.85rem; margin-top: 8px;">DN = EP / 80</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────
+             SECTION 3: RESOURCE GAP ANALYSIS
+             ───────────────────────────────────────────── -->
+        <section id="section-gaps" aria-labelledby="gaps-heading" style="margin-top: 32px;">
+          <h2 class="section-heading" id="gaps-heading">
+            <span class="dot"></span>
+            Resource Gap Analysis
+          </h2>
+
+          <div class="gap-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+            <div class="glass-card">
+              <div class="badge badge-amber" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; margin-bottom: 8px;">SHORTAGE</div>
+              <p class="metric-label">Medical Staff Gap</p>
+              <div class="metric-value text-amber" style="font-size: 2rem; font-weight: 700;">12 <span class="metric-unit" style="font-size: 1rem;">doctors short</span></div>
+              <p class="metric-sublabel" style="margin-top: 8px; color: var(--text-muted);">Required 17 | Stock 5</p>
+            </div>
+            <div class="glass-card">
+              <div class="badge badge-amber" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; margin-bottom: 8px;">SHORTAGE</div>
+              <p class="metric-label">ORS Packet Gap</p>
+              <div class="metric-value text-amber" style="font-size: 2rem; font-weight: 700;">4,893 <span class="metric-unit" style="font-size: 1rem;">packets short</span></div>
+              <p class="metric-sublabel" style="margin-top: 8px; color: var(--text-muted);">Required 9,093 | Stock 4,200</p>
+            </div>
+            <div class="glass-card">
+              <div class="badge badge-amber" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; margin-bottom: 8px;">SHORTAGE</div>
+              <p class="metric-label">Chlorine Tablet Gap</p>
+              <div class="metric-value text-amber" style="font-size: 2rem; font-weight: 700;">6,500 <span class="metric-unit" style="font-size: 1rem;">tablets short</span></div>
+              <p class="metric-sublabel" style="margin-top: 8px; color: var(--text-muted);">Required 15,000 | Stock 8,500</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────
+             SECTION 4: IMPACT SIMULATOR & INTERVENTION OPTIMIZER
+             ───────────────────────────────────────────── -->
+        <section id="section-impact" aria-labelledby="impact-heading" style="margin-top: 32px;">
+          <h2 class="section-heading" id="impact-heading">
+            <span class="dot"></span>
+            Impact Simulator & Ranked Interventions
+          </h2>
+          
+          <div class="glass-card impact-simulator-hero" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);">
+             <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
+                <div class="impact-before" style="text-align: center;">
+                  <div class="metric-value text-red" style="font-size: 2.5rem; font-weight: 700;">84.0%</div>
+                  <div class="badge badge-critical" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; margin-top: 8px;">CRITICAL</div>
+                </div>
+                <div class="impact-arrow" style="text-align: center; flex: 1; padding: 0 30px;">
+                  <div style="background: linear-gradient(90deg, #ef4444, #10b981); height: 6px; border-radius: 3px; margin: 10px 0; position: relative;">
+                     <div style="position: absolute; right: -2px; top: -5px; border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-left: 12px solid #10b981;"></div>
+                  </div>
+                  <div class="text-green fw-bold" style="color: #10b981; font-weight: 600; font-size: 1.1rem;">-37.0% Risk Reduction</div>
+                </div>
+                <div class="impact-after" style="text-align: center;">
+                  <div class="metric-value text-green" style="font-size: 2.5rem; font-weight: 700;">47.0%</div>
+                  <div class="badge badge-moderate" style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; margin-top: 8px;">MODERATE CONTAINED</div>
+                </div>
+             </div>
+          </div>
+
+          <div class="glass-card intervention-list" style="margin-top: 20px;">
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              <li style="display: flex; justify-content: space-between; padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                <span style="font-size: 1.05rem;">Action 1: Water Chlorination & Well Sealing</span>
+                <span class="text-green fw-bold" style="color: #10b981; font-weight: 600;">-18.0%</span>
+              </li>
+              <li style="display: flex; justify-content: space-between; padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                <span style="font-size: 1.05rem;">Action 2: Mobile Medical Camp & Triage Unit</span>
+                <span class="text-green fw-bold" style="color: #10b981; font-weight: 600;">-10.0%</span>
+              </li>
+              <li style="display: flex; justify-content: space-between; padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                <span style="font-size: 1.05rem;">Action 3: Mass ORS & Zinc Distribution</span>
+                <span class="text-green fw-bold" style="color: #10b981; font-weight: 600;">-5.0%</span>
+              </li>
+              <li style="display: flex; justify-content: space-between; padding: 16px;">
+                <span style="font-size: 1.05rem;">Action 4: ASHA Worker Door-to-Door Survey</span>
+                <span class="text-green fw-bold" style="color: #10b981; font-weight: 600;">-4.0%</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────
+             SECTION 5: RECOMMENDED ACTION TIMELINE
+             ───────────────────────────────────────────── -->
+        <section id="section-timeline" aria-labelledby="timeline-heading" style="margin-top: 32px;">
+          <h2 class="section-heading" id="timeline-heading">
+            <span class="dot"></span>
+            Recommended Action Timeline
+          </h2>
+
+          <div class="glass-card timeline-container" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; padding: 24px;">
+            <div class="timeline-col">
+              <h3 style="margin-top: 0; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; font-size: 1.2rem; color: #f0f4f8;">0-6h</h3>
+              <div class="badge badge-critical" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; margin-bottom: 16px;">PRIORITY: CRITICAL</div>
+              <ul style="padding-left: 16px; font-size: 0.9rem; color: #7a8ba8; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+                <li>Immediate Response</li>
+                <li>Task 2</li>
+                <li>Task 3</li>
+                <li>Task 4</li>
+              </ul>
+            </div>
+            <div class="timeline-col">
+              <h3 style="margin-top: 0; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; font-size: 1.2rem; color: #f0f4f8;">6-12h</h3>
+              <div class="badge badge-critical" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; margin-bottom: 16px;">PRIORITY: CRITICAL</div>
+              <ul style="padding-left: 16px; font-size: 0.9rem; color: #7a8ba8; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+                <li>Early Intervention</li>
+                <li>Task 2</li>
+                <li>Task 3</li>
+                <li>Task 4</li>
+              </ul>
+            </div>
+            <div class="timeline-col">
+              <h3 style="margin-top: 0; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; font-size: 1.2rem; color: #f0f4f8;">12-24h</h3>
+              <div class="badge badge-high" style="background: rgba(249, 115, 22, 0.1); color: #f97316; border: 1px solid rgba(249, 115, 22, 0.3); display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; margin-bottom: 16px;">PRIORITY: HIGH</div>
+              <ul style="padding-left: 16px; font-size: 0.9rem; color: #7a8ba8; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+                <li>Containment</li>
+                <li>Task 2</li>
+                <li>Task 3</li>
+                <li>Task 4</li>
+              </ul>
+            </div>
+            <div class="timeline-col">
+              <h3 style="margin-top: 0; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; font-size: 1.2rem; color: #f0f4f8;">24-48h</h3>
+              <div class="badge badge-high" style="background: rgba(249, 115, 22, 0.1); color: #f97316; border: 1px solid rgba(249, 115, 22, 0.3); display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; margin-bottom: 16px;">PRIORITY: HIGH</div>
+              <ul style="padding-left: 16px; font-size: 0.9rem; color: #7a8ba8; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+                <li>Stabilisation</li>
+                <li>Task 2</li>
+                <li>Task 3</li>
+                <li>Task 4</li>
+              </ul>
+            </div>
+            <div class="timeline-col">
+              <h3 style="margin-top: 0; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; font-size: 1.2rem; color: #f0f4f8;">3-7d</h3>
+              <div class="badge badge-moderate" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; margin-bottom: 16px;">PRIORITY: MODERATE</div>
+              <ul style="padding-left: 16px; font-size: 0.9rem; color: #7a8ba8; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+                <li>Sustain & Prepare</li>
+                <li>Task 2</li>
+                <li>Task 3</li>
+                <li>Task 4</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────
+             SECTION 6: EXECUTIVE NARRATIVE BRIEFING
+             ───────────────────────────────────────────── -->
+        <section id="section-narrative" aria-labelledby="narrative-heading" style="margin-top: 32px; margin-bottom: 40px;">
+          <h2 class="section-heading" id="narrative-heading">
+            <span class="dot"></span>
+            Executive Decision Briefing
+          </h2>
+
+          <div class="glass-card narrative-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 16px; margin-bottom: 16px;">
+              <h3 style="margin: 0; font-size: 1.25rem;">Briefing</h3>
+              <div class="badge badge-cyan" style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; background: rgba(0,242,254,0.1); color: #00f2fe; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(0,242,254,0.2);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
+                Powered by Gemini 2.0 Flash
+              </div>
+            </div>
+            
+            <details style="margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;" open>
+              <summary style="cursor: pointer; font-weight: 600; font-size: 1.05rem; padding: 8px 0;">1. Executive Situation & Patient Load Forecast</summary>
+              <div style="padding: 12px 0 8px 16px; color: #7a8ba8; font-size: 0.95rem; line-height: 1.6;">
+                Based on current epidemiological models, the probability of an outbreak stands at a critical 84%. The primary threat identified is Cholera. Over the next 5 days, our models anticipate approximately 1,299 expected patients, driven by an estimated WHO attack rate of 8.0%.
+              </div>
+            </details>
+            
+            <details style="margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
+              <summary style="cursor: pointer; font-weight: 600; font-size: 1.05rem; padding: 8px 0;">2. Resource Bottleneck Analysis (Shortages & Gaps)</summary>
+              <div style="padding: 12px 0 8px 16px; color: #7a8ba8; font-size: 0.95rem; line-height: 1.6;">
+                A severe resource deficit is currently projected. There is an immediate shortage of 12 doctors (only 5 in stock against 17 required), a deficit of 4,893 ORS packets, and a gap of 6,500 chlorine tablets. Prompt procurement and deployment are essential.
+              </div>
+            </details>
+            
+            <details style="margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
+              <summary style="cursor: pointer; font-weight: 600; font-size: 1.05rem; padding: 8px 0;">3. Intervention Optimization & Impact Simulation (84% → 47%)</summary>
+              <div style="padding: 12px 0 8px 16px; color: #7a8ba8; font-size: 0.95rem; line-height: 1.6;">
+                Executing the recommended intervention strategy—prioritizing water chlorination and well sealing, followed by rapid deployment of mobile medical camps—will reduce the risk by 37.0%, bringing the outbreak probability down to a manageable 47.0%.
+              </div>
+            </details>
+            
+            <details style="margin-bottom: 12px;">
+              <summary style="cursor: pointer; font-weight: 600; font-size: 1.05rem; padding: 8px 0;">4. Operational 24–48 Hour Execution Timeline</summary>
+              <div style="padding: 12px 0 8px 16px; color: #7a8ba8; font-size: 0.95rem; line-height: 1.6;">
+                Immediate action within the 0-6 hour window is critical to mount a response. The following 6-12 hours should focus on early intervention, transitioning to strict containment measures between 12-24 hours. Full stabilization efforts must be in effect by the 24-48 hour mark.
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────
+             FOOTER NAVIGATION
+             ───────────────────────────────────────────── -->
+        <nav class="page-nav-footer" aria-label="Module navigation" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; margin-top: 24px;">
+          <a href="/prediction.html" class="nav-footer-btn secondary" style="display: flex; align-items: center; gap: 8px; color: #7a8ba8; text-decoration: none; font-size: 0.95rem;">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+            Prediction Module
+          </a>
+          <span class="nav-footer-label" style="font-size: 0.9rem; color: #7a8ba8; letter-spacing: 0.05em; text-transform: uppercase;">Module 7 of 7 — Decision Intelligence</span>
+          <a href="/index.html" class="nav-footer-btn primary" style="display: flex; align-items: center; gap: 8px; background: rgba(0,242,254,0.1); color: #00f2fe; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; border: 1px solid rgba(0,242,254,0.2); transition: all 0.2s ease;">
+            Overview Dashboard
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+          </a>
+        </nav>
+
+      </div><!-- /.page-body -->
+    </main>
+  </div><!-- /.app-shell -->
+
+  <!-- ═══════════════════════════════════════════════════
+       SCRIPTS
+       ═══════════════════════════════════════════════════ -->
+  <script src="js/components/sidebar.js"></script>
+  <script src="js/components/header.js"></script>
+  <script src="js/dioe.js"></script>
+
+</body>
+</html>
