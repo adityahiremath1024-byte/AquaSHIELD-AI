@@ -29,7 +29,7 @@
       AquaShield AI
     </div>
     <div class="home-nav-right">
-      <!-- Theme Toggle (rendered inline for home page) -->
+      <!-- Theme Toggle -->
       <button class="theme-toggle" id="home-theme-toggle" aria-label="Toggle dark/light theme" title="Toggle theme">
         <div class="theme-toggle-icons">
           <span class="theme-icon-sun">
@@ -52,7 +52,7 @@
           </span>
         </div>
       </button>
-      <a href="#" class="nav-link">Open platform</a>
+      <a href="weather.html" class="nav-link">Open Platform</a>
     </div>
   </nav>
 
@@ -71,8 +71,8 @@
       <p class="hero-subtitle">
         One continuous assessment workflow across seven intelligence engines — weather, satellite, hospital, citizen, fusion, prediction and decision optimization — producing an operational plan your district can execute in the next six hours.
       </p>
-      <button class="btn-primary" onclick="window.location.href='dioe.html'">
-        Start an assessment
+      <button class="btn-primary" onclick="window.location.href='weather.html'">
+        Start an Assessment
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M5 12h14"></path>
           <path d="M12 5l7 7-7 7"></path>
@@ -80,18 +80,18 @@
       </button>
     </section>
 
-    <!-- Engines Grid -->
+    <!-- Engines Grid (Modules 1 to 7) -->
     <div class="engines-grid">
 
       <!-- Card 1: Meteorological Signal -->
-      <a href="#" class="engine-card">
+      <a href="weather.html" class="engine-card">
         <svg class="engine-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20 16.2A4.5 4.5 0 0 0 17.5 8h-1.8A7 7 0 1 0 4 14.9"></path>
           <path d="M16 14v6"></path>
           <path d="M8 14v6"></path>
           <path d="M12 16v6"></path>
         </svg>
-        <h3 class="engine-title">Meteorological signal</h3>
+        <h3 class="engine-title">1. Meteorological Signal</h3>
         <p class="engine-desc">Rainfall anomaly and bacteria growth index.</p>
       </a>
 
@@ -104,76 +104,90 @@
           <path d="M14.83 9.17l4.24-4.24"/>
           <path d="M4.93 19.07l4.24-4.24"/>
         </svg>
-        <h3 class="engine-title">Satellite inundation</h3>
+        <h3 class="engine-title">2. Satellite Inundation</h3>
         <p class="engine-desc">NDWI flood extent and water expansion.</p>
       </a>
 
       <!-- Card 3: Hospital Surveillance -->
-      <a href="#" class="engine-card">
+      <a href="hospital.html" class="engine-card">
         <svg class="engine-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
         </svg>
-        <h3 class="engine-title">Hospital surveillance</h3>
+        <h3 class="engine-title">3. Hospital Surveillance</h3>
         <p class="engine-desc">Case velocity, capacity and stock risk.</p>
       </a>
 
       <!-- Card 4: Citizen Reports -->
-      <a href="#" class="engine-card">
+      <a href="citizen.html" class="engine-card">
         <svg class="engine-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
           <circle cx="9" cy="7" r="4"></circle>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M23 21v-2a4 4 0 0 1-3-3.87"></path>
           <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
         </svg>
-        <h3 class="engine-title">Citizen reports</h3>
+        <h3 class="engine-title">4. Citizen Reports</h3>
         <p class="engine-desc">Validated contamination clusters on the ground.</p>
       </a>
 
       <!-- Card 5: Multi-signal Fusion -->
-      <a href="#" class="engine-card">
+      <a href="fusion.html" class="engine-card">
         <svg class="engine-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
           <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
           <line x1="6" y1="6" x2="6.01" y2="6"></line>
           <line x1="6" y1="18" x2="6.01" y2="18"></line>
         </svg>
-        <h3 class="engine-title">Multi-signal fusion</h3>
+        <h3 class="engine-title">5. Multi-Signal Fusion</h3>
         <p class="engine-desc">Four domains merged into one unified score.</p>
       </a>
 
-      <!-- Card 6: AI Prediction -->
-      <a href="prediction.html" class="engine-card">
+      <!-- Card 6: AI Outbreak Prediction -->
+      <a href="prediction.html" class="engine-card highlight-card">
         <svg class="engine-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 3v18h18"></path>
           <path d="M7 16l4-8 4 4 4-8"></path>
         </svg>
-        <h3 class="engine-title">AI prediction</h3>
-        <p class="engine-desc">7-day outbreak probability with SHAP drivers.</p>
+        <h3 class="engine-title">6. AI Outbreak Prediction</h3>
+        <p class="engine-desc">XGBoost 7-day outbreak risk with SHAP XAI drivers.</p>
       </a>
+
+      <!-- Card 7: AI Decision Intelligence (DIOE) -->
+      <a href="dioe.html" class="engine-card highlight-card">
+        <svg class="engine-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+        <h3 class="engine-title">7. AI Decision Intelligence (DIOE)</h3>
+        <p class="engine-desc">7-stage WHO resource estimator & intervention optimizer.</p>
+      </a>
+
     </div>
 
     <!-- Workflow Section -->
     <section class="workflow-section">
-      <h2 class="workflow-title">The connected workflow</h2>
+      <h2 class="workflow-title">The Connected 7-Module Workflow</h2>
       <div class="workflow-tags">
-        <a href="#" class="workflow-tag"><span class="tag-num">01</span> Weather Intelligence</a>
+        <a href="weather.html" class="workflow-tag"><span class="tag-num">01</span> Weather Intelligence</a>
         <a href="satellite.html" class="workflow-tag"><span class="tag-num">02</span> Satellite Intelligence</a>
-        <a href="#" class="workflow-tag"><span class="tag-num">03</span> Hospital Surveillance</a>
-        <a href="#" class="workflow-tag"><span class="tag-num">04</span> Citizen Reports</a>
-        <a href="#" class="workflow-tag"><span class="tag-num">05</span> AI Data Fusion</a>
-        <a href="prediction.html" class="workflow-tag"><span class="tag-num">06</span> AI Prediction</a>
-        <a href="dioe.html" class="workflow-tag"><span class="tag-num">07</span> Decision Intelligence</a>
+        <a href="hospital.html" class="workflow-tag"><span class="tag-num">03</span> Hospital Surveillance</a>
+        <a href="citizen.html" class="workflow-tag"><span class="tag-num">04</span> Citizen Reports</a>
+        <a href="fusion.html" class="workflow-tag"><span class="tag-num">05</span> AI Data Fusion</a>
+        <a href="prediction.html" class="workflow-tag"><span class="tag-num">06</span> AI Outbreak Prediction</a>
+        <a href="dioe.html" class="workflow-tag"><span class="tag-num">07</span> Decision Intelligence (DIOE)</a>
       </div>
-      <button class="btn-secondary" onclick="window.location.href='dioe.html'">Executive Report</button>
+      <div class="hero-actions" style="display: flex; gap: 16px; justify-content: center; margin-top: 20px;">
+        <button class="btn-secondary" onclick="window.location.href='prediction.html'">View AI Predictions (Module 6)</button>
+        <button class="btn-primary" onclick="window.location.href='dioe.html'">Execute Decision Engine (Module 7)</button>
+      </div>
     </section>
 
   </main>
 
   <!-- Home page toggle script -->
   <script>
-    // Wire up the home page theme toggle button
     document.getElementById('home-theme-toggle').addEventListener('click', function() {
-      window.AquaShield.toggleTheme();
+      if (window.AquaShield && typeof window.AquaShield.toggleTheme === 'function') {
+        window.AquaShield.toggleTheme();
+      }
     });
   </script>
 </body>

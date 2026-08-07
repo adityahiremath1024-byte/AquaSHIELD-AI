@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Citizen Reports Engine — AquaShield AI</title>
+  <meta name="description" content="Module 4: Crowdsourced geotagged water contamination reports and Haversine spatial clustering." />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/theme-toggle.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300ffaa' stroke-width='2'><path d='M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z'/></svg>" />
+  <script src="js/components/theme-toggle.js"></script>
+  <style>
+    .citizen-page { max-width: 1200px; margin: 0 auto; padding: 24px; display: flex; flex-direction: column; gap: 24px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .stat-card { background: rgba(14,22,40,0.65); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 24px; }
+    .stat-val { font-family: var(--font-heading); font-size: 2.2rem; font-weight: 700; color: #fff; margin-top: 8px; }
+    .stat-sub { font-size: 0.85rem; color: #7a8ba8; margin-top: 4px; }
+  </style>
+</head>
+<body class="citizen-page">
+  <div class="main-content">
+    <div class="page-body">
+      <section>
+        <div class="glass-card">
+          <h2 style="font-family: var(--font-heading); color: #fff; font-size: 1.6rem; margin-bottom: 8px;">Module 4: Citizen Reports Engine</h2>
+          <p style="color: #7a8ba8;">Crowdsourced geotagged water quality uploads, OpenCV water validation, and Haversine 200m spatial clustering.</p>
+        </div>
+      </section>
+
+      <div class="stats-grid" style="margin-top: 24px;">
+        <div class="stat-card">
+          <span style="color: #7a8ba8; font-size: 0.8rem; text-transform: uppercase;">Active Citizen Reports</span>
+          <div class="stat-val">18</div>
+          <div class="stat-sub">Geotagged Water Reports</div>
+        </div>
+        <div class="stat-card">
+          <span style="color: #7a8ba8; font-size: 0.8rem; text-transform: uppercase;">Spatial Clusters (200m)</span>
+          <div class="stat-val">3 Clusters</div>
+          <div class="stat-sub">High Contamination Density</div>
+        </div>
+        <div class="stat-card">
+          <span style="color: #7a8ba8; font-size: 0.8rem; text-transform: uppercase;">Computer Vision Gate</span>
+          <div class="stat-val">ACCEPTED</div>
+          <div class="stat-sub">Laplacian Variance &gt; 80</div>
+        </div>
+        <div class="stat-card">
+          <span style="color: #7a8ba8; font-size: 0.8rem; text-transform: uppercase;">Perceived Risk Index</span>
+          <div class="stat-val">76.2 / 100</div>
+          <div class="stat-sub">Water Stagnation Alert</div>
+        </div>
+      </div>
+
+      <nav class="page-nav-footer" style="display: flex; justify-content: space-between; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px;">
+        <a href="hospital.html" class="btn-secondary" style="text-decoration: none;">← Hospital Module</a>
+        <span style="color: #7a8ba8;">Module 4 of 7</span>
+        <a href="fusion.html" class="btn-primary" style="text-decoration: none;">Fusion Module →</a>
+      </nav>
+    </div>
+  </div>
+
+  <script src="js/components/sidebar.js"></script>
+  <script src="js/components/header.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.AquaShield) {
+        window.AquaShield.renderSidebar('/citizen.html');
+        window.AquaShield.renderHeader({
+          title: 'Citizen Reports Engine',
+          subtitle: 'Module 4 — Computer Vision Water Verification & Spatial Clustering',
+          stepCurrent: '4',
+          stepTotal: '7'
+        });
+      }
+    });
+  </script>
+</body>
+</html>

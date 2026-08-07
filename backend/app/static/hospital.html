@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hospital Surveillance Engine — AquaShield AI</title>
+  <meta name="description" content="Module 3: Clinical case velocity, hospital bed occupancy, and medical stock risk surveillance." />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/theme-toggle.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300ffaa' stroke-width='2'><path d='M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z'/></svg>" />
+  <script src="js/components/theme-toggle.js"></script>
+  <style>
+    .hospital-page { max-width: 1200px; margin: 0 auto; padding: 24px; display: flex; flex-direction: column; gap: 24px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .stat-card { background: rgba(14,22,40,0.65); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 24px; }
+    .stat-val { font-family: var(--font-heading); font-size: 2.2rem; font-weight: 700; color: #fff; margin-top: 8px; }
+    .stat-sub { font-size: 0.85rem; color: #7a8ba8; margin-top: 4px; }
+  </style>
+</head>
+<body class="hospital-page">
+  <div class="main-content">
+    <div class="page-body">
+      <section>
+        <div class="glass-card">
+          <h2 style="font-family: var(--font-heading); color: #fff; font-size: 1.6rem; margin-bottom: 8px;">Module 3: Hospital Surveillance Engine</h2>
+          <p style="color: #7a8ba8;">Real-time clinical admissions tracking, bed occupancy velocity, and emergency medical stock risk analysis.</p>
+        </div>
+      </section>
+
+      <div class="stats-grid" style="margin-top: 24px;">
+        <div class="stat-card">
+          <span style="color: #7a8ba8; font-size: 0.8rem; text-transform: uppercase;">Total Beds Occupied</span>
+          <div class="stat-val">85 / 100</div>
+          <div class="stat-sub">85% Occupancy Rate (HIGH)</div>
+        </div>
+        <div class="stat-card">
+          <span style="color: #7a8ba8; font-size: 0.8rem; text-transform: uppercase;">7-Day Diarrheal Cases</span>
+          <div class="stat-val">120</div>
+          <div class="stat-sub">+47.0% Surge Rate</div>
+        </div>
+        <div class="stat-card">
+          <span style="color: #7a8ba8; font-size: 0.8rem; text-transform: uppercase;">ORS Packets in Stock</span>
+          <div class="stat-val">4,200</div>
+          <div class="stat-sub">Shortage Risk Threshold</div>
+        </div>
+        <div class="stat-card">
+          <span style="color: #7a8ba8; font-size: 0.8rem; text-transform: uppercase;">Doctors on Duty</span>
+          <div class="stat-val">5</div>
+          <div class="stat-sub">Kuttanad Primary Health Centre</div>
+        </div>
+      </div>
+
+      <nav class="page-nav-footer" style="display: flex; justify-content: space-between; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px;">
+        <a href="satellite.html" class="btn-secondary" style="text-decoration: none;">← Satellite Module</a>
+        <span style="color: #7a8ba8;">Module 3 of 7</span>
+        <a href="citizen.html" class="btn-primary" style="text-decoration: none;">Citizen Reports →</a>
+      </nav>
+    </div>
+  </div>
+
+  <script src="js/components/sidebar.js"></script>
+  <script src="js/components/header.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.AquaShield) {
+        window.AquaShield.renderSidebar('/hospital.html');
+        window.AquaShield.renderHeader({
+          title: 'Hospital Surveillance Engine',
+          subtitle: 'Module 3 — Clinical Case Velocity & Bed Occupancy Surveillance',
+          stepCurrent: '3',
+          stepTotal: '7'
+        });
+      }
+    });
+  </script>
+</body>
+</html>
