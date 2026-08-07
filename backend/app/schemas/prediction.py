@@ -55,28 +55,32 @@ class PredictionFullResponse(BaseModel):
 # MODULE 7: DIOE SCHEMAS
 # ==========================================
 
-class HospitalCapacityInput(BaseModel):
+class DIOEHospitalInput(BaseModel):
     total_beds: int = Field(100, description="Total bed capacity")
     occupied_beds: int = Field(85, description="Current occupied beds")
     doctors_on_duty: int = Field(5, description="Doctors on duty")
     ors_stock_packets: int = Field(4200, description="Current ORS stock packets")
     chlorine_stock_tablets: int = Field(8500, description="Current Chlorine stock tablets")
 
-class DIEPayload(BaseModel):
-    village_name: str = Field("West Kainakary", description="Location name")
-    latitude: float = Field(9.4981, description="Latitude")
-    longitude: float = Field(76.3388, description="Longitude")
+class DIOEPayload(BaseModel):
+    village_name: str = Field("Kuttanad, Kerala", description="Location name")
+    latitude: float = Field(9.3500, description="Latitude")
+    longitude: float = Field(76.4300, description="Longitude")
     risk_score: float = Field(84.0, description="Module 6 predicted risk score %")
     risk_level: str = Field("CRITICAL", description="Risk level tier")
     disease_type: str = Field("Cholera / Acute Diarrhea", description="Predominant disease threat")
     confidence_pct: float = Field(91.0, description="Model confidence %")
     population: int = Field(16240, description="Regional population")
-    hospital: Optional[HospitalCapacityInput] = None
-    rain_7d_mm: Optional[float] = 182.0
-    humidity_pct: Optional[float] = 91.0
-    flood_pct: Optional[float] = 34.0
-    flood_expansion_pct: Optional[float] = 19.0
-    citizen_reports_count: Optional[int] = 18
+    hospital: Optional[DIOEHospitalInput] = None
+    rain_7d_mm: Optional[float] = Field(182.0, description="7-day rainfall in mm")
+    humidity_pct: Optional[float] = Field(91.0, description="Humidity %")
+    flood_pct: Optional[float] = Field(34.0, description="Flood coverage %")
+    flood_expansion_pct: Optional[float] = Field(19.0, description="Flood expansion %")
+    citizen_reports_count: Optional[int] = Field(18, description="Geotagged citizen reports count")
+    citizen_cluster_risk: Optional[str] = Field("HIGH", description="Citizen report cluster risk")
+
+# Alias DIEPayload to DIOEPayload for backwards compatibility
+DIEPayload = DIOEPayload
 
 class ResourceMetrics(BaseModel):
     expected_patients: int
@@ -86,27 +90,33 @@ class ResourceMetrics(BaseModel):
     attack_rate_pct: float
 
 class ResourceGaps(BaseModel):
-    doctors_gap: int
     ors_gap: int
+    ors_status: str
     chlorine_gap: int
+    chlorine_status: str
+    doctors_gap: int
+    doctors_status: str
+    critical_shortage: bool
 
 class InterventionItem(BaseModel):
     rank: int
     action_name: str
     efficacy_pct: float
-    description: str
+    target_description: str
 
 class ImpactSimulation(BaseModel):
-    initial_risk: float
-    total_reduction: float
-    post_intervention_risk: float
+    initial_risk_pct: float
+    total_combined_reduction_pct: float
+    predicted_post_action_risk_pct: float
+    post_level: str
     status_label: str
 
 class TimelineBracket(BaseModel):
-    bracket: str
+    time_bracket: str
     stage_title: str
     priority: str
     priority_class: str
+    operational_task: str
     tasks: List[str]
 
 class DIOEResponse(BaseModel):
@@ -116,4 +126,5 @@ class DIOEResponse(BaseModel):
     interventions: List[InterventionItem]
     impact_simulation: ImpactSimulation
     timeline: List[TimelineBracket]
+    deterministic_json: Dict[str, Any]
     executive_narrative: ActionPlanData
