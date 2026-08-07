@@ -8,7 +8,7 @@
 | **Team** | Dev Pirates |
 | **Event** | HackGenesis 2026 · Healthcare Track |
 | **Document Owner** | Product / Engineering Lead |
-| **Last Updated** | 2026-08-05 |
+|
 
 ### Document History
 
