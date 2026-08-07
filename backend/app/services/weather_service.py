@@ -173,7 +173,7 @@ class WeatherService:
 
         try:
             async with httpx.AsyncClient() as client:
-                response = await client.get(url, params=params, timeout=10.0)
+                response = await client.get(url, params=params, timeout=3.0)
                 
             if response.status_code != 200:
                 raise httpx.HTTPStatusError(f"Open-Meteo returned status {response.status_code}", request=response.request, response=response)
@@ -480,7 +480,7 @@ class WeatherService:
         
         try:
             async with httpx.AsyncClient() as client:
-                response = await client.get(url, params=params, timeout=10.0)
+                response = await client.get(url, params=params, timeout=3.0)
             
             if response.status_code != 200:
                 raise Exception(f"Open-Meteo forecast endpoint error: {response.status_code}")
@@ -542,7 +542,7 @@ class WeatherService:
         
         try:
             async with httpx.AsyncClient() as client:
-                response = await client.get(url, params=params, timeout=10.0)
+                response = await client.get(url, params=params, timeout=3.0)
                 
             if response.status_code != 200:
                 raise Exception(f"Open-Meteo archive endpoint error: {response.status_code}")
@@ -603,7 +603,7 @@ class WeatherService:
         start_time = time.time()
         try:
             async with httpx.AsyncClient() as client:
-                response = await client.get(url, params=params, timeout=5.0)
+                response = await client.get(url, params=params, timeout=2.0)
             latency = int((time.time() - start_time) * 1000)
             
             if response.status_code == 200:
