@@ -376,14 +376,24 @@ def _load_or_generate_image(image_id: str) -> Tuple[Image.Image, float, float, s
 
 
 def _create_water_mask_jpeg(original_img: Image.Image, water_mask: np.ndarray) -> bytes:
-    """Applies glowing cyan/blue overlay where water is classified and exports JPEG bytes."""
-    mask_img = original_img.copy()
-    mask_arr = np.array(mask_img)
+    """
+    Converts non-water pixels to dark grayscale (black & white satellite view) 
+    and highlights ONLY the detected water pixels in bright electric cyan ([0, 242, 254]).
+    """
+    mask_img = original_img.copy().convert("RGB")
+    img_arr = np.array(mask_img, dtype=np.float32)
 
-    # Colorize water pixels to bright glowing cyan
-    mask_arr[water_mask] = [0, 242, 254]
+    # Calculate grayscale luminance (0.299 R + 0.587 G + 0.114 B) dimmed to 70% for dark contrast
+    gray = (0.299 * img_arr[:, :, 0] + 0.587 * img_arr[:, :, 1] + 0.114 * img_arr[:, :, 2]) * 0.75
+    
+    # Create 3-channel grayscale array
+    out_arr = np.stack([gray, gray, gray], axis=-1).astype(np.uint8)
 
-    result_img = Image.fromarray(mask_arr)
+    # Highlight ONLY water pixels with bright electric cyan [0, 242, 254]
+    out_arr[water_mask] = [0, 242, 254]
+
+    result_img = Image.fromarray(out_arr)
     bio = io.BytesIO()
-    result_img.save(bio, format="JPEG", quality=85)
+    result_img.save(bio, format="JPEG", quality=90)
     return bio.getvalue()
+
