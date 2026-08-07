@@ -191,8 +191,9 @@ def analyze_scene_ndwi(image_id: str) -> Dict[str, Any]:
     # NDWI Calculation (Formula 1)
     ndwi = (green - red) / (green + red + 1e-6)
     
-    # Water pixel mask on real optical satellite photograph
-    water_mask = (ndwi > 0.02) | ((blue > red * 1.02) & (green > 20.0))
+    # Strict Water Pixel Classification on Real Satellite Imagery
+    brightness = (red + green + blue) / 3.0
+    water_mask = (ndwi > 0.12) & (blue > red * 1.1) & (brightness < 120.0)
     water_count = np.sum(water_mask)
     total_pixels = width * height
     
@@ -200,6 +201,7 @@ def analyze_scene_ndwi(image_id: str) -> Dict[str, Any]:
     water_pct = round((float(water_count) / total_pixels) * 100, 2)
     if water_pct < 0.1:
         water_pct = 6.47 # default fallback for clear inland scenes
+
 
     
     # Flooded Area Estimation (Formula 4)
