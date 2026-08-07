@@ -188,7 +188,7 @@
       });
     }, { threshold: 0.15 });
 
-    document.querySelectorAll('.glass-card, .comparison-panel, .expansion-hero').forEach(el => {
+    document.querySelectorAll('.glass-card, .comparison-panel, .expansion-hero, .timeline-card').forEach(el => {
       el.style.opacity = '0';
       el.style.transform = 'translateY(16px)';
       el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
