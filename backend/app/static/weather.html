@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,7 +8,11 @@
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/theme-toggle.css" />
   <link rel="stylesheet" href="css/weather.css" />
+
+  <!-- Apply theme before paint to prevent FOUC -->
+  <script src="js/components/theme-toggle.js"></script>
 
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
