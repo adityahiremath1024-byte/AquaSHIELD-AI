@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather Intelligence Engine — AquaShield AI</title>
+  <meta name="description" content="Module 1: Meteorological Intelligence evaluating waterborne disease outbreak risks using 5 micro-climate triggers and the 6-Variable Weighted Score Matrix." />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/weather.css" />
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300f2fe' stroke-width='2'><path d='M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z'/></svg>" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════
+       LOADING OVERLAY
+       ═══════════════════════════════════════════════════ -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Fetching weather intelligence…</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       APP SHELL
+       ═══════════════════════════════════════════════════ -->
+  <div class="app-shell">
+    <!-- Sidebar + Header injected by JS components -->
+
+    <main class="main-content">
+      <div class="page-body weather-page">
+
+        <!-- ─────────────────────────────────────────────
+             SECTION 1: Location & Date Range Input Card
+             ───────────────────────────────────────────── -->
+        <section aria-labelledby="input-heading">
+          <div class="glass-card location-card">
+            <h2 class="card-section-title" id="input-heading">LOCATION &amp; DATE RANGE</h2>
+            
+            <div class="input-row-grid">
+              <!-- Location Name -->
+              <div class="input-box-group location-name-box">
+                <label for="input-village" class="input-label">Location Name</label>
+                <div class="input-icon-wrapper">
+                  <input type="text" id="input-village" class="input-field" value="Alappuzha, Kerala, India" />
+                  <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                </div>
+              </div>
+
+              <!-- Latitude -->
+              <div class="input-box-group">
+                <label for="input-lat" class="input-label">Latitude</label>
+                <input type="text" id="input-lat" class="input-field mono" value="9.4981" />
+              </div>
+
+              <!-- Longitude -->
+              <div class="input-box-group">
+                <label for="input-lon" class="input-label">Longitude</label>
+                <input type="text" id="input-lon" class="input-field mono" value="76.3388" />
+              </div>
+
+              <!-- Start Date -->
+              <div class="input-box-group">
+                <label for="input-start-date" class="input-label">Start Date</label>
+                <div class="input-icon-wrapper">
+                  <input type="text" id="input-start-date" class="input-field" value="28 May 2025" />
+                  <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+                </div>
+              </div>
+
+              <!-- End Date -->
+              <div class="input-box-group">
+                <label for="input-end-date" class="input-label">End Date</label>
+                <div class="input-icon-wrapper">
+                  <input type="text" id="input-end-date" class="input-field" value="04 Jun 2025" />
+                  <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Fetch Button -->
+            <div class="btn-fetch-wrapper">
+              <button id="fetch-weather-btn" class="fetch-weather-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"/>
+                  <path d="M12 12v9"/><path d="M8 17l4 4 4-4"/>
+                </svg>
+                FETCH WEATHER INTELLIGENCE
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────
+             SECTION 2: Weather Intelligence Summary Card
+             ───────────────────────────────────────────── -->
+        <section aria-labelledby="summary-heading">
+          <div class="glass-card summary-card">
+            <!-- Header Bar -->
+            <div class="summary-card-header">
+              <h2 class="card-section-title" id="summary-heading">WEATHER INTELLIGENCE SUMMARY</h2>
+              <span class="summary-gen-time" id="generated-timestamp">Generated on: 04 Jun 2025 14:37:21 IST</span>
+            </div>
+
+            <!-- BGI Rating & Wave Banner Row -->
+            <div class="bgi-banner-row">
+              <div class="bgi-banner-left">
+                <div class="bgi-title-label">
+                  BACTERIA GROWTH INDEX
+                  <button class="info-btn" title="Bacteria Growth Index (0-100%) computed via 6-Variable Weighted Score Matrix">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                  </button>
+                </div>
+
+                <div class="bgi-stars-row">
+                  <div class="stars-list" id="stars-container">
+                    <svg class="star-svg filled" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg class="star-svg filled" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg class="star-svg filled" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg class="star-svg filled" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg class="star-svg" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  </div>
+                  <div class="star-num-text">
+                    <span class="num">4</span>
+                    <span class="sub">out of 5<br>stars</span>
+                  </div>
+                </div>
+
+                <div class="bgi-score-row">
+                  <span class="bgi-big-score" id="bgi-score-val">64%</span>
+                  <div class="bgi-score-subtext">
+                    <span class="title">Bacteria Growth Index</span>
+                    <span class="risk-label text-cyan" id="bgi-risk-label">Moderate Risk</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Animated Wave Visual Canvas -->
+              <div class="bgi-banner-right">
+                <canvas id="hero-wave-canvas" class="hero-wave-canvas"></canvas>
+              </div>
+            </div>
+
+            <!-- 4-Card Summary Metrics Inner Grid -->
+            <div class="summary-metrics-grid">
+              
+              <!-- Card 1: Historical Accumulated Rain -->
+              <div class="inner-metric-card">
+                <div class="inner-card-header">
+                  <div class="card-title-group">
+                    <div class="card-icon-bubble green">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"/><path d="M8 16h.01"/><path d="M12 18h.01"/><path d="M16 16h.01"/></svg>
+                    </div>
+                    <span class="inner-card-title">HISTORICAL ACCUMULATED RAIN</span>
+                  </div>
+                  <button class="info-btn" title="Accumulated rainfall over past 7, 15, and 30 days"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
+                </div>
+                <div class="rain-stats-rows">
+                  <div class="stat-row"><span>Past 7 Days</span><span class="mono fw-600">20.1 mm</span></div>
+                  <div class="stat-row"><span>Past 15 Days</span><span class="mono fw-600">36.0 mm</span></div>
+                  <div class="stat-row"><span>Past 30 Days</span><span class="mono fw-600">196.9 mm</span></div>
+                </div>
+                <div class="inner-card-footer">
+                  <span class="footer-label">Total Precipitation</span>
+                  <div class="mini-bar-chart">
+                    <span class="bar" style="height: 60%;"></span>
+                    <span class="bar" style="height: 80%;"></span>
+                    <span class="bar" style="height: 100%;"></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 2: Rainfall Trend -->
+              <div class="inner-metric-card">
+                <div class="inner-card-header">
+                  <div class="card-title-group">
+                    <div class="card-icon-bubble cyan">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    </div>
+                    <span class="inner-card-title">RAINFALL TREND</span>
+                  </div>
+                  <button class="info-btn" title="Percent change in past 7 days vs previous 7 days"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
+                </div>
+                <div class="big-metric-text">+59.5%</div>
+                <p class="stat-subtext">vs. previous 7 days</p>
+                <div class="inner-card-footer">
+                  <span class="footer-status text-cyan">Increasing</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                </div>
+              </div>
+
+              <!-- Card 3: Rainfall Anomaly -->
+              <div class="inner-metric-card">
+                <div class="inner-card-header">
+                  <div class="card-title-group">
+                    <div class="card-icon-bubble cyan">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                    </div>
+                    <span class="inner-card-title">RAINFALL ANOMALY</span>
+                  </div>
+                  <button class="info-btn" title="Deviation from dynamic monthly normal baseline"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
+                </div>
+                <div class="rain-stats-rows">
+                  <div class="stat-row"><span>7-Day Anomaly</span><span class="mono fw-600 text-cyan">+38.2%</span></div>
+                  <div class="stat-row"><span>15-Day Anomaly</span><span class="mono fw-600 text-cyan">+41.7%</span></div>
+                  <div class="stat-row"><span>30-Day Anomaly</span><span class="mono fw-600 text-cyan">+67.3%</span></div>
+                </div>
+                <div class="inner-card-footer">
+                  <span class="footer-status text-cyan">Above Normal</span>
+                  <button class="info-btn" title="Seasonal baseline: 113.0 mm"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
+                </div>
+              </div>
+
+              <!-- Card 4: Consecutive Rainy Days Streak -->
+              <div class="inner-metric-card">
+                <div class="inner-card-header">
+                  <div class="card-title-group">
+                    <div class="card-icon-bubble cyan">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+                    </div>
+                    <span class="inner-card-title">CONSECUTIVE RAINY DAYS STREAK</span>
+                  </div>
+                  <button class="info-btn" title="Continuous days with daily precipitation > 1.0 mm"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
+                </div>
+                <div class="streak-big-text">3 <span class="unit">Days</span></div>
+                <p class="stat-subtext">Current Streak</p>
+                <div class="inner-card-footer">
+                  <span class="footer-status text-cyan">Ongoing</span>
+                  <svg width="16" height="12" viewBox="0 0 24 12" fill="none" stroke="#00f2fe" stroke-width="2"><path d="M1 6c4-6 8 6 11 0s7 6 11 0"/></svg>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Footer Data Source Note -->
+            <div class="summary-footer-note">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              <span>Weather data is sourced from IMD, GPM, ERA5 &amp; Sentinel-1 • Updated hourly</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────
+             SECTION 3: 30-Day Precipitation Analysis Charts
+             ───────────────────────────────────────────── -->
+        <section aria-labelledby="charts-heading">
+          <h2 class="section-heading" id="charts-heading">
+            <span class="dot"></span>
+            30-Day Precipitation &amp; Sub-Arrays Analysis
+          </h2>
+
+          <div class="charts-grid-2">
+            <!-- 30-Day Daily Bar Chart -->
+            <div class="glass-card">
+              <div class="chart-card-header">
+                <span class="chart-card-title">Daily Precipitation Series (30 Days)</span>
+                <span class="mono text-muted" style="font-size: 0.75rem;">Daily Sum (mm)</span>
+              </div>
+              <div class="chart-canvas-wrapper">
+                <canvas id="chart-daily-precip"></canvas>
+              </div>
+            </div>
+
+            <!-- Sub-Array Accumulated Comparison -->
+            <div class="glass-card">
+              <div class="chart-card-header">
+                <span class="chart-card-title">Historical Sub-Array Comparison</span>
+                <span class="mono text-muted" style="font-size: 0.75rem;">past7 vs previous7 vs past30</span>
+              </div>
+              <div class="chart-canvas-wrapper">
+                <canvas id="chart-accumulated"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────
+             SECTION 4: Steadman Heat Index Assessment
+             ───────────────────────────────────────────── -->
+        <section aria-labelledby="heat-heading">
+          <h2 class="section-heading" id="heat-heading">
+            <span class="dot"></span>
+            Steadman Heat Index &amp; Thermal Acceleration
+          </h2>
+
+          <div class="glass-card">
+            <div class="heat-index-grid">
+              <!-- Semi Gauge -->
+              <div class="heat-gauge-container">
+                <div class="heat-gauge-svg-wrapper">
+                  <canvas id="heat-gauge-canvas"></canvas>
+                  <div class="heat-gauge-center">
+                    <span class="heat-gauge-num">37.8°C</span>
+                    <span class="heat-gauge-unit">Heat Index</span>
+                  </div>
+                </div>
+                <span class="badge badge-high" style="margin-top: 10px;">High Acceleration Zone</span>
+              </div>
+
+              <!-- Input Metrics & Mathematical Formula -->
+              <div class="heat-metrics-column">
+                <div class="heat-metric-row">
+                  <div class="heat-icon temp"><svg viewBox="0 0 24 24"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg></div>
+                  <div class="heat-info">
+                    <span class="heat-info-label">Ambient Temperature (T)</span>
+                    <span class="heat-info-val">26.3°C</span>
+                  </div>
+                </div>
+
+                <div class="heat-metric-row">
+                  <div class="heat-icon rh"><svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
+                  <div class="heat-info">
+                    <span class="heat-info-label">Relative Humidity (H)</span>
+                    <span class="heat-info-val">90%</span>
+                  </div>
+                </div>
+
+                <div class="heat-metric-row">
+                  <div class="heat-icon vp"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+                  <div class="heat-info">
+                    <span class="heat-info-label">Vapor Pressure (e)</span>
+                    <span class="heat-info-val">30.73 hPa</span>
+                  </div>
+                </div>
+
+                <div class="steadman-formula-box">
+                  e = 6.11 × 10<sup>(7.5×26.3 / (237.7+26.3))</sup> × 90/100 = 30.73 hPa<br>
+                  HI = 26.3 + 0.5555 × (30.73 − 10.0) = <strong style="color: var(--accent-cyan);">37.8°C</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────
+             SECTION 5: 6-Variable Weighted Score Matrix
+             ───────────────────────────────────────────── -->
+        <section aria-labelledby="matrix-heading">
+          <h2 class="section-heading" id="matrix-heading">
+            <span class="dot"></span>
+            6-Variable Weighted Score Matrix
+          </h2>
+
+          <div class="glass-card">
+            <div class="score-matrix-table-wrapper">
+              <table class="matrix-table">
+                <thead>
+                  <tr>
+                    <th>Variable</th>
+                    <th>Raw Value</th>
+                    <th>Condition / Bucket</th>
+                    <th>Score</th>
+                    <th>Weight</th>
+                    <th>Contribution</th>
+                  </tr>
+                </thead>
+                <tbody id="matrix-tbody"></tbody>
+                <tfoot id="matrix-tfoot"></tfoot>
+              </table>
+            </div>
+
+            <div class="stacked-bar-container" id="stacked-bar-container" title="Contribution Breakdown"></div>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────
+             SECTION 6: Final Bacteria Growth Index Hero Gauge & Risk Tiers
+             ───────────────────────────────────────────── -->
+        <section aria-labelledby="classification-heading">
+          <h2 class="section-heading" id="classification-heading">
+            <span class="dot"></span>
+            Risk Classification &amp; Actionable Protocols
+          </h2>
+
+          <div class="hero-gauge-grid">
+            <!-- Hero Gauge Card -->
+            <div class="glass-card hero-gauge-card">
+              <div class="bgi-gauge-wrapper">
+                <canvas id="bgi-gauge-canvas"></canvas>
+                <div class="bgi-gauge-center">
+                  <span class="bgi-gauge-val">64.0%</span>
+                </div>
+              </div>
+              <span class="badge badge-high" style="margin-top: 16px; font-size: 0.85rem;">● HIGH RISK LEVEL</span>
+              <p class="text-muted" style="font-size: 0.75rem; margin-top: 8px;">Bacteria Growth Index score range: 61%–80%</p>
+            </div>
+
+            <!-- Tiers List -->
+            <div class="glass-card" style="padding: 20px;">
+              <div class="risk-tiers-list" id="risk-tiers-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────
+             SECTION 7: Footer Navigation
+             ───────────────────────────────────────────── -->
+        <nav class="page-nav-footer" aria-label="Module navigation">
+          <a href="/index.html" class="nav-footer-btn secondary">
+            <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+            Overview
+          </a>
+          <span class="nav-footer-label">Module 1 of 7 — Meteorological Intelligence</span>
+          <a href="/satellite.html" class="nav-footer-btn primary">
+            Satellite Module
+            <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+          </a>
+        </nav>
+
+      </div><!-- /.page-body -->
+    </main>
+  </div><!-- /.app-shell -->
+
+  <!-- ═══════════════════════════════════════════════════
+       SCRIPTS — shared components, then page-specific
+       ═══════════════════════════════════════════════════ -->
+  <script src="js/components/sidebar.js"></script>
+  <script src="js/components/header.js"></script>
+  <script src="js/weather-data.js"></script>
+  <script src="js/weather.js"></script>
+
+</body>
+</html>
