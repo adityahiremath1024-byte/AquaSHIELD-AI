@@ -90,7 +90,60 @@
           </div>
         </section>
 
-        <!-- SECTION 2: IMAGE QUALITY CONTROL GATE -->
+        <!-- SECTION 2: SIDE-BY-SIDE SATELLITE COMPARISON -->
+        <section aria-labelledby="comparison-heading">
+          <h3 class="panel-heading" id="comparison-heading" style="margin-left: 4px;">
+            <span class="dot"></span> Real Satellite Imagery Comparison (Side-by-Side)
+          </h3>
+          <div class="comparison-section">
+            <!-- BASELINE PRE-FLOOD PANEL -->
+            <div class="comparison-panel" id="panel-baseline">
+              <div class="panel-image-wrapper">
+                <img id="img-baseline" src="/api/satellite/thumbnail/20260626_143522_PSScene?lat=9.35&lon=76.43" alt="Baseline optical satellite scene" loading="eager" />
+                <div class="panel-label-strip">
+                  <span class="panel-scene-badge baseline">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/></svg>
+                    Baseline Pre-Flood Scene
+                  </span>
+                  <span class="panel-date-badge" id="date-baseline">June 26, 2026</span>
+                </div>
+                <div class="panel-water-pct">
+                  <span class="pct-value text-green" id="overlay-baseline-pct">18.0%</span>
+                  <span class="pct-label">Water coverage</span>
+                </div>
+              </div>
+              <div class="panel-info-bar">
+                <span class="info-label">Surface water detected</span>
+                <span class="info-value text-green" id="info-baseline-area">127.2 sq km</span>
+              </div>
+            </div>
+
+            <!-- POST-FLOOD SCENE & MASK PANEL -->
+            <div class="comparison-panel" id="panel-postflood">
+              <div class="panel-image-wrapper">
+                <img id="img-postflood" src="/api/ndwi/mask/20260715_143721_PSScene" alt="Post-flood NDWI water mask overlay" loading="eager" />
+                <div class="panel-label-strip">
+                  <span class="panel-scene-badge postflood">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    Post-Flood NDWI Water Mask
+                  </span>
+                  <span class="panel-date-badge" id="date-postflood">July 15, 2026</span>
+                </div>
+                <div class="panel-water-pct">
+                  <span class="pct-value text-red" id="overlay-postflood-pct">36.0%</span>
+                  <span class="pct-label">Water coverage</span>
+                </div>
+              </div>
+              <div class="panel-info-bar">
+                <span class="info-label">Surface water detected</span>
+                <span class="info-value text-red" id="info-postflood-area">254.4 sq km</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 3: IMAGE QUALITY CONTROL GATE -->
+
         <section aria-labelledby="gate-heading">
           <div class="glass-card gate-card">
             <div class="gate-header">

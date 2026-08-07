@@ -281,17 +281,42 @@
     if (!selectedBaselineId || !selectedFloodId) return;
 
     try {
+      const lat = parseFloat(document.getElementById('input-lat').value);
+      const lon = parseFloat(document.getElementById('input-lon').value);
       const radius = parseFloat(document.getElementById('input-radius').value);
+
       const res = await fetch(`/api/ndwi/compare?baseline_image_id=${selectedBaselineId}&flood_image_id=${selectedFloodId}&radius_km=${radius}`);
       if (!res.ok) throw new Error("Compare API error");
       const data = await res.json();
 
+      // Update Side-by-Side Comparison Panel Images & Values
+      const imgBaseline = document.getElementById('img-baseline');
+      if (imgBaseline) imgBaseline.src = `/api/satellite/thumbnail/${selectedBaselineId}?lat=${lat}&lon=${lon}`;
+      
+      const imgPostflood = document.getElementById('img-postflood');
+      if (imgPostflood) imgPostflood.src = `/api/ndwi/mask/${selectedFloodId}`;
+
+      const overlayBasePct = document.getElementById('overlay-baseline-pct');
+      if (overlayBasePct) overlayBasePct.textContent = data.baseline_water_pct.toFixed(1) + '%';
+
+      const overlayPostPct = document.getElementById('overlay-postflood-pct');
+      if (overlayPostPct) overlayPostPct.textContent = data.flood_water_pct.toFixed(1) + '%';
+
+      const baseArea = (data.baseline_water_pct / 100 * Math.PI * (radius ** 2)).toFixed(1);
+      const postArea = (data.flood_water_pct / 100 * Math.PI * (radius ** 2)).toFixed(1);
+
+      const infoBaseArea = document.getElementById('info-baseline-area');
+      if (infoBaseArea) infoBaseArea.textContent = `${baseArea} sq km`;
+
+      const infoPostArea = document.getElementById('info-postflood-area');
+      if (infoPostArea) infoPostArea.textContent = `${postArea} sq km`;
+
       // Render Matrix Values
       document.getElementById('matrix-before-val').textContent = data.baseline_water_pct.toFixed(1) + '%';
-      document.getElementById('matrix-before-area').textContent = `~${data.expanded_area_sq_km.toFixed(1)} sq km`; // preflood estimated area
+      document.getElementById('matrix-before-area').textContent = `~${baseArea} sq km`;
 
       document.getElementById('matrix-after-val').textContent = data.flood_water_pct.toFixed(1) + '%';
-      document.getElementById('matrix-after-area').textContent = `~${(data.flood_water_pct / 100 * Math.PI * (radius ** 2)).toFixed(1)} sq km`;
+      document.getElementById('matrix-after-area').textContent = `~${postArea} sq km`;
 
       const sign = data.water_expansion_rate_pct >= 0 ? '+' : '';
       document.getElementById('matrix-expansion-val').textContent = `${sign}${data.water_expansion_rate_pct.toFixed(1)}%`;

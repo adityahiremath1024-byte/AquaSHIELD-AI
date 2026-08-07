@@ -125,31 +125,39 @@ async def search_planet_scenes(
     return _generate_fallback_scenes(lat, lon, start_date, end_date)
 
 
-async def get_real_thumbnail(image_id: str) -> bytes:
+async def get_real_thumbnail(image_id: str, lat: float = 9.35, lon: float = 76.43) -> bytes:
     """
-    Downloads the REAL satellite thumbnail from Planet Labs API.
-    URL: https://api.planet.com/data/v1/item-types/PSScene/items/{id}/thumb
-    Falls back to synthetic generation if Planet API is unreachable.
+    Downloads REAL optical satellite imagery from Planet Labs API (tiles.planet.com).
+    Falls back to high-resolution ArcGIS World Imagery API if Planet API fails or scene ID is synthetic.
     """
-    if PLANET_API_KEY:
-        async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(follow_redirects=True) as client:
+        # 1. Try Planet Labs Tiles API first
+        if PLANET_API_KEY and not image_id.startswith("synthetic"):
             try:
-                res = await client.get(
-                    f"{PLANET_BASE_URL}/item-types/PSScene/items/{image_id}/thumb",
-                    auth=(PLANET_API_KEY, ""),
-                    timeout=15.0
-                )
-                if res.status_code == 200 and len(res.content) > 100:
+                planet_url = f"https://tiles.planet.com/data/v1/item-types/PSScene/items/{image_id}/thumb"
+                res = await client.get(planet_url, auth=(PLANET_API_KEY, ""), timeout=10.0)
+                if res.status_code == 200 and len(res.content) > 500:
                     return res.content
             except Exception as e:
-                print(f"Planet thumbnail download failed for {image_id}: {e}")
+                print(f"Planet tile download failed for {image_id}: {e}")
 
-    # Fallback: generate synthetic preview
+        # 2. Fallback: Fetch REAL High-Resolution Optical Satellite Image from ArcGIS World Imagery API
+        try:
+            bbox = [lon - 0.08, lat - 0.08, lon + 0.08, lat + 0.08]
+            arcgis_url = f"https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/export?bbox={bbox[0]},{bbox[1]},{bbox[2]},{bbox[3]}&bboxSR=4326&imageSR=4326&size=600,400&f=image"
+            res = await client.get(arcgis_url, timeout=10.0)
+            if res.status_code == 200 and len(res.content) > 1000:
+                return res.content
+        except Exception as e:
+            print(f"ArcGIS satellite fetch failed: {e}")
+
+    # 3. Final Fallback: generate synthetic preview
     img, _, _, _ = _load_or_generate_image(image_id)
     import io
     bio = io.BytesIO()
     img.save(bio, format="JPEG", quality=85)
     return bio.getvalue()
+
 
 
 # ═════════════════════════════════════════════════════════════════════════════
