@@ -421,7 +421,7 @@
       window.AquaShield.renderSidebar('/prediction.html');
       window.AquaShield.renderHeader({
         title: 'AI Outbreak Prediction Engine',
-        subtitle: 'Module 6 — XGBoost + SHAP + Gemini AI Technical Architecture',
+        subtitle: 'XGBoost + SHAP + Gemini AI Technical Architecture',
         stepCurrent: '6',
         stepTotal: '7',
       });

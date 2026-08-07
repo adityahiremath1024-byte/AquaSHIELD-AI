@@ -339,7 +339,7 @@
       if (typeof window.AquaShield.renderHeader === 'function') {
         window.AquaShield.renderHeader({
           title: 'Citizen Reports Engine',
-          subtitle: 'Module 4 — Computer Vision Water Verification & Spatial Clustering',
+          subtitle: 'Computer Vision Water Verification & Spatial Clustering',
           stepCurrent: '4',
           stepTotal: '7',
           alertCount: 12

@@ -395,7 +395,7 @@
       window.AquaShield.renderSidebar('/satellite.html');
       window.AquaShield.renderHeader({
         title:       'Satellite Flood Inundation Analysis',
-        subtitle:    'Module 2 — PlanetScope 3m Resolution Assessment',
+        subtitle:    'PlanetScope 3m Resolution Assessment',
         stepCurrent: '2',
         stepTotal:   '7',
       });

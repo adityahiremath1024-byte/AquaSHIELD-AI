@@ -1074,8 +1074,14 @@ h1, h2, h3, h4, h5, h6,
 }
 
 /* Page Titles */
-h1, .header-title, .hero-title {
+h1, .header-title {
   font-size: var(--fs-2xl) !important; /* ~28.8px */
+}
+
+.hero-title {
+  font-size: 54px !important; /* ~25% larger than original 43.2px */
+  letter-spacing: 0.03em !important; /* increased letter spacing */
+  line-height: 1.2 !important;
 }
 
 /* Section Headings */
