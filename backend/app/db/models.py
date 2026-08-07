@@ -83,7 +83,7 @@ class CitizenReport(Base):
 
 
 class SpatialCluster(Base):
-    """200-meter aggregated spatial cluster metadata."""
+    """Haversine-based 200m spatial cluster of citizen contamination reports."""
 
     __tablename__ = "spatial_clusters"
 
@@ -94,29 +94,8 @@ class SpatialCluster(Base):
     risk_level = Column(String, default="MODERATE")  # HIGH RISK or MODERATE
     is_active = Column(Boolean, default=True)
 
-
     # ── Meta ──
     created_at = Column(DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        return f"<CitizenReport(id={self.id}, status={self.status}, cluster={self.cluster_id})>"
-
-
-class SpatialCluster(Base):
-    """Haversine-based 200m spatial cluster of citizen contamination reports."""
-
-    __tablename__ = "spatial_clusters"
-
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    cluster_id = Column(String, unique=True, nullable=False, index=True)
-    latitude = Column(Float, nullable=False)
-    longitude = Column(Float, nullable=False)
-    reports_count = Column(Integer, default=0)
-    risk_level = Column(String, default="LOW")
-    is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-    def __repr__(self):
         return f"<SpatialCluster(id={self.cluster_id}, reports={self.reports_count}, risk={self.risk_level})>"
->>>>>>> 79b8d27 (Resolve merge conflict in main.py, models.py and add db ignore)
-

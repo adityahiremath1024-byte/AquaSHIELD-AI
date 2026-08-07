@@ -134,22 +134,32 @@
               <div class="pipeline-step-box">
                 <span class="step-num">STEP 1</span>
                 <h4 class="step-title">Raw Optical Imagery</h4>
-                <p class="step-text">Ingest PlanetScope 3-meter commercial optical satellite imagery byte stream.</p>
+                <p class="step-text">Ingest PlanetScope 3m commercial optical satellite imagery or ArcGIS World Imagery fallback.</p>
               </div>
               <div class="pipeline-step-box">
                 <span class="step-num">STEP 2</span>
-                <h4 class="step-title">NDWI Index Calculation</h4>
-                <p class="step-text">Computes normalized band ratios (Green - Red) / (Green + Red) for moisture index.</p>
+                <h4 class="step-title">Cloud &amp; Shadow Masking</h4>
+                <p class="step-text">Exclude bright cloud pixels (brightness &gt; 200) and deep shadows (brightness &lt; 20) to prevent false detections.</p>
               </div>
               <div class="pipeline-step-box">
                 <span class="step-num">STEP 3</span>
-                <h4 class="step-title">Binary Water Masking</h4>
-                <p class="step-text">Thresholds water pixels at NDWI &gt; 0.05 and renders glowing Cyan/Blue mask overlay.</p>
+                <h4 class="step-title">NDWI Computation</h4>
+                <p class="step-text">Compute (Green &minus; NIR) / (Green + NIR) from 8-band analytic data, or (Green &minus; Red) / (Green + Red) from RGB with strict multi-spectral constraints.</p>
               </div>
               <div class="pipeline-step-box">
                 <span class="step-num">STEP 4</span>
-                <h4 class="step-title">Inundation Metrics</h4>
-                <p class="step-text">Calculates total surface water area %, standing water pockets &amp; vector risk level.</p>
+                <h4 class="step-title">Morphological Cleanup</h4>
+                <p class="step-text">OpenCV opening &amp; closing with 5&times;5 kernel to remove salt-and-pepper noise and fill small gaps within water bodies.</p>
+              </div>
+              <div class="pipeline-step-box">
+                <span class="step-num">STEP 5</span>
+                <h4 class="step-title">Connected Component Filter</h4>
+                <p class="step-text">Label all contiguous water regions and remove every connected component smaller than 80 pixels, eliminating isolated false positives.</p>
+              </div>
+              <div class="pipeline-step-box">
+                <span class="step-num">STEP 6</span>
+                <h4 class="step-title">Flood Statistics &amp; Risk</h4>
+                <p class="step-text">Compute surface water %, flooded area sq km, mean NDWI, stagnant water pockets, and flood severity from the cleaned mask.</p>
               </div>
             </div>
           </div>

@@ -216,15 +216,19 @@
             </div>
             <div class="res-item">
               <span class="res-label">Water Pixels</span>
-              <span class="res-val">${Math.floor(data.surface_water_pct * 655.36).toLocaleString()} / 65,536</span>
+              <span class="res-val">${(data.water_pixel_count || 0).toLocaleString()} / ${(data.total_pixels || 240000).toLocaleString()}</span>
             </div>
             <div class="res-item">
               <span class="res-label">Mean NDWI</span>
-              <span class="res-val">${(data.surface_water_pct * 0.0012).toFixed(4)}</span>
+              <span class="res-val">${(data.mean_ndwi || 0).toFixed(4)}</span>
             </div>
             <div class="res-item">
               <span class="res-label">Flood Risk</span>
-              <span class="res-val text-green">${data.surface_water_pct > 25 ? 'HIGH' : 'LOW'}</span>
+              <span class="res-val ${(data.flood_risk || 'LOW') === 'CRITICAL' || (data.flood_risk || 'LOW') === 'HIGH' ? 'text-red' : (data.flood_risk || 'LOW') === 'MODERATE' ? 'text-amber' : 'text-green'}">${data.flood_risk || 'MINIMAL'}</span>
+            </div>
+            <div class="res-item">
+              <span class="res-label">Pipeline</span>
+              <span class="res-val">${data.processing_pipeline || 'rgb_fallback'}</span>
             </div>
           </div>
         </div>
