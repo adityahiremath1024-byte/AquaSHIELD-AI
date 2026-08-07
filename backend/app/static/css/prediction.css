@@ -1,0 +1,691 @@
+/* ============================================================
+   AquaShield AI — Module 6: AI Outbreak Prediction Engine CSS
+   Theme: Glassmorphism Dark Mode
+   Ref:   aquashield_ui_ux_blueprint.md & Module_6.pdf
+   ============================================================ */
+
+/* ---------- Page Base ---------- */
+.prediction-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ---------- Section 1: Input Command Bar ---------- */
+.prediction-input-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  padding: 20px 24px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.input-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.input-field,
+.input-select {
+  background: var(--bg-input);
+  border: var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.input-select {
+  cursor: pointer;
+}
+
+.input-select option {
+  background: var(--bg-card-solid);
+  color: var(--text-primary);
+}
+
+.input-field:focus,
+.input-select:focus {
+  border-color: var(--accent-cyan);
+  box-shadow: var(--shadow-glow-cyan);
+}
+
+.run-prediction-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--gradient-accent);
+  color: #06080f;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  padding: 11px 28px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: var(--shadow-glow-cyan);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.run-prediction-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(0, 242, 254, 0.4);
+}
+
+.run-prediction-btn:active {
+  transform: translateY(0);
+}
+
+/* ---------- Section 2: Results Grid (3-Col Layout) ---------- */
+.prediction-results-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 0.8fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+/* ---------- Panel 1: SHAP Feature Importance ---------- */
+.shap-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.shap-panel-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  letter-spacing: 0.02em;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: var(--border-subtle);
+}
+
+.info-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border-radius: 50%;
+  transition: color var(--transition-fast);
+}
+
+.info-btn:hover {
+  color: var(--accent-cyan);
+}
+
+.shap-bar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  justify-content: center;
+}
+
+.shap-bar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.shap-bar-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  min-width: 140px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.shap-bar-track {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.shap-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  width: 0%;
+  transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.shap-bar-fill[data-color="blue"]   { background: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
+.shap-bar-fill[data-color="cyan"]   { background: var(--accent-cyan); box-shadow: 0 0 10px rgba(0, 242, 254, 0.3); }
+.shap-bar-fill[data-color="violet"] { background: var(--accent-violet); box-shadow: 0 0 10px rgba(168, 85, 247, 0.3); }
+.shap-bar-fill[data-color="red"]    { background: var(--accent-red); box-shadow: 0 0 10px rgba(239, 68, 68, 0.3); }
+.shap-bar-fill[data-color="amber"]  { background: var(--accent-amber); box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+.shap-bar-fill[data-color="green"]  { background: var(--accent-green); box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
+
+.shap-bar-pct {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  min-width: 48px;
+  text-align: right;
+}
+
+/* ---------- Panel 2: Risk Gauge (Hero Center) ---------- */
+.risk-gauge-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.risk-gauge-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.risk-gauge-svg-wrapper {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.risk-gauge-svg-wrapper svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.gauge-bg-ring {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.06);
+  stroke-width: 16;
+}
+
+.gauge-color-ring {
+  fill: none;
+  stroke: url(#gaugeGradient);
+  stroke-width: 16;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gauge-center-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.gauge-risk-value-wrapper {
+  display: flex;
+  align-items: baseline;
+  line-height: 1;
+}
+
+.gauge-risk-value {
+  font-family: var(--font-heading);
+  font-size: 4.2rem;
+  font-weight: 800;
+  color: var(--text-bright);
+  letter-spacing: -0.03em;
+  text-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+}
+
+.gauge-risk-unit {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-left: 2px;
+}
+
+.gauge-risk-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 4px;
+}
+
+.gauge-confidence-text {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--accent-green);
+  margin-top: 14px;
+  font-weight: 500;
+}
+
+.gauge-ci-text {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ---------- Panel 3: Model Metadata ---------- */
+.model-meta-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.model-meta-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  letter-spacing: 0.02em;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: var(--border-subtle);
+}
+
+.meta-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  justify-content: center;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: rgba(6, 8, 15, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: border-color var(--transition-fast);
+}
+
+.meta-item:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.meta-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.meta-icon.model   { background: var(--cyan-15); color: var(--accent-cyan); }
+.meta-icon.r2      { background: var(--green-15); color: var(--accent-green); }
+.meta-icon.mae     { background: var(--amber-15); color: var(--accent-amber); }
+.meta-icon.samples { background: var(--violet-15); color: var(--accent-violet); }
+
+.meta-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.meta-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.meta-value {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+
+/* ---------- Section 3: Gemini Action Plan Panel ---------- */
+.action-plan-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.action-plan-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.action-plan-title {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.action-plan-title svg {
+  width: 24px;
+  height: 24px;
+  color: var(--accent-cyan);
+  filter: drop-shadow(0 0 6px rgba(0, 242, 254, 0.4));
+}
+
+.powered-by-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border-radius: var(--radius-full);
+  background: var(--cyan-10);
+  border: 1px solid rgba(0, 242, 254, 0.25);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent-cyan);
+}
+
+.plan-source-indicator {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: var(--border-subtle);
+}
+
+/* ---------- Collapsible Accordion ---------- */
+.plan-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.plan-accordion-item {
+  background: rgba(6, 8, 15, 0.5);
+  border: var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.plan-accordion-item:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.plan-accordion-item.active {
+  border-color: rgba(0, 242, 254, 0.3);
+  background: rgba(14, 22, 40, 0.9);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.plan-accordion-trigger {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  color: var(--text-bright);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.plan-step-number {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: var(--cyan-15);
+  color: var(--accent-cyan);
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.plan-accordion-title-text {
+  flex: 1;
+}
+
+.plan-accordion-arrow {
+  color: var(--text-muted);
+  transition: transform var(--transition-base), color var(--transition-fast);
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.plan-accordion-item.active .plan-accordion-arrow {
+  transform: rotate(180deg);
+  color: var(--accent-cyan);
+}
+
+.plan-accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+  padding: 0 20px;
+}
+
+.plan-accordion-item.active .plan-accordion-content {
+  max-height: 600px;
+  padding: 0 20px 20px 20px;
+}
+
+.plan-accordion-content-inner {
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.plan-content-text {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.plan-content-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.plan-content-list li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.plan-content-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--accent-green);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* ---------- Section 4: Footer Navigation ---------- */
+.page-nav-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 0 8px;
+  border-top: var(--border-subtle);
+  margin-top: 16px;
+}
+
+.nav-footer-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.nav-footer-btn.primary {
+  background: var(--gradient-accent);
+  color: #06080f;
+  box-shadow: var(--shadow-glow-cyan);
+}
+
+.nav-footer-btn.primary:hover {
+  transform: translateX(4px);
+  text-decoration: none;
+}
+
+.nav-footer-btn.secondary {
+  background: rgba(255, 255, 255, 0.05);
+  border: var(--border-subtle);
+  color: var(--text-muted);
+}
+
+.nav-footer-btn.secondary:hover {
+  color: var(--text-bright);
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(-4px);
+  text-decoration: none;
+}
+
+.nav-footer-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+  fill: none;
+}
+
+.nav-footer-label {
+  font-size: 0.75rem;
+  color: var(--text-dimmed);
+  font-weight: 500;
+}
+
+/* ---------- Loading Overlay ---------- */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(6, 8, 15, 0.92);
+  backdrop-filter: var(--glass-blur);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease;
+}
+
+.loading-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--accent-cyan);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 16px;
+  letter-spacing: 0.05em;
+}
+
+/* ---------- Responsive Breakpoints ---------- */
+@media (max-width: 1024px) {
+  .prediction-results-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .prediction-input-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .run-prediction-btn {
+    width: 100%;
+  }
+
+  .risk-gauge-svg-wrapper {
+    width: 220px;
+    height: 220px;
+  }
+
+  .gauge-risk-value {
+    font-size: 3.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .action-plan-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .shap-bar-label {
+    min-width: 110px;
+    font-size: 0.72rem;
+  }
+
+  .meta-value {
+    font-size: 1.05rem;
+  }
+
+  .page-nav-footer {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+}
