@@ -163,6 +163,63 @@
     }
   }
 
+  /* ================================================================
+     BACKEND API INTEGRATION FOR DIOE
+     ================================================================ */
+  async function fetchDIOEOptimizationFromBackend() {
+    try {
+      const payload = {
+        village_name: MOCK_DIOE_DATA.location.villageName,
+        latitude: MOCK_DIOE_DATA.location.latitude,
+        longitude: MOCK_DIOE_DATA.location.longitude,
+        risk_score: MOCK_DIOE_DATA.prediction.riskScore,
+        risk_level: MOCK_DIOE_DATA.prediction.riskLevel,
+        disease_type: MOCK_DIOE_DATA.prediction.diseaseType,
+        confidence_pct: MOCK_DIOE_DATA.prediction.confidencePct,
+        population: MOCK_DIOE_DATA.location.population,
+        hospital: {
+          total_beds: MOCK_DIOE_DATA.hospitalStock.totalBeds,
+          occupied_beds: MOCK_DIOE_DATA.hospitalStock.occupiedBeds,
+          doctors_on_duty: MOCK_DIOE_DATA.hospitalStock.doctorsOnDuty,
+          ors_stock_packets: MOCK_DIOE_DATA.hospitalStock.orsStockPackets,
+          chlorine_stock_tablets: MOCK_DIOE_DATA.hospitalStock.chlorineStockTablets
+        }
+      };
+
+      const res = await fetch('/api/dioe/optimize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+      const data = await res.json();
+
+      if (data.resources) {
+        MOCK_DIOE_DATA.calculatedResources = data.resources;
+      }
+      if (data.gaps) {
+        MOCK_DIOE_DATA.calculatedGaps = data.gaps;
+      }
+      if (data.impact_simulation) {
+        MOCK_DIOE_DATA.calculatedImpact = data.impact_simulation;
+      }
+      if (data.executive_narrative && data.executive_narrative.sections) {
+        const narrativeContainer = document.getElementById('narrative-accordion') || document.querySelector('.narrative-panel');
+        if (narrativeContainer) {
+          const badge = document.getElementById('dioe-source-badge');
+          if (badge && data.executive_narrative.source === 'gemini') {
+            badge.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Powered by Gemini 2.0 Flash`;
+          }
+        }
+      }
+      return true;
+    } catch (err) {
+      console.warn('Backend DIOE connection failed or offline. Using local deterministic math engine.', err);
+      return false;
+    }
+  }
+
   // 4. Initializer
   document.addEventListener('DOMContentLoaded', () => {
     // Load layout components
@@ -181,13 +238,16 @@
     }
 
     showLoading();
+    loadSessionData();
 
-    setTimeout(() => {
-      loadSessionData();
-      initCounters();
-      initScrollAnimations();
-      saveSessionData();
-      hideLoading();
-    }, 1000);
+    fetchDIOEOptimizationFromBackend().then(() => {
+      setTimeout(() => {
+        initCounters();
+        initScrollAnimations();
+        saveSessionData();
+        hideLoading();
+      }, 500);
+    });
   });
 })();
+

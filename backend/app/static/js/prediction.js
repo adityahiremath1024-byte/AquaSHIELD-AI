@@ -323,31 +323,92 @@
   }
 
   /* ================================================================
+     BACKEND API INTEGRATION
+     ================================================================ */
+  async function fetchPredictionFromBackend(villageName, latitude, longitude) {
+    try {
+      const url = `/api/prediction/analyze?village_name=${encodeURIComponent(villageName)}&latitude=${latitude}&longitude=${longitude}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+      const data = await res.json();
+      
+      // Update global state with backend data
+      MOCK_PREDICTION_DATA.prediction.riskScore = data.prediction.riskScore;
+      MOCK_PREDICTION_DATA.prediction.riskLevel = data.prediction.riskLevel;
+      MOCK_PREDICTION_DATA.prediction.confidenceR2 = data.prediction.confidenceR2;
+      MOCK_PREDICTION_DATA.prediction.confidenceR2Pct = data.prediction.confidenceR2Pct;
+      MOCK_PREDICTION_DATA.prediction.mae = data.prediction.mae;
+      MOCK_PREDICTION_DATA.prediction.ciLower = data.prediction.ciLower;
+      MOCK_PREDICTION_DATA.prediction.ciUpper = data.prediction.ciUpper;
+      MOCK_PREDICTION_DATA.prediction.trainingSamples = data.prediction.trainingSamples;
+      MOCK_PREDICTION_DATA.prediction.modelType = data.prediction.modelType;
+      
+      if (data.shapValues && data.shapValues.length > 0) {
+        MOCK_PREDICTION_DATA.shapValues = data.shapValues;
+      }
+      if (data.actionPlan && data.actionPlan.sections) {
+        MOCK_PREDICTION_DATA.actionPlan = data.actionPlan;
+      }
+      
+      // Update UI badges
+      const r2El = document.getElementById('meta-r2');
+      if (r2El) r2El.textContent = data.prediction.confidenceR2.toFixed(4);
+      
+      const maeEl = document.getElementById('meta-mae');
+      if (maeEl) maeEl.textContent = `±${data.prediction.mae.toFixed(2)}%`;
+      
+      const samplesEl = document.getElementById('meta-samples');
+      if (samplesEl) samplesEl.textContent = `~${data.prediction.trainingSamples}`;
+      
+      const ciEl = document.getElementById('gauge-ci');
+      if (ciEl) ciEl.textContent = `95% CI: ${data.prediction.ciLower}% — ${data.prediction.ciUpper}%`;
+      
+      const badgeEl = document.getElementById('risk-badge');
+      if (badgeEl) {
+        badgeEl.textContent = data.prediction.riskLevel;
+        badgeEl.className = `badge badge-${data.prediction.riskLevel.toLowerCase()}`;
+      }
+      
+      const planBadge = document.getElementById('plan-source-badge');
+      if (planBadge && data.actionPlan.source === 'gemini') {
+        planBadge.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Powered by Gemini 2.0 Flash`;
+      }
+      
+      return true;
+    } catch (err) {
+      console.warn('Backend API connection failed or offline. Using local simulation engine.', err);
+      return false;
+    }
+  }
+
+  /* ================================================================
      RUN ENGINE BUTTON EVENT HANDLER
      ================================================================ */
   function setupRunButton() {
     const btn = document.getElementById('run-prediction-btn');
     if (!btn) return;
 
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       const villageSelect = document.getElementById('input-village');
       const latInput = document.getElementById('input-lat');
       const lonInput = document.getElementById('input-lon');
 
-      saveSession({
-        city: villageSelect ? villageSelect.value : MOCK_PREDICTION_DATA.input.villageName,
-        lat: latInput ? parseFloat(latInput.value) : MOCK_PREDICTION_DATA.input.latitude,
-        lon: lonInput ? parseFloat(lonInput.value) : MOCK_PREDICTION_DATA.input.longitude,
-      });
+      const village = villageSelect ? villageSelect.value : MOCK_PREDICTION_DATA.input.villageName;
+      const lat = latInput ? parseFloat(latInput.value) : MOCK_PREDICTION_DATA.input.latitude;
+      const lon = lonInput ? parseFloat(lonInput.value) : MOCK_PREDICTION_DATA.input.longitude;
+
+      saveSession({ city: village, lat, lon });
 
       showLoading();
+      await fetchPredictionFromBackend(village, lat, lon);
+      
       setTimeout(() => {
         hideLoading();
         renderSHAPChart();
         initRiskGauge(MOCK_PREDICTION_DATA.prediction.riskScore);
         renderActionPlan();
         persistPredictionSession();
-      }, 1500);
+      }, 600);
     });
   }
 
@@ -369,15 +430,25 @@
     restoreInputs();
     setupRunButton();
 
-    // Simulate initial pipeline load
     showLoading();
-    setTimeout(() => {
-      hideLoading();
-      renderSHAPChart();
-      initRiskGauge(MOCK_PREDICTION_DATA.prediction.riskScore);
-      renderActionPlan();
-      initScrollAnimations();
-      persistPredictionSession();
-    }, 1200);
+    
+    const villageSelect = document.getElementById('input-village');
+    const latInput = document.getElementById('input-lat');
+    const lonInput = document.getElementById('input-lon');
+    const village = villageSelect ? villageSelect.value : MOCK_PREDICTION_DATA.input.villageName;
+    const lat = latInput ? parseFloat(latInput.value) : MOCK_PREDICTION_DATA.input.latitude;
+    const lon = lonInput ? parseFloat(lonInput.value) : MOCK_PREDICTION_DATA.input.longitude;
+
+    fetchPredictionFromBackend(village, lat, lon).then(() => {
+      setTimeout(() => {
+        hideLoading();
+        renderSHAPChart();
+        initRiskGauge(MOCK_PREDICTION_DATA.prediction.riskScore);
+        renderActionPlan();
+        initScrollAnimations();
+        persistPredictionSession();
+      }, 500);
+    });
   });
 })();
+
