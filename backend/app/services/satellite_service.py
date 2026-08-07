@@ -125,6 +125,33 @@ async def search_planet_scenes(
     return _generate_fallback_scenes(lat, lon, start_date, end_date)
 
 
+async def get_real_thumbnail(image_id: str) -> bytes:
+    """
+    Downloads the REAL satellite thumbnail from Planet Labs API.
+    URL: https://api.planet.com/data/v1/item-types/PSScene/items/{id}/thumb
+    Falls back to synthetic generation if Planet API is unreachable.
+    """
+    if PLANET_API_KEY:
+        async with httpx.AsyncClient() as client:
+            try:
+                res = await client.get(
+                    f"{PLANET_BASE_URL}/item-types/PSScene/items/{image_id}/thumb",
+                    auth=(PLANET_API_KEY, ""),
+                    timeout=15.0
+                )
+                if res.status_code == 200 and len(res.content) > 100:
+                    return res.content
+            except Exception as e:
+                print(f"Planet thumbnail download failed for {image_id}: {e}")
+
+    # Fallback: generate synthetic preview
+    img, _, _, _ = _load_or_generate_image(image_id)
+    import io
+    bio = io.BytesIO()
+    img.save(bio, format="JPEG", quality=85)
+    return bio.getvalue()
+
+
 # ═════════════════════════════════════════════════════════════════════════════
 # Inundation Analysis & Math Calculations
 # ═════════════════════════════════════════════════════════════════════════════
