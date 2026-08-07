@@ -4,9 +4,16 @@ from fastapi import APIRouter, Query, HTTPException, Response, status
 from app.schemas.satellite import (
     SatelliteHealthResponse,
     SearchResponse,
-    SceneDetailResponse
+    SceneDetailResponse,
+    NDWIAnalysisResponse,
+    FloodComparisonResponse
 )
 from app.services.planet_service import planet_service
+from app.services.satellite_service import (
+    analyze_scene_ndwi,
+    compare_flood_scenes,
+    MASK_CACHE
+)
 from app.utils.exceptions import PlanetAPIError, PlanetAuthError, PlanetNotFoundError
 
 router = APIRouter(prefix="/api/satellite", tags=["Satellite Imagery Module"])
@@ -93,3 +100,43 @@ async def satellite_scene_detail(
         raise HTTPException(status_code=e.status_code, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to fetch scene detail: {str(e)}")
+
+
+# ── NDWI / Inundation Mask Endpoints ─────────────────────────────────────────
+
+@router.get("/ndwi/analyze", response_model=NDWIAnalysisResponse)
+def analyze_ndwi(
+    image_id: str = Query(..., description="Target image ID"),
+    item_type: str = Query("PSScene")
+):
+    """Compute NDWI, stagnant water clusters, and confidence ratios on scene."""
+    try:
+        return analyze_scene_ndwi(image_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"NDWI analysis failure: {str(e)}")
+
+
+@router.get("/ndwi/mask/{image_id}")
+def get_ndwi_mask(image_id: str):
+    """Streams generated NDWI water mask JPEG overlay from memory cache."""
+    if image_id not in MASK_CACHE:
+        analyze_scene_ndwi(image_id)
+    
+    mask_data = MASK_CACHE.get(image_id)
+    if not mask_data:
+        raise HTTPException(status_code=404, detail=f"Water mask not found for image: {image_id}")
+    
+    return Response(content=mask_data, media_type="image/jpeg")
+
+
+@router.get("/ndwi/compare", response_model=FloodComparisonResponse)
+def compare_ndwi(
+    baseline_image_id: str = Query(..., description="Pre-flood baseline scene ID"),
+    flood_image_id: str = Query(..., description="Post-flood current scene ID"),
+    radius_km: float = Query(15.0)
+):
+    """Compares pre-flood vs post-flood water coverage to obtain expansion rate %."""
+    try:
+        return compare_flood_scenes(baseline_image_id, flood_image_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Comparative analysis failure: {str(e)}")

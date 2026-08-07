@@ -17,13 +17,7 @@ from app.api.citizen import router as citizen_router
 from app.api.fusion import router as fusion_router
 from app.api.prediction import router as prediction_router
 from app.api.dioe import router as dioe_router
-<<<<<<< HEAD
 
-=======
-from app.api.hospital import router as hospital_router
-from app.api.fusion import router as fusion_router
-from app.api.citizen import router as citizen_router
->>>>>>> 79b8d27 (Resolve merge conflict in main.py, models.py and add db ignore)
 from app.db.database import engine, SessionLocal
 from app.db.models import Base, HospitalRecord, CitizenReport, SpatialCluster
 
@@ -50,7 +44,6 @@ app.include_router(citizen_router)
 app.include_router(fusion_router)
 app.include_router(prediction_router)
 app.include_router(dioe_router)
-
 
 # ── Database Initialization & Seed Data ──────────────────────────────────────
 @app.on_event("startup")

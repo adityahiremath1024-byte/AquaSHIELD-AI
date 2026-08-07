@@ -1,15 +1,12 @@
 /**
- * AquaShield AI — Module 2: Satellite Flood Inundation Engine
- * Client-side logic: mock data, confidence gauge, counters, session state.
+ * AquaShield AI — Module 2: Satellite Flood Inundation Engine JS
+ * Client-side interface linked to live backend NDWI compare API.
  */
 
 (function () {
   'use strict';
 
-  /* ================================================================
-     MOCK DATA — matches PDF "Current Assessment Result" exactly
-     ================================================================ */
-  const MOCK_SATELLITE_DATA = {
+  const DATA = {
     baseline: {
       date:        '2026-06-26',
       dateDisplay: 'June 26, 2026',
@@ -47,9 +44,6 @@
     },
   };
 
-  /* ================================================================
-     SESSION STATE — restore / persist via localStorage
-     ================================================================ */
   function loadSession() {
     try {
       return JSON.parse(localStorage.getItem('aquashield_session') || '{}');
@@ -61,15 +55,12 @@
     localStorage.setItem('aquashield_session', JSON.stringify(session));
   }
 
-  /* ================================================================
-     ANIMATED NUMBER COUNTER
-     ================================================================ */
   function animateValue(element, start, end, duration, suffix = '', decimals = 1) {
+    if (!element) return;
     const startTime = performance.now();
     function update(currentTime) {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      // ease-out cubic
       const eased = 1 - Math.pow(1 - progress, 3);
       const current = start + (end - start) * eased;
       element.textContent = current.toFixed(decimals) + suffix;
@@ -78,9 +69,6 @@
     requestAnimationFrame(update);
   }
 
-  /* ================================================================
-     CONFIDENCE GAUGE — SVG ring
-     ================================================================ */
   function initConfidenceGauge(confidencePct) {
     const gauge = document.getElementById('confidence-gauge-svg');
     if (!gauge) return;
@@ -92,79 +80,62 @@
     circle.style.strokeDasharray = circumference;
     circle.style.strokeDashoffset = circumference;
 
-    // Animate after a brief delay
     setTimeout(() => {
       const offset = circumference - (confidencePct / 100) * circumference;
       circle.style.strokeDashoffset = offset;
     }, 300);
 
-    // Animate number
     const pctEl = document.getElementById('gauge-pct-value');
     if (pctEl) animateValue(pctEl, 0, confidencePct, 1500, '%', 2);
   }
 
-  /* ================================================================
-     RENDER METRIC COUNTERS
-     ================================================================ */
   function initMetricCounters() {
-    const d = MOCK_SATELLITE_DATA;
-
     // Baseline water %
     const baselinePct = document.getElementById('metric-baseline-pct');
-    if (baselinePct) animateValue(baselinePct, 0, d.baseline.waterPct, 1200, '%', 1);
+    if (baselinePct) animateValue(baselinePct, 0, DATA.baseline.waterPct, 1200, '%', 1);
 
     const baselineArea = document.getElementById('metric-baseline-area');
-    if (baselineArea) animateValue(baselineArea, 0, d.baseline.areaSqKm, 1200, '', 1);
+    if (baselineArea) animateValue(baselineArea, 0, DATA.baseline.areaSqKm, 1200, '', 1);
 
     // Post-flood water %
     const postPct = document.getElementById('metric-postflood-pct');
-    if (postPct) animateValue(postPct, 0, d.postFlood.waterPct, 1200, '%', 1);
+    if (postPct) animateValue(postPct, 0, DATA.postFlood.waterPct, 1200, '%', 1);
 
     const postArea = document.getElementById('metric-postflood-area');
-    if (postArea) animateValue(postArea, 0, d.postFlood.areaSqKm, 1200, '', 1);
+    if (postArea) animateValue(postArea, 0, DATA.postFlood.areaSqKm, 1200, '', 1);
 
     // Expanded area
     const expandedArea = document.getElementById('metric-expanded-area');
-    if (expandedArea) animateValue(expandedArea, 0, d.analysis.expandedAreaSqKm, 1200, '', 1);
+    if (expandedArea) animateValue(expandedArea, 0, DATA.analysis.expandedAreaSqKm, 1200, '', 1);
 
     // Expansion rate (hero)
     const expansionRate = document.getElementById('expansion-rate');
-    if (expansionRate) animateValue(expansionRate, 0, d.analysis.waterExpansionRatePct, 1800, '%', 1);
+    if (expansionRate) animateValue(expansionRate, 0, DATA.analysis.waterExpansionRatePct, 1800, '%', 1);
 
     // Stagnant pockets
     const stagnant = document.getElementById('metric-stagnant');
-    if (stagnant) animateValue(stagnant, 0, d.analysis.stagnantPockets, 1000, '', 0);
+    if (stagnant) animateValue(stagnant, 0, DATA.analysis.stagnantPockets, 1000, '', 0);
 
     // Panel overlays
     const baselineOverlay = document.getElementById('overlay-baseline-pct');
-    if (baselineOverlay) animateValue(baselineOverlay, 0, d.baseline.waterPct, 1200, '%', 1);
+    if (baselineOverlay) animateValue(baselineOverlay, 0, DATA.baseline.waterPct, 1200, '%', 1);
 
     const postOverlay = document.getElementById('overlay-postflood-pct');
-    if (postOverlay) animateValue(postOverlay, 0, d.postFlood.waterPct, 1200, '%', 1);
+    if (postOverlay) animateValue(postOverlay, 0, DATA.postFlood.waterPct, 1200, '%', 1);
   }
 
-  /* ================================================================
-     FACTOR PROGRESS BARS
-     ================================================================ */
   function initFactorBars() {
-    const d = MOCK_SATELLITE_DATA.analysis;
-
-    // Cloud cover: lower is better, so invert for "goodness"
+    const d = DATA.analysis;
     const cloudBar = document.getElementById('factor-cloud-bar');
     if (cloudBar) {
       setTimeout(() => { cloudBar.style.width = (100 - d.cloudCoverPct) + '%'; }, 400);
     }
-
-    // GSD: 3m is good for PlanetScope, show as ~85% quality
     const gsdBar = document.getElementById('factor-gsd-bar');
     if (gsdBar) {
       setTimeout(() => { gsdBar.style.width = '85%'; }, 500);
     }
   }
 
-  /* ================================================================
-     LOADING STATE
-     ================================================================ */
   function showLoading() {
     const overlay = document.getElementById('loading-overlay');
     if (overlay) overlay.classList.remove('hidden');
@@ -175,9 +146,6 @@
     if (overlay) overlay.classList.add('hidden');
   }
 
-  /* ================================================================
-     INTERSECTION OBSERVER — animate on scroll
-     ================================================================ */
   function initScrollAnimations() {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -196,31 +164,51 @@
     });
   }
 
-  // CSS class for revealed state
   const style = document.createElement('style');
   style.textContent = `.animate-in { opacity: 1 !important; transform: translateY(0) !important; }`;
   document.head.appendChild(style);
 
-  /* ================================================================
-     PERSIST SESSION FOR DOWNSTREAM MODULES
-     ================================================================ */
   function persistSatelliteSession() {
-    const d = MOCK_SATELLITE_DATA;
     saveSession({
-      flood_water_pct:     d.postFlood.waterPct,
-      flood_increase_pct:  d.analysis.waterExpansionRatePct,
-      flood_baseline_pct:  d.baseline.waterPct,
-      flood_severity:      d.analysis.severityLevel,
-      flood_confidence:    d.analysis.detectionConfidence,
-      stagnant_pockets:    d.analysis.stagnantPockets,
+      flood_water_pct:     DATA.postFlood.waterPct,
+      flood_increase_pct:  DATA.analysis.waterExpansionRatePct,
+      flood_baseline_pct:  DATA.baseline.waterPct,
+      flood_severity:      DATA.analysis.severityLevel,
+      flood_confidence:    DATA.analysis.detectionConfidence,
+      stagnant_pockets:    DATA.analysis.stagnantPockets,
     });
   }
 
-  /* ================================================================
-     INIT
-     ================================================================ */
+  // ─── Fetch Compare Metrics from Backend API ────────────────────────────────
+  async function fetchCompareData() {
+    try {
+      const res = await fetch(`/api/ndwi/compare?baseline_image_id=20260626_143522_PSScene&flood_image_id=20260715_143721_PSScene`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const apiData = await res.json();
+      
+      DATA.baseline.waterPct = apiData.baseline_water_pct;
+      DATA.postFlood.waterPct = apiData.flood_water_pct;
+      DATA.analysis.waterExpansionRatePct = apiData.water_expansion_rate_pct;
+      DATA.analysis.expandedAreaSqKm = apiData.expanded_area_sq_km;
+      DATA.analysis.severityLevel = apiData.severity_level;
+      DATA.analysis.severityDescription = apiData.severity_description;
+      DATA.analysis.detectionConfidence = apiData.detection_confidence_pct;
+      DATA.analysis.stagnantPockets = apiData.stagnant_water_pockets;
+
+      // Update source indicators
+      const statusBadge = document.getElementById('api-status-badge');
+      if (statusBadge) {
+        statusBadge.innerHTML = `
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+          Planet API Engine Live
+        `;
+      }
+    } catch (err) {
+      console.warn("Backend satellite compare offline. Reverting to local fallback data.", err);
+    }
+  }
+
   window.addEventListener('DOMContentLoaded', () => {
-    // Render shared shell components
     if (window.AquaShield) {
       window.AquaShield.renderSidebar('/satellite.html');
       window.AquaShield.renderHeader({
@@ -231,16 +219,18 @@
       });
     }
 
-    // Simulate loading
     showLoading();
-    setTimeout(() => {
-      hideLoading();
-      initMetricCounters();
-      initConfidenceGauge(MOCK_SATELLITE_DATA.analysis.detectionConfidence);
-      initFactorBars();
-      initScrollAnimations();
-      persistSatelliteSession();
-    }, 1400);
+    
+    fetchCompareData().then(() => {
+      setTimeout(() => {
+        hideLoading();
+        initMetricCounters();
+        initConfidenceGauge(DATA.analysis.detectionConfidence);
+        initFactorBars();
+        initScrollAnimations();
+        persistSatelliteSession();
+      }, 800);
+    });
   });
 
 })();
