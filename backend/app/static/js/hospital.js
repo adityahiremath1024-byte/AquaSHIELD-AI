@@ -29,8 +29,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // Wire up submit button
   document.getElementById('submit-data-btn').addEventListener('click', handleSubmit);
 
+  // Wire up hospital dropdown change listener
+  const hospitalSelect = document.getElementById('input-hospital');
+  if (hospitalSelect) {
+    hospitalSelect.addEventListener('change', (e) => {
+      fetchSurgeData(e.target.value);
+    });
+  }
+
   // Load initial data
-  fetchSurgeData('Kottayam');
+  fetchSurgeData(hospitalSelect ? hospitalSelect.value : 'Kottayam');
 });
 
 
