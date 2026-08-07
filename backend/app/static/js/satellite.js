@@ -69,24 +69,47 @@
       const data = await res.json();
 
       // Ensure we have at least 6 scenes in the list for beautiful layout (matching screenshot)
-      scenesList = [...data.scenes];
+      // Normalize scenes list from backend API response
+      scenesList = (data.scenes || []).map(item => {
+        const sid = item.image_id || item.id;
+        const acq = item.acquisition_date || item.acquired || "2026-08-01T05:27:12Z";
+        const cloudPct = item.cloud_cover_percent !== undefined ? item.cloud_cover_percent : ((item.cloud_cover || 0) * 100);
+        const gsdVal = item.ground_resolution_m !== undefined ? item.ground_resolution_m : (item.gsd || 3.0);
+        return {
+          id: sid,
+          image_id: sid,
+          acquired: acq,
+          acquisition_date: acq,
+          cloud_cover: cloudPct / 100.0,
+          cloud_cover_percent: cloudPct,
+          gsd: gsdVal,
+          ground_resolution_m: gsdVal,
+          thumbnail_url: item.thumbnail_url || `/api/satellite/thumbnail/${sid}`
+        };
+      });
+
       const defaultScenes = [
-        { id: "20250831_054315_14_351d_PSScene", acquired: "2025-08-31T05:43:15Z", cloud_cover: 0.15, gsd: 3.0 },
-        { id: "20250821_055136_94_26ad_PSScene", acquired: "2025-08-21T05:51:36Z", cloud_cover: 0.18, gsd: 3.0 },
-        { id: "20250820_055223_07_250c_PSScene", acquired: "2025-08-20T05:52:23Z", cloud_cover: 0.12, gsd: 3.0 },
-        { id: "20250810_053124_11_253b_PSScene", acquired: "2025-08-10T05:31:24Z", cloud_cover: 0.05, gsd: 3.0 },
-        { id: "20250805_052918_12_2504_PSScene", acquired: "2025-08-05T05:29:18Z", cloud_cover: 0.07, gsd: 3.0 },
-        { id: "20250801_052712_10_2501_PSScene", acquired: "2025-08-01T05:27:12Z", cloud_cover: 0.04, gsd: 3.0 }
+        { id: "20250831_054315_14_351d_PSScene", acquired: "2025-08-31T05:43:15Z", cloud_cover: 0.15, cloud_cover_percent: 15.0, gsd: 3.0, ground_resolution_m: 3.0 },
+        { id: "20250821_055136_94_26ad_PSScene", acquired: "2025-08-21T05:51:36Z", cloud_cover: 0.18, cloud_cover_percent: 18.0, gsd: 3.0, ground_resolution_m: 3.0 },
+        { id: "20250820_055223_07_250c_PSScene", acquired: "2025-08-20T05:52:23Z", cloud_cover: 0.12, cloud_cover_percent: 12.0, gsd: 3.0, ground_resolution_m: 3.0 },
+        { id: "20250810_053124_11_253b_PSScene", acquired: "2025-08-10T05:31:24Z", cloud_cover: 0.05, cloud_cover_percent: 5.0, gsd: 3.0, ground_resolution_m: 3.0 },
+        { id: "20250805_052918_12_2504_PSScene", acquired: "2025-08-05T05:29:18Z", cloud_cover: 0.07, cloud_cover_percent: 7.0, gsd: 3.0, ground_resolution_m: 3.0 },
+        { id: "20250801_052712_10_2501_PSScene", acquired: "2025-08-01T05:27:12Z", cloud_cover: 0.04, cloud_cover_percent: 4.0, gsd: 3.0, ground_resolution_m: 3.0 }
       ];
 
       while (scenesList.length < 6) {
         const dummy = defaultScenes[scenesList.length % defaultScenes.length];
+        const sid = dummy.id;
         scenesList.push({
-          id: dummy.id,
+          id: sid,
+          image_id: sid,
           acquired: dummy.acquired,
+          acquisition_date: dummy.acquired,
           cloud_cover: dummy.cloud_cover,
+          cloud_cover_percent: dummy.cloud_cover_percent,
           gsd: dummy.gsd,
-          thumbnail_url: `/api/satellite/thumbnail/${dummy.id}`
+          ground_resolution_m: dummy.ground_resolution_m,
+          thumbnail_url: `/api/satellite/thumbnail/${sid}`
         });
       }
 
@@ -118,23 +141,26 @@
 
     container.innerHTML = '';
     scenesList.forEach((scene, index) => {
+      const sceneId = scene.id || scene.image_id;
+      const dateObj = new Date(scene.acquired || scene.acquisition_date);
+      const dateDisplay = isNaN(dateObj.getTime()) ? 'Aug 8, 2025' : dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const cloudPct = (scene.cloud_cover_percent !== undefined ? scene.cloud_cover_percent : ((scene.cloud_cover || 0) * 100)).toFixed(1);
+      const gsdVal = (scene.ground_resolution_m !== undefined ? scene.ground_resolution_m : (scene.gsd || 3.0)).toFixed(1);
+      const thumbUrl = scene.thumbnail_url || `/api/satellite/thumbnail/${sceneId}`;
+
       const card = document.createElement('div');
       card.className = 'scene-card';
-      card.id = `card-${scene.id}`;
-
-      const dateObj = new Date(scene.acquired);
-      const dateDisplay = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-      const cloudPct = (scene.cloud_cover * 100).toFixed(1);
+      card.id = `card-${sceneId}`;
 
       card.innerHTML = `
         <div class="scene-thumbnail-wrapper">
-          <img class="scene-thumbnail" id="thumb-${scene.id}" src="/api/satellite/thumbnail/${scene.id}" alt="Satellite preview" />
-          <img class="scene-mask-overlay" id="mask-${scene.id}" src="/api/ndwi/mask/${scene.id}" alt="NDWI Mask" />
+          <img class="scene-thumbnail" id="thumb-${sceneId}" src="${thumbUrl}" alt="Satellite preview" />
+          <img class="scene-mask-overlay" id="mask-${sceneId}" src="/api/ndwi/mask/${sceneId}" alt="NDWI Mask" />
         </div>
         <div class="scene-details">
           <div class="scene-id-row">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
-            <span>${scene.id}</span>
+            <span>${sceneId}</span>
           </div>
           <div class="scene-meta-row">
             <div class="meta-col">
@@ -147,42 +173,47 @@
             </div>
             <div class="meta-col">
               <span class="meta-label">GSD</span>
-              <span class="meta-val">${scene.gsd.toFixed(1)}m</span>
+              <span class="meta-val">${gsdVal}m</span>
             </div>
           </div>
           <div class="scene-actions">
-            <button class="btn-run-ndwi" id="btn-run-${scene.id}">
+            <button class="btn-run-ndwi" id="btn-run-${sceneId}">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               RUN NDWI ANALYSIS
             </button>
-            <button class="btn-toggle-mask" id="btn-mask-${scene.id}">
-              <input type="checkbox" id="chk-mask-${scene.id}" />
-              <label for="chk-mask-${scene.id}" style="cursor:pointer; margin-left:4px;">TOGGLE MASK</label>
+            <button class="btn-toggle-mask" id="btn-mask-${sceneId}">
+              <input type="checkbox" id="chk-mask-${sceneId}" />
+              <label for="chk-mask-${sceneId}" style="cursor:pointer; margin-left:4px;">TOGGLE MASK</label>
             </button>
           </div>
-          <div class="results-container" id="results-${scene.id}"></div>
+          <div class="results-container" id="results-${sceneId}"></div>
         </div>
       `;
 
       container.appendChild(card);
 
       // Event Listeners
-      const runBtn = card.querySelector(`#btn-run-${scene.id}`);
-      runBtn.addEventListener('click', () => {
-        // Toggle selected scene as the active analyzed flood scene
-        selectedFloodId = scene.id;
-        triggerAnalysis(scene.id, 'flood').then(() => updateComparisonMatrix());
-      });
+      const runBtn = card.querySelector(`#btn-run-${sceneId}`);
+      if (runBtn) {
+        runBtn.addEventListener('click', () => {
+          selectedFloodId = sceneId;
+          triggerAnalysis(sceneId, 'flood').then(() => updateComparisonMatrix());
+        });
+      }
 
-      const maskCheckbox = card.querySelector(`#chk-mask-${scene.id}`);
-      maskCheckbox.addEventListener('change', (e) => {
-        const overlay = card.querySelector(`#mask-${scene.id}`);
-        if (e.target.checked) {
-          overlay.classList.add('active');
-        } else {
-          overlay.classList.remove('active');
-        }
-      });
+      const maskCheckbox = card.querySelector(`#chk-mask-${sceneId}`);
+      if (maskCheckbox) {
+        maskCheckbox.addEventListener('change', (e) => {
+          const overlay = card.querySelector(`#mask-${sceneId}`);
+          if (overlay) {
+            if (e.target.checked) {
+              overlay.classList.add('active');
+            } else {
+              overlay.classList.remove('active');
+            }
+          }
+        });
+      }
     });
   }
 
