@@ -313,6 +313,8 @@ img { max-width: 100%; display: block; }
   flex: 1;
   padding: 24px 32px 40px;
   margin-top: var(--header-height);
+  display: flex;
+  flex-direction: column;
 }
 
 /* ============================================================
@@ -1227,6 +1229,13 @@ html, body {
 .header-profile {
   flex-shrink: 0 !important;
   max-width: none !important; /* overrides standard badge constraints */
+}
+
+/* Push footers to the very bottom of the flex container to eliminate blank space */
+.page-nav-footer,
+.platform-meta-footer {
+  margin-top: auto !important;
+  padding-top: 32px !important;
 }
 
 
