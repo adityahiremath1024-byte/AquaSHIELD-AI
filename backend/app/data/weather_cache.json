@@ -1,0 +1,352 @@
+{
+  "9.35_76.43": {
+    "timestamp": 1786129710.7401679,
+    "data": {
+      "latitude": 9.35,
+      "longitude": 76.43,
+      "current": {
+        "temperature_c": 24.0,
+        "humidity_pct": 99.0,
+        "wind_speed_kmh": 13.3,
+        "precipitation_mm": 0.3
+      },
+      "advanced_risk_assessment": {
+        "bacteria_growth_index_pct": 81.5,
+        "risk_level": "CRITICAL",
+        "risk_stars": 5,
+        "past_7d_accumulated_rain_mm": 255.1,
+        "past_15d_accumulated_rain_mm": 313.5,
+        "past_30d_accumulated_rain_mm": 373.1,
+        "rainfall_trend_pct": 352.3,
+        "rainfall_trend_direction": "Increasing",
+        "consecutive_rainy_days": 13
+      },
+      "assessment": {
+        "bacteriaGrowthIndex": 81.5,
+        "riskLevel": "CRITICAL",
+        "riskLevelLabel": "Critical Risk",
+        "riskStars": 5,
+        "generatedAt": "08 Aug 2026 00:38:30 IST",
+        "protocol": "Issue emergency boil-water advisory"
+      },
+      "precipitation": {
+        "past7_mm": 255.1,
+        "previous7_mm": 56.4,
+        "past15_mm": 313.5,
+        "past30_mm": 373.1,
+        "seasonalNormal_mm": 340.0,
+        "trendPct": 352.3,
+        "trendDirection": "Increasing",
+        "anomaly7d": "+1600.7%",
+        "anomaly15d": "+879.7%",
+        "anomaly30d": "+9.7%",
+        "anomalyPct": 9.7,
+        "anomalyStatus": "Normal",
+        "consecutiveRainyDays": 13,
+        "streakStatus": "Ongoing",
+        "daily": [
+          6.0,
+          16.0,
+          7.0,
+          3.3,
+          1.0,
+          2.0,
+          0.3,
+          0.9,
+          1.7,
+          3.6,
+          3.1,
+          8.6,
+          1.4,
+          1.5,
+          3.2,
+          2.0,
+          0.6,
+          1.8,
+          4.6,
+          9.3,
+          1.9,
+          7.9,
+          30.3,
+          107.3,
+          47.1,
+          32.2,
+          11.0,
+          7.0,
+          31.6,
+          18.9
+        ]
+      },
+      "heatIndex": {
+        "temperature_c": 24.0,
+        "humidity_pct": 99,
+        "vaporPressure_hpa": 29.48,
+        "heatIndex_c": 34.8,
+        "formula": "e = 6.11 \u00d7 10^(7.5\u00d724.0 / (237.7+24.0)) \u00d7 99/100 = 29.48 hPa\nHI = 24.0 + 0.5555 \u00d7 (29.48 \u2212 10.0) = 34.8\u00b0C"
+      },
+      "scoreMatrix": [
+        {
+          "variable": "Temperature",
+          "rawValue": "24.0\u00b0C",
+          "condition": "20\u00b0C < T \u2264 25\u00b0C",
+          "score": 50,
+          "weightPct": "30%",
+          "weight": 0.3,
+          "contribution": 15.0,
+          "color": "#f59e0b"
+        },
+        {
+          "variable": "Relative Humidity",
+          "rawValue": "99%",
+          "condition": "H > 85%",
+          "score": 100,
+          "weightPct": "15%",
+          "weight": 0.15,
+          "contribution": 15.0,
+          "color": "#3b82f6"
+        },
+        {
+          "variable": "Heat Index",
+          "rawValue": "34.8\u00b0C",
+          "condition": "32\u00b0C < HI \u2264 38\u00b0C",
+          "score": 80,
+          "weightPct": "10%",
+          "weight": 0.1,
+          "contribution": 8.0,
+          "color": "#ef4444"
+        },
+        {
+          "variable": "Past 30-Day Rain",
+          "rawValue": "373.1 mm",
+          "condition": "R\u2083\u2080 > 300 mm",
+          "score": 100,
+          "weightPct": "20%",
+          "weight": 0.2,
+          "contribution": 20.0,
+          "color": "#00f2fe"
+        },
+        {
+          "variable": "Flood Surface Area (NDWI)",
+          "rawValue": "Estimated",
+          "condition": "Severe flooding NDWI mask",
+          "score": 90,
+          "weightPct": "15%",
+          "weight": 0.15,
+          "contribution": 13.5,
+          "color": "#a855f7"
+        },
+        {
+          "variable": "Consecutive Rain Streak",
+          "rawValue": "13 days",
+          "condition": "13 days continuous",
+          "score": 100,
+          "weightPct": "10%",
+          "weight": 0.1,
+          "contribution": 10.0,
+          "color": "#10b981"
+        }
+      ],
+      "riskTiers": [
+        {
+          "range": "0%\u201330%",
+          "level": "LOW",
+          "badgeClass": "badge-low",
+          "protocol": "Routine water monitoring"
+        },
+        {
+          "range": "31%\u201360%",
+          "level": "MODERATE",
+          "badgeClass": "badge-moderate",
+          "protocol": "Test PHC water samples"
+        },
+        {
+          "range": "61%\u201380%",
+          "level": "HIGH",
+          "badgeClass": "badge-high",
+          "protocol": "Pre-chlorinate public drinking water & alert medical teams"
+        },
+        {
+          "range": "81%\u2013100%",
+          "level": "CRITICAL",
+          "badgeClass": "badge-critical",
+          "protocol": "Issue emergency boil-water advisory"
+        }
+      ]
+    }
+  },
+  "15.85_74.50": {
+    "timestamp": 1786133340.4021025,
+    "data": {
+      "latitude": 15.8497,
+      "longitude": 74.4977,
+      "current": {
+        "temperature_c": 20.6,
+        "humidity_pct": 98.0,
+        "wind_speed_kmh": 14.8,
+        "precipitation_mm": 0.0
+      },
+      "advanced_risk_assessment": {
+        "bacteria_growth_index_pct": 63.0,
+        "risk_level": "HIGH",
+        "risk_stars": 4,
+        "past_7d_accumulated_rain_mm": 31.5,
+        "past_15d_accumulated_rain_mm": 78.4,
+        "past_30d_accumulated_rain_mm": 133.3,
+        "rainfall_trend_pct": -20.3,
+        "rainfall_trend_direction": "Decreasing",
+        "consecutive_rainy_days": 24
+      },
+      "assessment": {
+        "bacteriaGrowthIndex": 63.0,
+        "riskLevel": "HIGH",
+        "riskLevelLabel": "High Risk",
+        "riskStars": 4,
+        "generatedAt": "08 Aug 2026 01:39:00 IST",
+        "protocol": "Pre-chlorinate public drinking water and alert medical teams immediately."
+      },
+      "precipitation": {
+        "past7_mm": 31.5,
+        "previous7_mm": 39.5,
+        "past15_mm": 78.4,
+        "past30_mm": 133.3,
+        "seasonalNormal_mm": 340.0,
+        "trendPct": -20.3,
+        "trendDirection": "Decreasing",
+        "anomaly7d": "+110.0%",
+        "anomaly15d": "+145.0%",
+        "anomaly30d": "-60.8%",
+        "anomalyPct": -60.8,
+        "anomalyStatus": "Below Normal",
+        "consecutiveRainyDays": 24,
+        "streakStatus": "Ongoing",
+        "daily": [
+          2.0,
+          0.9,
+          0.0,
+          0.9,
+          0.1,
+          0.0,
+          1.8,
+          2.9,
+          7.3,
+          4.6,
+          5.6,
+          10.8,
+          8.6,
+          5.1,
+          4.3,
+          7.4,
+          2.1,
+          2.3,
+          4.7,
+          5.6,
+          6.9,
+          8.2,
+          9.7,
+          4.6,
+          4.0,
+          4.9,
+          5.6,
+          4.7,
+          4.7,
+          3.0
+        ]
+      },
+      "heatIndex": {
+        "temperature_c": 20.6,
+        "humidity_pct": 98,
+        "vaporPressure_hpa": 23.74,
+        "heatIndex_c": 28.2,
+        "formula": "e = 6.11 \u00d7 10^(7.5\u00d720.6 / (237.7+20.6)) \u00d7 98/100 = 23.74 hPa\nHI = 20.6 + 0.5555 \u00d7 (23.74 \u2212 10.0) = 28.2\u00b0C"
+      },
+      "scoreMatrix": [
+        {
+          "variable": "Temperature",
+          "rawValue": "20.6\u00b0C",
+          "condition": "20\u00b0C < T \u2264 25\u00b0C",
+          "score": 50,
+          "weightPct": "30%",
+          "weight": 0.3,
+          "contribution": 15.0,
+          "color": "#f59e0b"
+        },
+        {
+          "variable": "Relative Humidity",
+          "rawValue": "98%",
+          "condition": "H > 85%",
+          "score": 100,
+          "weightPct": "15%",
+          "weight": 0.15,
+          "contribution": 15.0,
+          "color": "#3b82f6"
+        },
+        {
+          "variable": "Heat Index",
+          "rawValue": "28.2\u00b0C",
+          "condition": "27\u00b0C < HI \u2264 32\u00b0C",
+          "score": 50,
+          "weightPct": "10%",
+          "weight": 0.1,
+          "contribution": 5.0,
+          "color": "#ef4444"
+        },
+        {
+          "variable": "Past 30-Day Rain",
+          "rawValue": "133.3 mm",
+          "condition": "100 < R\u2083\u2080 \u2264 200 mm",
+          "score": 60,
+          "weightPct": "20%",
+          "weight": 0.2,
+          "contribution": 12.0,
+          "color": "#00f2fe"
+        },
+        {
+          "variable": "Flood Surface Area (NDWI)",
+          "rawValue": "Estimated",
+          "condition": "133.3 mm rainfall band",
+          "score": 40,
+          "weightPct": "15%",
+          "weight": 0.15,
+          "contribution": 6.0,
+          "color": "#a855f7"
+        },
+        {
+          "variable": "Consecutive Rain Streak",
+          "rawValue": "24 days",
+          "condition": "24 days continuous",
+          "score": 100,
+          "weightPct": "10%",
+          "weight": 0.1,
+          "contribution": 10.0,
+          "color": "#10b981"
+        }
+      ],
+      "riskTiers": [
+        {
+          "range": "0%\u201330%",
+          "level": "LOW",
+          "badgeClass": "badge-low",
+          "protocol": "Routine water monitoring"
+        },
+        {
+          "range": "31%\u201360%",
+          "level": "MODERATE",
+          "badgeClass": "badge-moderate",
+          "protocol": "Test PHC water samples"
+        },
+        {
+          "range": "61%\u201380%",
+          "level": "HIGH",
+          "badgeClass": "badge-high",
+          "protocol": "Pre-chlorinate public drinking water & alert medical teams"
+        },
+        {
+          "range": "81%\u2013100%",
+          "level": "CRITICAL",
+          "badgeClass": "badge-critical",
+          "protocol": "Issue emergency boil-water advisory"
+        }
+      ]
+    }
+  }
+}
