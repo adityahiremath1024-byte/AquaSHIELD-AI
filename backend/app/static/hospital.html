@@ -4,74 +4,266 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hospital Surveillance Engine — AquaShield AI</title>
-  <meta name="description" content="Module 3: Clinical case velocity, hospital bed occupancy, and medical stock risk surveillance." />
+  <meta name="description" content="Module 3: Real-time hospital case velocity, bed occupancy, medicine stock, and outbreak threshold surveillance engine." />
+
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/theme-toggle.css" />
+  <link rel="stylesheet" href="css/hospital.css" />
+
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300ffaa' stroke-width='2'><path d='M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z'/></svg>" />
+
   <script src="js/components/theme-toggle.js"></script>
-  <style>
-    .hospital-page { max-width: 1200px; margin: 0 auto; padding: 24px; display: flex; flex-direction: column; gap: 24px; }
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-    .stat-card { background: rgba(14,22,40,0.65); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 24px; }
-    .stat-val { font-family: var(--font-heading); font-size: 2.2rem; font-weight: 700; color: #fff; margin-top: 8px; }
-    .stat-sub { font-size: 0.85rem; color: #7a8ba8; margin-top: 4px; }
-  </style>
 </head>
-<body class="hospital-page">
-  <div class="main-content">
-    <div class="page-body">
-      <section>
-        <div class="glass-card">
-          <h2 style="font-family: var(--font-heading); color: #fff; font-size: 1.6rem; margin-bottom: 8px;">Module 3: Hospital Surveillance Engine</h2>
-          <p style="color: #7a8ba8;">Real-time clinical admissions tracking, bed occupancy velocity, and emergency medical stock risk analysis.</p>
-        </div>
-      </section>
+<body>
 
-      <div class="stats-grid" style="margin-top: 24px;">
-        <div class="stat-card">
-          <span style="color: #7a8ba8; font-size: 0.8rem; text-transform: uppercase;">Total Beds Occupied</span>
-          <div class="stat-val">85 / 100</div>
-          <div class="stat-sub">85% Occupancy Rate (HIGH)</div>
-        </div>
-        <div class="stat-card">
-          <span style="color: #7a8ba8; font-size: 0.8rem; text-transform: uppercase;">7-Day Diarrheal Cases</span>
-          <div class="stat-val">120</div>
-          <div class="stat-sub">+47.0% Surge Rate</div>
-        </div>
-        <div class="stat-card">
-          <span style="color: #7a8ba8; font-size: 0.8rem; text-transform: uppercase;">ORS Packets in Stock</span>
-          <div class="stat-val">4,200</div>
-          <div class="stat-sub">Shortage Risk Threshold</div>
-        </div>
-        <div class="stat-card">
-          <span style="color: #7a8ba8; font-size: 0.8rem; text-transform: uppercase;">Doctors on Duty</span>
-          <div class="stat-val">5</div>
-          <div class="stat-sub">Kuttanad Primary Health Centre</div>
-        </div>
-      </div>
-
-      <nav class="page-nav-footer" style="display: flex; justify-content: space-between; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px;">
-        <a href="satellite.html" class="btn-secondary" style="text-decoration: none;">← Satellite Module</a>
-        <span style="color: #7a8ba8;">Module 3 of 7</span>
-        <a href="citizen.html" class="btn-primary" style="text-decoration: none;">Citizen Reports →</a>
-      </nav>
-    </div>
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading hospital surveillance data…</div>
   </div>
 
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- App Shell -->
+  <div class="app-shell">
+    <main class="main-content">
+      <div class="page-body">
+
+        <!-- ═══════════════════════════════════════════════
+             SECTION 1: Hospital Data Entry Bar
+             ═══════════════════════════════════════════════ -->
+        <section aria-labelledby="input-heading">
+          <div class="section-label" id="input-heading">HOSPITAL DATA ENTRY</div>
+          <div class="glass-card hospital-input-bar">
+            <div class="input-group">
+              <label for="input-hospital" class="input-label">Hospital Name</label>
+              <select id="input-hospital" class="input-select">
+                <option value="Kottayam General Hospital" selected>Kottayam General Hospital</option>
+                <option value="Kuttanad PHC">Kuttanad PHC</option>
+                <option value="Alappuzha District Hospital">Alappuzha District Hospital</option>
+                <option value="West Kainakary Clinic">West Kainakary Clinic</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label for="input-beds" class="input-label">Total Beds</label>
+              <input type="number" id="input-beds" class="input-field" value="520" min="1" />
+            </div>
+            <div class="input-group">
+              <label for="input-occupied" class="input-label">Occupied Beds</label>
+              <input type="number" id="input-occupied" class="input-field" value="442" min="0" />
+            </div>
+            <div class="input-group">
+              <label for="input-cases" class="input-label">Today's New Cases</label>
+              <input type="number" id="input-cases" class="input-field" value="38" min="0" />
+            </div>
+            <div class="input-group">
+              <label for="input-doctors" class="input-label">Doctors on Duty</label>
+              <input type="number" id="input-doctors" class="input-field" value="24" min="0" />
+            </div>
+            <button id="submit-data-btn" class="submit-data-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M22 2L11 13"/>
+                <path d="M22 2L15 22L11 13L2 9L22 2Z"/>
+              </svg>
+              SUBMIT DATA
+            </button>
+          </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════
+             SECTION 2: Four Hero Metric Cards
+             ═══════════════════════════════════════════════ -->
+        <section class="metrics-grid" style="margin-top: 24px;">
+
+          <!-- Card 1: 7-Day Rolling Average -->
+          <div class="metric-card">
+            <div class="metric-icon avg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+            </div>
+            <div class="metric-body">
+              <div class="metric-title">7-DAY ROLLING AVERAGE</div>
+              <div class="metric-value text-cyan" id="metric-avg">—</div>
+              <div class="metric-sub">cases/day</div>
+            </div>
+          </div>
+
+          <!-- Card 2: Case Growth Rate -->
+          <div class="metric-card">
+            <div class="metric-icon growth">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                <polyline points="17 6 23 6 23 12"/>
+              </svg>
+            </div>
+            <div class="metric-body">
+              <div class="metric-title">CASE GROWTH RATE</div>
+              <div class="metric-value text-amber" id="metric-growth">—</div>
+              <div class="metric-sub">vs. previous day</div>
+            </div>
+          </div>
+
+          <!-- Card 3: Capacity Utilization -->
+          <div class="metric-card">
+            <div class="metric-icon capacity">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="M2 10h20"/>
+                <path d="M12 4v16"/>
+              </svg>
+            </div>
+            <div class="metric-body">
+              <div class="metric-title">CAPACITY UTILIZATION</div>
+              <div class="metric-value text-red" id="metric-capacity">—</div>
+              <div class="metric-sub" id="metric-beds-sub">loading…</div>
+            </div>
+          </div>
+
+          <!-- Card 4: Outbreak Threshold -->
+          <div class="metric-card">
+            <div class="metric-icon threshold">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+            </div>
+            <div class="metric-body">
+              <div class="metric-title">OUTBREAK THRESHOLD</div>
+              <div id="metric-threshold">
+                <span class="threshold-badge alert">ALERT</span>
+              </div>
+              <div class="metric-sub" id="metric-threshold-sub">loading…</div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ═══════════════════════════════════════════════
+             SECTION 3: 7-Day New Case Trend Chart
+             ═══════════════════════════════════════════════ -->
+        <section style="margin-top: 24px;">
+          <div class="glass-card trend-chart-card">
+            <div class="trend-chart-header">
+              <div class="trend-chart-title">
+                7-DAY NEW CASE TREND
+                <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 16v-4"/>
+                  <path d="M12 8h.01"/>
+                </svg>
+              </div>
+              <select class="trend-range-select" id="trend-range">
+                <option value="7" selected>Last 7 Days</option>
+              </select>
+            </div>
+            <div class="trend-chart-container">
+              <svg id="trend-chart-svg" class="trend-chart-svg" viewBox="0 0 800 280" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                  <linearGradient id="trendGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#00f2fe" />
+                    <stop offset="100%" stop-color="#10b981" />
+                  </linearGradient>
+                  <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#00f2fe" stop-opacity="0.3" />
+                    <stop offset="100%" stop-color="#00f2fe" stop-opacity="0.0" />
+                  </linearGradient>
+                </defs>
+                <!-- Chart rendered by JS -->
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════
+             SECTION 4: Case Breakdown & Capacity Details
+             ═══════════════════════════════════════════════ -->
+        <section style="margin-top: 24px;">
+          <div class="glass-card" style="padding: 24px;">
+            <div class="section-label">CASE BREAKDOWN — TODAY</div>
+            <div class="case-breakdown" id="case-breakdown">
+              <div class="case-item">
+                <div class="case-item-label">Diarrhea</div>
+                <div class="case-item-value" id="case-diarrhea">—</div>
+              </div>
+              <div class="case-item">
+                <div class="case-item-label">Typhoid</div>
+                <div class="case-item-value" id="case-typhoid">—</div>
+              </div>
+              <div class="case-item">
+                <div class="case-item-label">Cholera</div>
+                <div class="case-item-value" id="case-cholera">—</div>
+              </div>
+              <div class="case-item">
+                <div class="case-item-label">Fever</div>
+                <div class="case-item-value" id="case-fever">—</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section style="margin-top: 24px;">
+          <div class="glass-card" style="padding: 24px;">
+            <div class="section-label">HOSPITAL CAPACITY & RISK ASSESSMENT</div>
+            <div class="capacity-grid">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 0.8rem; color: var(--text-muted);">Bed Occupancy</span>
+                  <span id="cap-occ-pct" style="font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; color: var(--text-bright);">—</span>
+                </div>
+                <div class="capacity-bar-wrapper">
+                  <div class="capacity-bar-track">
+                    <div class="capacity-bar-fill" id="cap-bar-fill" style="width: 0%;"></div>
+                  </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 8px;">
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">Available: <strong id="cap-avail" style="color: var(--text-bright);">—</strong> beds</span>
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">Doctors: <strong id="cap-docs" style="color: var(--text-bright);">—</strong></span>
+                </div>
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 0.8rem; color: var(--text-muted);">Capacity Risk Score</span>
+                  <span id="cap-risk-score" style="font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; color: var(--text-bright);">—</span>
+                </div>
+                <div class="star-rating" id="star-rating"></div>
+                <div id="cap-risk-label" style="font-size: 0.72rem; color: var(--text-muted); margin-top: 8px;">—</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════
+             SECTION 5: Footer Navigation
+             ═══════════════════════════════════════════════ -->
+        <nav class="page-nav-footer" aria-label="Module navigation">
+          <a href="satellite.html" class="nav-footer-btn secondary">
+            <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+            Satellite Module
+          </a>
+          <span class="nav-footer-label">Module 3 of 7 — Hospital Case & Capacity Surveillance</span>
+          <a href="citizen.html" class="nav-footer-btn primary">
+            Citizen Reports
+            <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+          </a>
+        </nav>
+
+        <!-- Platform Footer -->
+        <footer class="platform-meta-footer">
+          <div>Data Sources: Hospital MIS | IDSP | State Health Systems</div>
+          <div>All times in IST (UTC +05:30)</div>
+        </footer>
+
+      </div><!-- /.page-body -->
+    </main>
+  </div><!-- /.app-shell -->
+
+  <!-- Scripts -->
   <script src="js/components/sidebar.js"></script>
   <script src="js/components/header.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      if (window.AquaShield) {
-        window.AquaShield.renderSidebar('/hospital.html');
-        window.AquaShield.renderHeader({
-          title: 'Hospital Surveillance Engine',
-          subtitle: 'Module 3 — Clinical Case Velocity & Bed Occupancy Surveillance',
-          stepCurrent: '3',
-          stepTotal: '7'
-        });
-      }
-    });
-  </script>
+  <script src="js/hospital.js"></script>
+
 </body>
 </html>
