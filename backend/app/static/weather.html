@@ -126,7 +126,7 @@
                     <svg class="star-svg" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                   </div>
                   <div class="star-num-text">
-                    <span class="num">4</span>
+                    <span class="num" id="summary-stars-val">4</span>
                     <span class="sub">out of 5<br>stars</span>
                   </div>
                 </div>
@@ -161,9 +161,9 @@
                   <button class="info-btn" title="Accumulated rainfall over past 7, 15, and 30 days"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
                 </div>
                 <div class="rain-stats-rows">
-                  <div class="stat-row"><span>Past 7 Days</span><span class="mono fw-600">20.1 mm</span></div>
-                  <div class="stat-row"><span>Past 15 Days</span><span class="mono fw-600">36.0 mm</span></div>
-                  <div class="stat-row"><span>Past 30 Days</span><span class="mono fw-600">196.9 mm</span></div>
+                  <div class="stat-row"><span>Past 7 Days</span><span class="mono fw-600" id="summary-past7-val">20.1 mm</span></div>
+                  <div class="stat-row"><span>Past 15 Days</span><span class="mono fw-600" id="summary-past15-val">36.0 mm</span></div>
+                  <div class="stat-row"><span>Past 30 Days</span><span class="mono fw-600" id="summary-past30-val">196.9 mm</span></div>
                 </div>
                 <div class="inner-card-footer">
                   <span class="footer-label">Total Precipitation</span>
@@ -186,10 +186,10 @@
                   </div>
                   <button class="info-btn" title="Percent change in past 7 days vs previous 7 days"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
                 </div>
-                <div class="big-metric-text">+59.5%</div>
+                <div class="big-metric-text" id="summary-trend-val">+59.5%</div>
                 <p class="stat-subtext">vs. previous 7 days</p>
                 <div class="inner-card-footer">
-                  <span class="footer-status text-cyan">Increasing</span>
+                  <span class="footer-status text-cyan" id="summary-trend-dir">Increasing</span>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
                 </div>
               </div>
@@ -206,12 +206,12 @@
                   <button class="info-btn" title="Deviation from dynamic monthly normal baseline"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
                 </div>
                 <div class="rain-stats-rows">
-                  <div class="stat-row"><span>7-Day Anomaly</span><span class="mono fw-600 text-cyan">+38.2%</span></div>
-                  <div class="stat-row"><span>15-Day Anomaly</span><span class="mono fw-600 text-cyan">+41.7%</span></div>
-                  <div class="stat-row"><span>30-Day Anomaly</span><span class="mono fw-600 text-cyan">+67.3%</span></div>
+                  <div class="stat-row"><span>7-Day Anomaly</span><span class="mono fw-600 text-cyan" id="summary-anomaly7d-val">+38.2%</span></div>
+                  <div class="stat-row"><span>15-Day Anomaly</span><span class="mono fw-600 text-cyan" id="summary-anomaly15d-val">+41.7%</span></div>
+                  <div class="stat-row"><span>30-Day Anomaly</span><span class="mono fw-600 text-cyan" id="summary-anomaly30d-val">+67.3%</span></div>
                 </div>
                 <div class="inner-card-footer">
-                  <span class="footer-status text-cyan">Above Normal</span>
+                  <span class="footer-status text-cyan" id="summary-anomaly-status">Above Normal</span>
                   <button class="info-btn" title="Seasonal baseline: 113.0 mm"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
                 </div>
               </div>
@@ -227,10 +227,10 @@
                   </div>
                   <button class="info-btn" title="Continuous days with daily precipitation > 1.0 mm"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
                 </div>
-                <div class="streak-big-text">3 <span class="unit">Days</span></div>
+                <div class="streak-big-text" id="summary-streak-val">3 <span class="unit">Days</span></div>
                 <p class="stat-subtext">Current Streak</p>
                 <div class="inner-card-footer">
-                  <span class="footer-status text-cyan">Ongoing</span>
+                  <span class="footer-status text-cyan" id="summary-streak-status">Ongoing</span>
                   <svg width="16" height="12" viewBox="0 0 24 12" fill="none" stroke="#00f2fe" stroke-width="2"><path d="M1 6c4-6 8 6 11 0s7 6 11 0"/></svg>
                 </div>
               </div>

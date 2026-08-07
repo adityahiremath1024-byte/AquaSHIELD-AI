@@ -13,6 +13,7 @@ load_dotenv(ENV_PATH)
 from app.api.prediction import router as prediction_router
 from app.api.dioe import router as dioe_router
 from app.api.hospital import router as hospital_router
+from app.api.weather import router as weather_router
 from app.db.database import engine, SessionLocal
 from app.db.models import Base, HospitalRecord
 
@@ -35,6 +36,7 @@ app.add_middleware(
 app.include_router(hospital_router)
 app.include_router(prediction_router)
 app.include_router(dioe_router)
+app.include_router(weather_router)
 
 
 # ── Database Initialization & Seed Data ──────────────────────────────────────
@@ -171,7 +173,12 @@ def health_check():
     return {
         "status": "healthy",
         "system": "AquaShield AI Engine",
-        "modules": ["Module 3: Hospital Surveillance", "Module 6: Prediction", "Module 7: DIOE"]
+        "modules": [
+            "Module 1: Meteorological Intelligence",
+            "Module 3: Hospital Surveillance",
+            "Module 6: Prediction",
+            "Module 7: DIOE"
+        ]
     }
 
 if __name__ == "__main__":
