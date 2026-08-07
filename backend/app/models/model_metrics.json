@@ -1,0 +1,20 @@
+{
+  "model_type": "XGBoost Regressor",
+  "training_samples": 800,
+  "r2_score": 0.9677,
+  "r2_pct": 96.8,
+  "mae": 1.76,
+  "feature_names": [
+    "rainfall_mm",
+    "temperature_c",
+    "humidity_pct",
+    "flood_pct_increase",
+    "hospital_cases_7d",
+    "case_surge_pct",
+    "citizen_reports_count",
+    "citizen_avg_risk_score",
+    "days_since_last_heavy_rain",
+    "water_stagnation_index"
+  ],
+  "prediction_horizon": "7-Day Forward Forecast"
+}
