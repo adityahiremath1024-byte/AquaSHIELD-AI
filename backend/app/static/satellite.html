@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Satellite Flood Analysis — AquaShield AI</title>
+  <meta name="description" content="Module 2: Satellite-based flood inundation analysis using PlanetScope 3m imagery. Before/after comparison, NDWI water detection, and disease vector risk assessment." />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/satellite.css" />
+
+  <!-- Favicon (shield icon inline) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300f2fe' stroke-width='2'><path d='M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z'/></svg>" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════
+       LOADING OVERLAY
+       ═══════════════════════════════════════════════════ -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Analyzing satellite imagery…</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       APP SHELL
+       ═══════════════════════════════════════════════════ -->
+  <div class="app-shell">
+    <!-- Sidebar + Header injected by JS components -->
+
+    <main class="main-content">
+      <div class="page-body satellite-page">
+
+        <!-- ─────────────────────────────────────────────
+             SECTION 1: Before / After Satellite Comparison
+             ───────────────────────────────────────────── -->
+        <section aria-labelledby="comparison-heading">
+          <h2 class="section-heading" id="comparison-heading">
+            <span class="dot"></span>
+            Satellite Imagery Comparison
+          </h2>
+
+          <div class="comparison-section">
+            <!-- BASELINE PANEL -->
+            <div class="comparison-panel" id="panel-baseline">
+              <div class="panel-image-wrapper">
+                <img
+                  src="assets/images/satellite/baseline_preflood.png"
+                  alt="Baseline satellite image of Kuttanad region showing normal water levels on June 26, 2026"
+                  loading="eager"
+                />
+                <div class="panel-label-strip">
+                  <span class="panel-scene-badge baseline">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/></svg>
+                    Baseline Pre-Flood
+                  </span>
+                  <span class="panel-date-badge">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+                    June 26, 2026
+                  </span>
+                </div>
+                <div class="panel-water-pct">
+                  <span class="pct-value text-green" id="overlay-baseline-pct">0.0%</span>
+                  <span class="pct-label">Water coverage</span>
+                </div>
+              </div>
+              <div class="panel-info-bar">
+                <span class="info-label">Surface water detected</span>
+                <span class="info-value text-green">127.2 sq km</span>
+              </div>
+            </div>
+
+            <!-- POST-FLOOD PANEL -->
+            <div class="comparison-panel" id="panel-postflood">
+              <div class="panel-image-wrapper">
+                <img
+                  src="assets/images/satellite/postflood_scene.png"
+                  alt="Post-flood satellite image of Kuttanad region showing severe inundation on July 15, 2026"
+                  loading="eager"
+                />
+                <div class="panel-label-strip">
+                  <span class="panel-scene-badge postflood">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    Post-Flood Scene
+                  </span>
+                  <span class="panel-date-badge">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+                    July 15, 2026
+                  </span>
+                </div>
+                <div class="panel-water-pct">
+                  <span class="pct-value text-red" id="overlay-postflood-pct">0.0%</span>
+                  <span class="pct-label">Water coverage</span>
+                </div>
+              </div>
+              <div class="panel-info-bar">
+                <span class="info-label">Surface water detected</span>
+                <span class="info-value text-red">254.4 sq km</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────
+             SECTION 2: Key Metrics Row
+             ───────────────────────────────────────────── -->
+        <section aria-labelledby="metrics-heading">
+          <h2 class="section-heading" id="metrics-heading">
+            <span class="dot"></span>
+            Inundation Metrics
+          </h2>
+
+          <div class="metrics-row">
+            <!-- Card 1: Baseline Water Coverage -->
+            <div class="glass-card metric-card" id="card-baseline">
+              <div class="card-icon icon-green">
+                <svg viewBox="0 0 24 24" stroke="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+              </div>
+              <p class="metric-label">Baseline water coverage</p>
+              <div class="metric-value">
+                <span id="metric-baseline-pct">0.0%</span>
+              </div>
+              <p class="metric-sublabel">
+                <span id="metric-baseline-area">0.0</span> sq km · Pre-flood reference
+              </p>
+            </div>
+
+            <!-- Card 2: Post-Flood Water Coverage -->
+            <div class="glass-card metric-card" id="card-postflood">
+              <div class="card-icon icon-red">
+                <svg viewBox="0 0 24 24" stroke="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/><path d="M7 13h10"/><path d="M9 17h6"/></svg>
+              </div>
+              <p class="metric-label">Post-flood water coverage</p>
+              <div class="metric-value">
+                <span id="metric-postflood-pct">0.0%</span>
+              </div>
+              <p class="metric-sublabel">
+                <span id="metric-postflood-area">0.0</span> sq km · Current inundation
+              </p>
+            </div>
+
+            <!-- Card 3: Expanded Inundation Area -->
+            <div class="glass-card metric-card" id="card-expanded">
+              <div class="card-icon icon-amber">
+                <svg viewBox="0 0 24 24" stroke="currentColor"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+              </div>
+              <p class="metric-label">Expanded inundation area</p>
+              <div class="metric-value">
+                <span id="metric-expanded-area">0.0</span>
+                <span class="metric-unit"> sq km</span>
+              </div>
+              <p class="metric-sublabel">Additional flooded area</p>
+            </div>
+
+            <!-- Card 4: Stagnant Water Pockets -->
+            <div class="glass-card metric-card" id="card-stagnant">
+              <div class="card-icon icon-cyan">
+                <svg viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M8 12a4 4 0 0 0 8 0"/><path d="M12 2v2"/><path d="M12 20v2"/></svg>
+              </div>
+              <p class="metric-label">Stagnant water pockets</p>
+              <div class="metric-value">
+                <span id="metric-stagnant">0</span>
+                <span class="metric-unit"> detected</span>
+              </div>
+              <p class="metric-sublabel">Vector breeding zones identified</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────
+             SECTION 3: Water Expansion Rate — HERO
+             ───────────────────────────────────────────── -->
+        <section aria-labelledby="expansion-heading">
+          <h2 class="section-heading" id="expansion-heading">
+            <span class="dot"></span>
+            Water Expansion Rate
+          </h2>
+
+          <div class="expansion-hero" id="expansion-hero">
+            <div class="expansion-hero-inner">
+              <div class="expansion-left">
+                <div class="expansion-icon-circle">
+                  <!-- Up-right arrow icon -->
+                  <svg viewBox="0 0 24 24">
+                    <path d="M7 17L17 7" />
+                    <path d="M7 7h10v10" />
+                  </svg>
+                </div>
+                <div class="expansion-text-group">
+                  <div class="expansion-rate-value">
+                    +<span id="expansion-rate">0.0%</span>
+                  </div>
+                  <p class="expansion-rate-label">Water expansion rate</p>
+                  <p class="expansion-rate-sublabel">
+                    Catastrophic increase from baseline flood coverage
+                  </p>
+                </div>
+              </div>
+
+              <div class="expansion-comparison">
+                <div class="expansion-from">
+                  <span class="ex-value">18.0%</span>
+                  <span class="ex-label">Baseline</span>
+                </div>
+                <div class="expansion-arrow">
+                  <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+                </div>
+                <div class="expansion-to">
+                  <span class="ex-value">36.0%</span>
+                  <span class="ex-label">Post-Flood</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────
+             SECTION 4: Risk Indicators
+             ───────────────────────────────────────────── -->
+        <section aria-labelledby="risk-heading">
+          <h2 class="section-heading" id="risk-heading">
+            <span class="dot"></span>
+            Risk Indicators
+          </h2>
+
+          <div class="risk-indicators">
+            <!-- Severity Classification Badge -->
+            <div class="glass-card severity-card" id="severity-card">
+              <div class="severity-header">
+                <div class="severity-icon">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                </div>
+                <div class="severity-title-group">
+                  <span class="severity-title">Flood severity classification</span>
+                  <span class="severity-level-text">VERY HIGH</span>
+                </div>
+              </div>
+              <p class="severity-description">
+                Catastrophic flood inundation &amp; epidemic alert
+              </p>
+              <div class="severity-badge-inline">
+                <span class="badge badge-very-high">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  VERY HIGH SEVERITY
+                </span>
+              </div>
+            </div>
+
+            <!-- Disease Vector Risk Alert -->
+            <div class="glass-card vector-alert-card" id="vector-alert" role="alert">
+              <div class="vector-alert-header">
+                <div class="vector-alert-icon">
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 8v4"/>
+                    <path d="M12 16h.01"/>
+                  </svg>
+                </div>
+                <div class="vector-alert-content">
+                  <h3 class="vector-alert-title">High disease vector risk</h3>
+                  <p class="vector-alert-desc">
+                    Standing water detected. Mosquito/pathogen breeding conditions present.
+                  </p>
+                  <div class="vector-alert-tags">
+                    <span class="vector-tag critical">
+                      <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/></svg>
+                      Mosquito Breeding
+                    </span>
+                    <span class="vector-tag critical">
+                      <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/></svg>
+                      Pathogen Risk
+                    </span>
+                    <span class="vector-tag">
+                      <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/></svg>
+                      28 Stagnant Pockets
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────
+             SECTION 5: Detection Confidence Gauge
+             ───────────────────────────────────────────── -->
+        <section aria-labelledby="confidence-heading">
+          <h2 class="section-heading" id="confidence-heading">
+            <span class="dot"></span>
+            Detection Confidence
+          </h2>
+
+          <div class="glass-card">
+            <div class="confidence-section">
+              <!-- Gauge -->
+              <div class="confidence-gauge-wrapper">
+                <div class="confidence-gauge">
+                  <svg id="confidence-gauge-svg" viewBox="0 0 200 200">
+                    <circle class="gauge-track" cx="100" cy="100" r="82" />
+                    <circle class="gauge-fill" cx="100" cy="100" r="82" />
+                  </svg>
+                  <div class="gauge-center">
+                    <span class="gauge-pct" id="gauge-pct-value">0.00%</span>
+                    <span class="gauge-label">Confidence</span>
+                  </div>
+                </div>
+                <p class="confidence-gauge-title">Detection Confidence Score</p>
+              </div>
+
+              <!-- Details -->
+              <div class="confidence-details">
+                <div class="confidence-factors">
+                  <!-- Cloud Cover Factor -->
+                  <div class="confidence-factor">
+                    <div class="factor-header">
+                      <span class="factor-label">Cloud cover factor</span>
+                      <span class="factor-value">5%</span>
+                    </div>
+                    <div class="factor-bar">
+                      <div class="factor-bar-fill" id="factor-cloud-bar" style="width: 0%"></div>
+                    </div>
+                  </div>
+
+                  <!-- Resolution GSD Factor -->
+                  <div class="confidence-factor">
+                    <div class="factor-header">
+                      <span class="factor-label">Resolution (GSD) factor</span>
+                      <span class="factor-value">3.0 m/pixel</span>
+                    </div>
+                    <div class="factor-bar">
+                      <div class="factor-bar-fill" id="factor-gsd-bar" style="width: 0%"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Explanation -->
+                <div class="confidence-explanation">
+                  <span class="explanation-icon">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                  </span>
+                  <p>
+                    High confidence driven by excellent image quality and minimal cloud obstruction.
+                    Assessment suitable for outbreak risk modeling.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────
+             SECTION 6: Assessment Summary Table
+             ───────────────────────────────────────────── -->
+        <section aria-labelledby="summary-heading">
+          <h2 class="section-heading" id="summary-heading">
+            <span class="dot"></span>
+            Assessment Summary
+          </h2>
+
+          <div class="glass-card">
+            <div class="summary-table-wrapper">
+              <table class="summary-table" id="summary-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Metric</th>
+                    <th scope="col">Value</th>
+                    <th scope="col">Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="td-metric">Baseline water coverage</td>
+                    <td class="td-value text-green">18.0%</td>
+                    <td class="td-detail">127.2 sq km</td>
+                  </tr>
+                  <tr>
+                    <td class="td-metric">Post-flood water coverage</td>
+                    <td class="td-value text-red">36.0%</td>
+                    <td class="td-detail">254.4 sq km</td>
+                  </tr>
+                  <tr>
+                    <td class="td-metric">Water expansion rate</td>
+                    <td class="td-value text-red">+100.0%</td>
+                    <td class="td-detail">Catastrophic increase</td>
+                  </tr>
+                  <tr>
+                    <td class="td-metric">Severity level</td>
+                    <td class="td-value">
+                      <span class="badge badge-very-high">VERY HIGH</span>
+                    </td>
+                    <td class="td-detail">Epidemic alert threshold</td>
+                  </tr>
+                  <tr>
+                    <td class="td-metric">Detection confidence</td>
+                    <td class="td-value text-cyan">95.25%</td>
+                    <td class="td-detail">Cloud: 5% · GSD: 3.0 m/pixel</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────
+             FOOTER NAVIGATION
+             ───────────────────────────────────────────── -->
+        <nav class="page-nav-footer" aria-label="Module navigation">
+          <a href="/weather.html" class="nav-footer-btn secondary">
+            <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+            Weather Module
+          </a>
+          <span class="nav-footer-label">Module 2 of 7 — Satellite Flood Inundation</span>
+          <a href="/hospital.html" class="nav-footer-btn primary">
+            Hospital Module
+            <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+          </a>
+        </nav>
+
+      </div><!-- /.page-body -->
+    </main>
+  </div><!-- /.app-shell -->
+
+  <!-- ═══════════════════════════════════════════════════
+       SCRIPTS — shared components, then page-specific
+       ═══════════════════════════════════════════════════ -->
+  <script src="js/components/sidebar.js"></script>
+  <script src="js/components/header.js"></script>
+  <script src="js/satellite.js"></script>
+
+</body>
+</html>
