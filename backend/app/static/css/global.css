@@ -909,3 +909,45 @@ img { max-width: 100%; display: block; }
     transform: none;
   }
 }
+
+/* ============================================================
+   LIGHT THEME OVERRIDES (Clean White/Gray Style)
+   ============================================================ */
+[data-theme="light"] .glass-card {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  background: #ffffff !important;
+}
+
+[data-theme="light"] .glass-card:hover {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  background: #ffffff !important;
+  transform: translateY(-2px) !important;
+}
+
+[data-theme="light"] .sidebar {
+  background: #ffffff !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme="light"] .global-header {
+  background: #ffffff !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme="light"] .nav-item:hover {
+  background: rgba(0, 0, 0, 0.03) !important;
+  box-shadow: none !important;
+}
+
+[data-theme="light"] .nav-item.active {
+  background: rgba(0, 0, 0, 0.04) !important;
+  color: #1a1a1a !important;
+}
+
+[data-theme="light"] .nav-item.active::before {
+  background: #1a1a1a !important;
+  box-shadow: none !important;
+}
+

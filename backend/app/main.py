@@ -13,9 +13,13 @@ load_dotenv(ENV_PATH)
 from app.api.prediction import router as prediction_router
 from app.api.dioe import router as dioe_router
 from app.api.hospital import router as hospital_router
+<<<<<<< HEAD
 from app.api.weather import router as weather_router
+=======
+from app.api.citizen import router as citizen_router
+>>>>>>> 162e1bade3b09cee5800df800933383344c29525
 from app.db.database import engine, SessionLocal
-from app.db.models import Base, HospitalRecord
+from app.db.models import Base, HospitalRecord, CitizenReport, SpatialCluster
 
 app = FastAPI(
     title="AquaShield AI — Outbreak Risk Engine & Decision Intelligence Backend",
@@ -34,6 +38,7 @@ app.add_middleware(
 
 # Include API Routers
 app.include_router(hospital_router)
+app.include_router(citizen_router)
 app.include_router(prediction_router)
 app.include_router(dioe_router)
 app.include_router(weather_router)
@@ -45,6 +50,7 @@ def on_startup():
     """Create database tables and seed 7-day historical data if empty."""
     Base.metadata.create_all(bind=engine)
     _seed_hospital_data()
+    _seed_citizen_data()
 
 
 def _seed_hospital_data():
@@ -159,6 +165,140 @@ def _seed_hospital_data():
             rec.moving_avg_7d = round(sum(totals_so_far[-n:]) / n, 1)
         db.commit()
 
+    finally:
+        db.close()
+
+
+def _seed_citizen_data():
+    """Insert initial crowdsourced validated citizen water reports and spatial clusters."""
+    db = SessionLocal()
+    try:
+        if db.query(CitizenReport).count() > 0:
+            return  # Already seeded
+
+        # 1. Create clusters
+        cluster_high = SpatialCluster(
+            cluster_id="CLUSTER-12971-77594",
+            latitude=12.9716,
+            longitude=77.5946,
+            reports_count=4,
+            risk_level="HIGH RISK",
+            is_active=True
+        )
+        cluster_mod = SpatialCluster(
+            cluster_id="CLUSTER-12962-77605",
+            latitude=12.9621,
+            longitude=77.6058,
+            reports_count=1,
+            risk_level="MODERATE",
+            is_active=True
+        )
+        db.add(cluster_high)
+        db.add(cluster_mod)
+        db.commit()
+
+        # 2. Add reports
+        reports = [
+            CitizenReport(
+                reporter_name="Anjali Kurup",
+                latitude=12.9716,
+                longitude=77.5946,
+                condition="silt",
+                silt_pct=18.4,
+                algae_pct=6.2,
+                sludge_pct=3.1,
+                laplacian_variance=340.0,
+                r_water_score=26.4,
+                status="ACCEPTED",
+                reason="Water contamination accepted",
+                reliability="badge-trusted",
+                cluster_id="CLUSTER-12971-77594"
+            ),
+            CitizenReport(
+                reporter_name="Manu Joseph",
+                latitude=12.9720,
+                longitude=77.5950,
+                condition="algae",
+                silt_pct=4.5,
+                algae_pct=22.8,
+                sludge_pct=1.2,
+                laplacian_variance=180.0,
+                r_water_score=21.0,
+                status="ACCEPTED",
+                reason="Water contamination accepted",
+                reliability="badge-trusted",
+                cluster_id="CLUSTER-12971-77594"
+            ),
+            CitizenReport(
+                reporter_name="Devassy Thomas",
+                latitude=12.9710,
+                longitude=77.5940,
+                condition="sludge",
+                silt_pct=2.1,
+                algae_pct=3.4,
+                sludge_pct=15.6,
+                laplacian_variance=95.0,
+                r_water_score=20.1,
+                status="ACCEPTED",
+                reason="Water contamination accepted",
+                reliability="badge-new",
+                cluster_id="CLUSTER-12971-77594"
+            ),
+            CitizenReport(
+                reporter_name="Ramesh K.",
+                latitude=12.9715,
+                longitude=77.5942,
+                condition="silt",
+                silt_pct=12.0,
+                algae_pct=5.0,
+                sludge_pct=2.0,
+                laplacian_variance=290.0,
+                r_water_score=23.6,
+                status="ACCEPTED",
+                reason="Water contamination accepted",
+                reliability="badge-trusted",
+                cluster_id="CLUSTER-12971-77594"
+            ),
+            CitizenReport(
+                reporter_name="Sunitha Paul",
+                latitude=12.9621,
+                longitude=77.6058,
+                condition="silt",
+                silt_pct=24.5,
+                algae_pct=1.5,
+                sludge_pct=8.2,
+                laplacian_variance=410.0,
+                r_water_score=31.2,
+                status="ACCEPTED",
+                reason="Water contamination accepted",
+                reliability="badge-trusted",
+                cluster_id="CLUSTER-12962-77605"
+            ),
+            CitizenReport(
+                reporter_name="Unknown Uploader",
+                latitude=12.9810,
+                longitude=77.5812,
+                condition="clean",
+                silt_pct=0.2,
+                algae_pct=0.1,
+                sludge_pct=0.5,
+                laplacian_variance=42.0,
+                r_water_score=15.0,
+                status="REJECTED",
+                reason="Selfie rejected",
+                reliability="badge-spam"
+            )
+        ]
+        
+        # Set default SVGs
+        for r in reports:
+            if r.status == "ACCEPTED":
+                r.photo_url = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%231b223c'><rect width='100' height='100'/><path d='M10 80 Q 30 50, 50 80 T 90 80' fill='none' stroke='%23d97706' stroke-width='3'/><path d='M10 60 Q 30 40, 50 60 T 90 60' fill='none' stroke='%23059669' stroke-width='2'/></svg>"
+            else:
+                r.photo_url = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%231b223c'><rect width='100' height='100'/><circle cx='50' cy='35' r='15' fill='%23e0e0e0'/><path d='M20 80 Q 50 50, 80 80' fill='%23e0e0e0'/></svg>"
+            db.add(r)
+            
+        db.commit()
     finally:
         db.close()
 

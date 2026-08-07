@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 fastapi>=0.110.0
 uvicorn>=0.28.0
 httpx>=0.27.0
@@ -12,3 +13,16 @@ scikit-learn>=1.4.0
 google-genai>=0.1.0
 pillow>=10.0.0
 opencv-python-headless>=4.8.0
+=======
+fastapi>=0.100.0
+uvicorn>=0.20.0
+python-dotenv>=1.0.0
+numpy>=1.20.0
+pandas>=1.3.0
+xgboost>=1.5.0
+shap>=0.40.0
+scikit-learn>=1.0.0
+google-genai>=0.1.0
+sqlalchemy>=2.0.0
+
+>>>>>>> 162e1bade3b09cee5800df800933383344c29525

@@ -139,6 +139,14 @@
               <svg id="particles-svg" width="100%" height="100%"></svg>
             </div>
 
+        <!-- SECTION 2: Unified Outbreak Fusion Score Hero -->
+        <section aria-labelledby="fusion-hero-heading" style="margin-top: 28px;">
+          <div class="glass-card hero-fusion-section">
+            <!-- Background particle stream visualization -->
+            <div class="data-particles-container">
+              <svg id="particles-svg" width="100%" height="100%"></svg>
+            </div>
+
             <div class="hero-gauge-wrapper">
               <div class="risk-gauge-container">
                 <div class="risk-gauge-svg-wrapper">
@@ -167,177 +175,91 @@
           </div>
         </section>
 
-        <!-- SECTION 3: Bottom Cards & Normalization / Radar chart comparison -->
-        <div class="fusion-details-grid" style="margin-top: 28px;">
+        <!-- SECTION 3: Bottom Cards -->
+        <div class="domains-grid" style="margin-top: 28px;">
           
-          <!-- Bottom Cards Grid (4 columns) -->
-          <div class="domains-container">
-            <h2 class="section-heading">
-              <span class="dot"></span>
-              Semantic Risk Domains
-            </h2>
-            <div class="domains-grid">
-              
-              <!-- Environmental Risk -->
-              <div class="glass-card domain-card domain-card-env">
-                <div class="domain-header">
-                  <svg class="domain-icon text-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 12A10 10 0 1 0 2 12"/>
-                    <path d="M12 2v10l4 4"/>
-                  </svg>
-                  <span class="domain-name">ENVIRONMENTAL RISK</span>
-                  <button class="info-btn" title="Weather + flood inundation models weighted at 30% contribution"><svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
-                </div>
-                <div class="domain-value text-green" id="env-val">82</div>
-                <div class="progress-bar-track">
-                  <div class="progress-bar-fill progress-env" style="width: 82%"></div>
-                </div>
-                <div class="domain-footer">
-                  <span class="badge badge-normal">High Risk</span>
-                  <span class="domain-weight">Weight: 30%</span>
-                </div>
-              </div>
-
-              <!-- Water Contamination -->
-              <div class="glass-card domain-card domain-card-water">
-                <div class="domain-header">
-                  <svg class="domain-icon text-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
-                  </svg>
-                  <span class="domain-name">WATER CONTAMINATION</span>
-                  <button class="info-btn" title="Citizen reports + satellite standing-water models weighted at 30% contribution"><svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
-                </div>
-                <div class="domain-value text-cyan" id="water-val">76</div>
-                <div class="progress-bar-track">
-                  <div class="progress-bar-fill progress-water" style="width: 76%"></div>
-                </div>
-                <div class="domain-footer">
-                  <span class="badge badge-normal">High Risk</span>
-                  <span class="domain-weight">Weight: 30%</span>
-                </div>
-              </div>
-
-              <!-- Health Stress -->
-              <div class="glass-card domain-card domain-card-health">
-                <div class="domain-header">
-                  <svg class="domain-icon text-amber" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-                  </svg>
-                  <span class="domain-name">HEALTH STRESS</span>
-                  <button class="info-btn" title="Hospital case velocity + bed capacity metrics weighted at 25% contribution"><svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
-                </div>
-                <div class="domain-value text-amber" id="health-val">71</div>
-                <div class="progress-bar-track">
-                  <div class="progress-bar-fill progress-health" style="width: 71%"></div>
-                </div>
-                <div class="domain-footer">
-                  <span class="badge badge-watch">Moderate Risk</span>
-                  <span class="domain-weight">Weight: 25%</span>
-                </div>
-              </div>
-
-              <!-- Community Exposure -->
-              <div class="glass-card domain-card domain-card-community">
-                <div class="domain-header">
-                  <svg class="domain-icon text-violet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                    <circle cx="9" cy="7" r="4"/>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                  </svg>
-                  <span class="domain-name">COMMUNITY EXPOSURE</span>
-                  <button class="info-btn" title="Cluster density + population density proxies weighted at 15% contribution"><svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
-                </div>
-                <div class="domain-value text-violet" id="community-val">84</div>
-                <div class="progress-bar-track">
-                  <div class="progress-bar-fill progress-community" style="width: 84%"></div>
-                </div>
-                <div class="domain-footer">
-                  <span class="badge badge-normal">High Risk</span>
-                  <span class="domain-weight">Weight: 15%</span>
-                </div>
-              </div>
+          <!-- Environmental Risk -->
+          <div class="glass-card domain-card domain-card-env">
+            <div class="domain-header">
+              <svg class="domain-icon text-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 12A10 10 0 1 0 2 12"/>
+                <path d="M12 2v10l4 4"/>
+              </svg>
+              <span class="domain-name">ENVIRONMENTAL RISK</span>
+              <button class="info-btn" title="Weather + flood inundation models weighted at 30% contribution"><svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
+            </div>
+            <div class="domain-value text-green" id="env-val">82</div>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill progress-env" style="width: 82%"></div>
+            </div>
+            <div class="domain-footer">
+              <span class="badge badge-normal">High Risk</span>
+              <span class="domain-weight">Weight: 30%</span>
             </div>
           </div>
 
-          <!-- Radar Chart Comparison and Normalization Blocks -->
-          <div class="visuals-row">
-            <!-- Radar Chart block -->
-            <div class="glass-card radar-panel">
-              <h3 class="panel-subtitle">Risk Domain Comparison</h3>
-              <div class="canvas-container">
-                <canvas id="radar-chart" width="300" height="300"></canvas>
-              </div>
+          <!-- Water Contamination -->
+          <div class="glass-card domain-card domain-card-water">
+            <div class="domain-header">
+              <svg class="domain-icon text-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+              </svg>
+              <span class="domain-name">WATER CONTAMINATION</span>
+              <button class="info-btn" title="Citizen reports + satellite standing-water models weighted at 30% contribution"><svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
             </div>
+            <div class="domain-value text-cyan" id="water-val">76</div>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill progress-water" style="width: 76%"></div>
+            </div>
+            <div class="domain-footer">
+              <span class="badge badge-normal">High Risk</span>
+              <span class="domain-weight">Weight: 30%</span>
+            </div>
+          </div>
 
-            <!-- Normalization visual block -->
-            <div class="glass-card norm-panel">
-              <h3 class="panel-subtitle">Signal Normalization Pipeline</h3>
-              <div class="norm-pipeline">
-                
-                <!-- Normalization Step 1 -->
-                <div class="norm-step">
-                  <div class="norm-raw">
-                    <span class="norm-lbl">Rain7d (7-Day Rainfall)</span>
-                    <span class="norm-val text-cyan">420 mm</span>
-                  </div>
-                  <div class="norm-arrow">
-                    <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                  </div>
-                  <div class="norm-normalized">
-                    <span class="norm-lbl">Nweather (Weather Score)</span>
-                    <span class="norm-val text-green">84.0/100</span>
-                  </div>
-                </div>
+          <!-- Health Stress -->
+          <div class="glass-card domain-card domain-card-health">
+            <div class="domain-header">
+              <svg class="domain-icon text-amber" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+              </svg>
+              <span class="domain-name">HEALTH STRESS</span>
+              <button class="info-btn" title="Hospital case velocity + bed capacity metrics weighted at 25% contribution"><svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
+            </div>
+            <div class="domain-value text-amber" id="health-val">71</div>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill progress-health" style="width: 71%"></div>
+            </div>
+            <div class="domain-footer">
+              <span class="badge badge-watch">Moderate Risk</span>
+              <span class="domain-weight">Weight: 25%</span>
+            </div>
+          </div>
 
-                <!-- Normalization Step 2 -->
-                <div class="norm-step">
-                  <div class="norm-raw">
-                    <span class="norm-lbl">Flood Area expansion</span>
-                    <span class="norm-val text-cyan">+100.0%</span>
-                  </div>
-                  <div class="norm-arrow">
-                    <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                  </div>
-                  <div class="norm-normalized">
-                    <span class="norm-lbl">Nwater (Contamination Score)</span>
-                    <span class="norm-val text-green">76.0/100</span>
-                  </div>
-                </div>
-
-                <!-- Normalization Step 3 -->
-                <div class="norm-step">
-                  <div class="norm-raw">
-                    <span class="norm-lbl">Daily Admission rate</span>
-                    <span class="norm-val text-cyan">+70% surge</span>
-                  </div>
-                  <div class="norm-arrow">
-                    <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                  </div>
-                  <div class="norm-normalized">
-                    <span class="norm-lbl">Nhealth (Health Stress Score)</span>
-                    <span class="norm-val text-green">71.0/100</span>
-                  </div>
-                </div>
-
-              </div>
+          <!-- Community Exposure -->
+          <div class="glass-card domain-card domain-card-community">
+            <div class="domain-header">
+              <svg class="domain-icon text-violet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              <span class="domain-name">COMMUNITY EXPOSURE</span>
+              <button class="info-btn" title="Cluster density + population density proxies weighted at 15% contribution"><svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
+            </div>
+            <div class="domain-value text-violet" id="community-val">84</div>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill progress-community" style="width: 84%"></div>
+            </div>
+            <div class="domain-footer">
+              <span class="badge badge-normal">High Risk</span>
+              <span class="domain-weight">Weight: 15%</span>
             </div>
           </div>
 
         </div>
 
-        <!-- FOOTER NAVIGATION -->
-        <nav class="page-nav-footer" aria-label="Module navigation">
-          <a href="citizen.html" class="nav-footer-btn secondary">
-            <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
-            Citizen Module
-          </a>
-          <span class="nav-footer-label">Module 5 of 7 — AI Data Fusion Engine</span>
-          <a href="prediction.html" class="nav-footer-btn primary">
-            Prediction Module
-            <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-          </a>
-        </nav>
 
         <!-- Platform Metadata Footer -->
         <footer class="platform-meta-footer">

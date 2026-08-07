@@ -1,77 +1,310 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Citizen Reports Engine — AquaShield AI</title>
-  <meta name="description" content="Module 4: Crowdsourced geotagged water contamination reports and Haversine spatial clustering." />
+  <title>Citizen Water Reports Engine — AquaShield AI</title>
+  <meta name="description"
+    content="Module 4: Crowdsourced geotagged water quality uploads, OpenCV water validation, and Haversine 200m spatial clustering." />
+
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/theme-toggle.css" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300ffaa' stroke-width='2'><path d='M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z'/></svg>" />
+  <link rel="stylesheet" href="css/citizen.css" />
+
+  <!-- Favicon -->
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300ffaa' stroke-width='2'><path d='M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z'/></svg>" />
+
+  <!-- Apply theme before paint to prevent FOUC -->
   <script src="js/components/theme-toggle.js"></script>
-  <style>
-    .citizen-page { max-width: 1200px; margin: 0 auto; padding: 24px; display: flex; flex-direction: column; gap: 24px; }
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-    .stat-card { background: rgba(14,22,40,0.65); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 24px; }
-    .stat-val { font-family: var(--font-heading); font-size: 2.2rem; font-weight: 700; color: #fff; margin-top: 8px; }
-    .stat-sub { font-size: 0.85rem; color: #7a8ba8; margin-top: 4px; }
-  </style>
 </head>
-<body class="citizen-page">
-  <div class="main-content">
-    <div class="page-body">
-      <section>
-        <div class="glass-card">
-          <h2 style="font-family: var(--font-heading); color: #fff; font-size: 1.6rem; margin-bottom: 8px;">Module 4: Citizen Reports Engine</h2>
-          <p style="color: #7a8ba8;">Crowdsourced geotagged water quality uploads, OpenCV water validation, and Haversine 200m spatial clustering.</p>
-        </div>
-      </section>
 
-      <div class="stats-grid" style="margin-top: 24px;">
-        <div class="stat-card">
-          <span style="color: #7a8ba8; font-size: 0.8rem; text-transform: uppercase;">Active Citizen Reports</span>
-          <div class="stat-val">18</div>
-          <div class="stat-sub">Geotagged Water Reports</div>
-        </div>
-        <div class="stat-card">
-          <span style="color: #7a8ba8; font-size: 0.8rem; text-transform: uppercase;">Spatial Clusters (200m)</span>
-          <div class="stat-val">3 Clusters</div>
-          <div class="stat-sub">High Contamination Density</div>
-        </div>
-        <div class="stat-card">
-          <span style="color: #7a8ba8; font-size: 0.8rem; text-transform: uppercase;">Computer Vision Gate</span>
-          <div class="stat-val">ACCEPTED</div>
-          <div class="stat-sub">Laplacian Variance &gt; 80</div>
-        </div>
-        <div class="stat-card">
-          <span style="color: #7a8ba8; font-size: 0.8rem; text-transform: uppercase;">Perceived Risk Index</span>
-          <div class="stat-val">76.2 / 100</div>
-          <div class="stat-sub">Water Stagnation Alert</div>
-        </div>
-      </div>
+<body>
 
-      <nav class="page-nav-footer" style="display: flex; justify-content: space-between; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px;">
-        <a href="hospital.html" class="btn-secondary" style="text-decoration: none;">← Hospital Module</a>
-        <span style="color: #7a8ba8;">Module 4 of 7</span>
-        <a href="fusion.html" class="btn-primary" style="text-decoration: none;">Fusion Module →</a>
-      </nav>
-    </div>
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Loading citizen reporting logs...</p>
   </div>
 
+  <!-- App Shell -->
+  <div class="app-shell">
+    <main class="main-content">
+      <div class="page-body citizen-page">
+
+        <!-- TITLE AREA -->
+        <header class="page-title-area">
+          <div class="title-icon-wrapper">
+            <svg class="title-icon text-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+            </svg>
+          </div>
+          <div class="title-text-group">
+            <h1 class="page-main-heading">Citizen Water Quality Reports</h1>
+            <p class="page-main-subtitle">Crowdsourced intelligence for real-time water quality monitoring and risk
+              detection.</p>
+          </div>
+        </header>
+
+        <!-- SECTION 1: Report Submission Form -->
+        <section aria-labelledby="form-heading" style="margin-top: 24px;">
+          <div class="glass-card submit-report-card">
+            <h2 class="card-section-title" id="form-heading">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+                <polyline points="10 9 9 9 8 9" />
+              </svg>
+              Submit a Water Quality Report
+            </h2>
+
+            <div class="submit-layout-grid">
+              <!-- Left Form inputs -->
+              <div class="form-inputs-column">
+                <div class="form-inputs-row">
+                  <div class="form-group flex-2">
+                    <label for="input-reporter" class="form-label">Reporter Name</label>
+                    <input type="text" id="input-reporter" class="form-input" placeholder="Enter your name" />
+                  </div>
+                  <div class="form-group flex-1">
+                    <label for="input-lat" class="form-label">Latitude</label>
+                    <input type="text" id="input-lat" class="form-input" placeholder="e.g. 12.9716" />
+                  </div>
+                  <div class="form-group flex-1">
+                    <label for="input-lon" class="form-label">Longitude</label>
+                    <input type="text" id="input-lon" class="form-input" placeholder="e.g. 77.5946" />
+                  </div>
+                </div>
+
+                <div class="form-inputs-row" style="margin-top: 16px;">
+                  <div class="form-group flex-1">
+                    <label for="select-condition" class="form-label">Water Condition</label>
+                    <select id="select-condition" class="form-select">
+                      <option value="" disabled selected>Select condition</option>
+                      <option value="silt">Muddy / Heavy Silt</option>
+                      <option value="algae">Green Scum / Algae Bloom</option>
+                      <option value="sludge">Dark Black / Sewage Sludge</option>
+                      <option value="clean">Looks Clear (Verify)</option>
+                    </select>
+                  </div>
+                  <div class="form-group button-group">
+                    <button type="button" id="btn-submit-report" class="btn-submit">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="22" y1="2" x2="11" y2="13" />
+                        <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                      </svg>
+                      SUBMIT REPORT
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Drag-and-drop box -->
+              <div class="upload-dropzone" id="upload-zone">
+                <input type="file" id="file-input" accept="image/*" class="hidden-file-input" />
+                <div class="dropzone-content">
+                  <div class="zone-icon-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                      <circle cx="12" cy="13" r="4" />
+                    </svg>
+                  </div>
+                  <div class="zone-text-title">Upload Geotagged Photo</div>
+                  <div class="zone-text-sub">Drag and drop an image here or click to <span
+                      class="browse-link">browse</span></div>
+                </div>
+                <!-- Mini Preview thumbnail inside dropzone -->
+                <div class="image-preview-container hidden" id="preview-container">
+                  <img id="image-preview" src="#" alt="Upload preview" />
+                  <button type="button" class="remove-preview-btn" id="btn-remove-photo">&times;</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 2: Metrics Row -->
+        <section class="metrics-grid" aria-label="Citizen reports metrics" style="margin-top: 24px;">
+          <!-- Card 1 -->
+          <div class="glass-card stat-card border-cyan">
+            <div class="stat-icon-wrapper bg-cyan-15 text-cyan">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+                <polyline points="10 9 9 9 8 9" />
+              </svg>
+            </div>
+            <div class="stat-data">
+              <div class="stat-value text-bright" id="val-total-reports">18</div>
+              <div class="stat-label">Total Reports <span class="dim">All time</span></div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="glass-card stat-card border-red">
+            <div class="stat-icon-wrapper bg-red-15 text-red">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            </div>
+            <div class="stat-data">
+              <div class="stat-value text-bright" id="val-total-clusters">3</div>
+              <div class="stat-label">High-Risk Clusters <span class="dim">Detected</span></div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="glass-card stat-card border-amber">
+            <div class="stat-icon-wrapper bg-amber-15 text-amber">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+            </div>
+            <div class="stat-data">
+              <div class="stat-value text-bright" id="val-avg-risk">74.2</div>
+              <div class="stat-label">Average Risk Score <span class="dim">Out of 100</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 3: Two-Column Data Row -->
+        <div class="dashboard-columns-grid" style="margin-top: 24px;">
+          <!-- Left: Spatial Cluster list/table view -->
+          <div class="glass-card clusters-card">
+            <div class="card-header-with-icon">
+              <div class="header-icon text-cyan">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+              </div>
+              <h2 class="card-section-title">200m Spatial Cluster Analysis (Haversine)</h2>
+            </div>
+
+            <div class="table-container">
+              <table class="data-table" id="clusters-table">
+                <thead>
+                  <tr>
+                    <th>Cluster ID</th>
+                    <th>Location (Lat, Long)</th>
+                    <th>Reports</th>
+                    <th>Risk Level</th>
+                  </tr>
+                </thead>
+                <tbody id="clusters-table-body">
+                  <!-- Injected by JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <div class="card-footer-note text-dimmed">
+              <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"
+                style="margin-right: 4px; vertical-align: middle;">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 16v-4" />
+                <path d="M12 8h.01" />
+              </svg>
+              Computer Vision Validated — Selfies and irrelevant photos auto-rejected by OpenCV
+            </div>
+          </div>
+
+          <!-- Right: Image Validation guide -->
+          <div class="glass-card image-validation-guide">
+            <div class="card-header-with-icon">
+              <div class="header-icon text-green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9 11 12 14 22 4" />
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                </svg>
+              </div>
+              <h2 class="card-section-title">Image Validation</h2>
+            </div>
+
+            <div class="validation-gate-list">
+              <!-- Accepted -->
+              <div class="gate-item">
+                <div class="gate-status-icon success">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </div>
+                <div class="gate-text">
+                  <div class="gate-label text-bright">Accepted</div>
+                  <div class="gate-desc">Water/Flood imagery</div>
+                </div>
+              </div>
+
+              <!-- Rejected -->
+              <div class="gate-item">
+                <div class="gate-status-icon error">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </div>
+                <div class="gate-text">
+                  <div class="gate-label text-bright">Rejected</div>
+                  <div class="gate-desc">Non-water content (pets, selfies, food)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 4: Photo Upload / Reports Feed -->
+        <section aria-labelledby="feed-heading" style="margin-top: 28px;">
+          <h2 class="section-heading" id="feed-heading">
+            <span class="dot"></span>
+            Crowdsourced Intelligence Feed
+          </h2>
+
+          <div class="reports-feed-grid" id="reports-feed">
+            <!-- Injected by JS -->
+          </div>
+        </section>
+
+        <!-- FOOTER NAVIGATION -->
+        <nav class="page-nav-footer" aria-label="Module navigation" style="margin-top: 32px;">
+          <a href="hospital.html" class="nav-footer-btn secondary">
+            <svg viewBox="0 0 24 24">
+              <path d="M19 12H5" />
+              <path d="M12 19l-7-7 7-7" />
+            </svg>
+            Hospital Module
+          </a>
+          <span class="nav-footer-label">Module 4 of 7 — Citizen Water Reports</span>
+          <a href="fusion.html" class="nav-footer-btn primary">
+            Fusion Module
+            <svg viewBox="0 0 24 24">
+              <path d="M5 12h14" />
+              <path d="M12 5l7 7-7 7" />
+            </svg>
+          </a>
+        </nav>
+
+        <!-- Platform Metadata Footer -->
+        <footer class="platform-meta-footer" style="margin-top: 24px;">
+          <div>Model: AquaShield CV-Clusters v1.8 | Region: South West Khasi Hills, Meghalaya</div>
+          <div>All times in IST (UTC+05:30)</div>
+        </footer>
+
+      </div><!-- /.page-body -->
+    </main>
+  </div><!-- /.app-shell -->
+
+  <!-- Scripts -->
   <script src="js/components/sidebar.js"></script>
   <script src="js/components/header.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      if (window.AquaShield) {
-        window.AquaShield.renderSidebar('/citizen.html');
-        window.AquaShield.renderHeader({
-          title: 'Citizen Reports Engine',
-          subtitle: 'Module 4 — Computer Vision Water Verification & Spatial Clustering',
-          stepCurrent: '4',
-          stepTotal: '7'
-        });
-      }
-    });
-  </script>
+  <script src="js/citizen.js"></script>
+
 </body>
+
 </html>

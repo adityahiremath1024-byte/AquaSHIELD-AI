@@ -1,332 +1,300 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Decision Intelligence Engine — AquaShield AI</title>
-  <meta name="description" content="Module 7: Decision Intelligence & Intervention Optimisation Engine - DIOE" />
+  <meta name="description" content="Module 7: AI Decision Intelligence & Intervention Optimisation Engine (DIOE) — 7-stage deterministic WHO resource estimator, gap analysis, impact simulator, and time-bracketed execution schedule." />
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/theme-toggle.css" />
   <link rel="stylesheet" href="css/dioe.css" />
 
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300f2fe' stroke-width='2'><path d='M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z'/></svg>" />
+
   <!-- Apply theme before paint to prevent FOUC -->
   <script src="js/components/theme-toggle.js"></script>
-
-  <!-- Favicon (shield icon inline) -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300f2fe' stroke-width='2'><path d='M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z'/></svg>" />
 </head>
 <body>
 
-  <!-- ═══════════════════════════════════════════════════
-       LOADING OVERLAY
-       ═══════════════════════════════════════════════════ -->
+  <!-- Loading Overlay -->
   <div id="loading-overlay" class="loading-overlay">
     <div class="loading-spinner"></div>
-    <p class="loading-text">Optimizing decision intelligence & resource allocation…</p>
+    <div class="loading-text">Optimizing decision intelligence & resource allocation…</div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════
-       APP SHELL
-       ═══════════════════════════════════════════════════ -->
+  <!-- App Shell -->
   <div class="app-shell">
-    <!-- Sidebar + Header injected by JS components -->
+    <!-- Sidebar and Header injected dynamically by JS components -->
 
     <main class="main-content">
       <div class="page-body dioe-page">
 
-        <!-- ─────────────────────────────────────────────
-             SECTION 1: SITUATION ASSESSMENT
-             ───────────────────────────────────────────── -->
-        <section id="section-situation" aria-labelledby="situation-heading">
-          <h2 class="section-heading" id="situation-heading">
+        <!-- ═══════════════════════════════════════════════
+             STAGE 1: SITUATION ASSESSMENT
+             ═══════════════════════════════════════════════ -->
+        <section aria-labelledby="stage1-heading">
+          <h2 class="section-heading" id="stage1-heading">
             <span class="dot"></span>
-            Situation Assessment
+            1. Situation Assessment & Threat Profile
           </h2>
 
           <div class="situation-grid">
-            <!-- Card 1 -->
-            <div class="glass-card situation-card situation-risk">
-              <p class="metric-label">Risk</p>
-              <div class="metric-value text-red situation-val">84%</div>
-              <p class="metric-sublabel situation-sub">Outbreak Probability</p>
-              <div class="badge badge-critical">CRITICAL</div>
-            </div>
-            
-<<<<<<< HEAD
-            <!-- Card 2 -->
-            <div class="glass-card situation-card situation-threat">
-=======
-            git push origin main
-            <div class="glass-card">
->>>>>>> ececf6f2f9d47c362c93203c7d320ba015d489bc
-              <p class="metric-label">Threat Level</p>
-              <div class="metric-value text-red situation-val text-uppercase">CRITICAL</div>
-              <p class="metric-sublabel situation-sub">Risk Level</p>
-              <div class="badge badge-critical">CRITICAL</div>
+            <!-- Card 1: Risk -->
+            <div class="situation-card">
+              <span class="metric-label">Outbreak Risk</span>
+              <div class="situation-val text-red" id="sit-risk">84%</div>
+              <span class="situation-sub">Outbreak Probability</span>
+              <span class="badge badge-critical" style="align-self: flex-start; margin-top: 4px;">CRITICAL</span>
             </div>
 
-            <!-- Card 3 -->
-            <div class="glass-card situation-card situation-disease">
-              <p class="metric-label">Disease</p>
-              <div class="metric-value text-cyan situation-val">Cholera</div>
-              <p class="metric-sublabel">Predominant Threat</p>
+            <!-- Card 2: Threat Level -->
+            <div class="situation-card">
+              <span class="metric-label">Threat Level</span>
+              <div class="situation-val text-red" id="sit-threat">CRITICAL</div>
+              <span class="situation-sub">Risk Tier Classification</span>
+              <span class="badge badge-critical" style="align-self: flex-start; margin-top: 4px;">TIER 4</span>
             </div>
 
-            <!-- Card 4 -->
-            <div class="glass-card situation-card situation-horizon">
-              <p class="metric-label">Horizon</p>
-              <div class="metric-value text-amber situation-val">5 Days</div>
-              <p class="metric-sublabel">Forecast Window (WHO Attack Rate: 8.0%)</p>
+            <!-- Card 3: Predominant Disease -->
+            <div class="situation-card">
+              <span class="metric-label">Predominant Threat</span>
+              <div class="situation-val text-cyan" id="sit-disease" style="font-size: 1.6rem;">Cholera</div>
+              <span class="situation-sub">Acute Diarrheal Pathogen</span>
             </div>
 
-            <!-- Card 5 -->
-            <div class="glass-card situation-card situation-confidence">
-              <p class="metric-label">Confidence</p>
-              <div class="metric-value text-green situation-val">91%</div>
-              <p class="metric-sublabel">Model Confidence</p>
+            <!-- Card 4: Forecast Horizon -->
+            <div class="situation-card">
+              <span class="metric-label">Forecast Horizon</span>
+              <div class="situation-val text-amber" id="sit-horizon">5 Days</div>
+              <span class="situation-sub">WHO Attack Rate: <strong id="sit-attack-rate" style="color: #f0f4f8;">8.0%</strong></span>
+            </div>
+
+            <!-- Card 5: Model Confidence -->
+            <div class="situation-card">
+              <span class="metric-label">Model Confidence</span>
+              <div class="situation-val text-green" id="sit-confidence">91%</div>
+              <span class="situation-sub">Deterministic + XGBoost</span>
             </div>
           </div>
         </section>
 
-        <!-- ─────────────────────────────────────────────
-             SECTION 2: WHO RESOURCE ESTIMATOR
-             ───────────────────────────────────────────── -->
-        <section id="section-resources" aria-labelledby="resources-heading" class="mt-32">
-          <h2 class="section-heading" id="resources-heading">
+        <!-- ═══════════════════════════════════════════════
+             STAGE 2: WHO RESOURCE ESTIMATOR
+             ═══════════════════════════════════════════════ -->
+        <section aria-labelledby="stage2-heading">
+          <h2 class="section-heading" id="stage2-heading">
             <span class="dot"></span>
-            WHO Resource Estimator
+            2. WHO Resource Requirements Estimator
           </h2>
 
           <div class="resource-grid">
-            <div class="glass-card resource-card">
-              <p class="metric-label">Expected Patients</p>
-              <div class="metric-value resource-val">1,299 <span class="metric-unit">people</span></div>
-              <p class="metric-sublabel mono resource-formula">EP = P × AR × D</p>
+            <!-- Expected Patients -->
+            <div class="resource-card">
+              <div class="resource-header">
+                <div class="resource-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                  </svg>
+                </div>
+                <span class="metric-label">Expected Patients</span>
+              </div>
+              <div class="resource-val" id="res-patients">1,299 <span class="resource-unit">people</span></div>
+              <div class="resource-formula">EP = P × AR × D</div>
             </div>
-            <div class="glass-card resource-card">
-              <p class="metric-label">ORS Packets</p>
-              <div class="metric-value resource-val">9,093 <span class="metric-unit">packets</span></div>
-              <p class="metric-sublabel mono resource-formula">ORS = EP × 7</p>
+
+            <!-- ORS Packets -->
+            <div class="resource-card">
+              <div class="resource-header">
+                <div class="resource-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+                  </svg>
+                </div>
+                <span class="metric-label">ORS Packets Needed</span>
+              </div>
+              <div class="resource-val" id="res-ors">9,093 <span class="resource-unit">packets</span></div>
+              <div class="resource-formula">ORS = EP × 7</div>
             </div>
-            <div class="glass-card resource-card">
-              <p class="metric-label">Chlorine Tablets</p>
-              <div class="metric-value resource-val">15,000 <span class="metric-unit">tablets</span></div>
-              <p class="metric-sublabel mono resource-formula">CT = P × 30 × D</p>
+
+            <!-- Chlorine Tablets -->
+            <div class="resource-card">
+              <div class="resource-header">
+                <div class="resource-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 6v12"/>
+                    <path d="M6 12h12"/>
+                  </svg>
+                </div>
+                <span class="metric-label">Chlorine Tablets</span>
+              </div>
+              <div class="resource-val" id="res-chlorine">15,000 <span class="resource-unit">tablets</span></div>
+              <div class="resource-formula">CT = P × 30 × D</div>
             </div>
-            <div class="glass-card resource-card">
-              <p class="metric-label">Doctors Needed</p>
-              <div class="metric-value resource-val">17 <span class="metric-unit">doctors</span></div>
-              <p class="metric-sublabel mono resource-formula">DN = EP / 80</p>
+
+            <!-- Doctors Needed -->
+            <div class="resource-card">
+              <div class="resource-header">
+                <div class="resource-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 21h18"/>
+                    <path d="M5 21V7l7-4 7 4v14"/>
+                    <path d="M9 21v-4h6v4"/>
+                  </svg>
+                </div>
+                <span class="metric-label">Doctors Required</span>
+              </div>
+              <div class="resource-val" id="res-doctors">17 <span class="resource-unit">doctors</span></div>
+              <div class="resource-formula">DN = EP / 80</div>
             </div>
           </div>
         </section>
 
-        <!-- ─────────────────────────────────────────────
-             SECTION 3: RESOURCE GAP ANALYSIS
-             ───────────────────────────────────────────── -->
-        <section id="section-gaps" aria-labelledby="gaps-heading" class="mt-32">
-          <h2 class="section-heading" id="gaps-heading">
+        <!-- ═══════════════════════════════════════════════
+             STAGE 3: RESOURCE GAP ANALYSIS
+             ═══════════════════════════════════════════════ -->
+        <section aria-labelledby="stage3-heading">
+          <h2 class="section-heading" id="stage3-heading">
             <span class="dot"></span>
-            Resource Gap Analysis
+            3. Supply Chain Gap Analysis & Deficits
           </h2>
 
           <div class="gap-grid">
-            <div class="glass-card gap-card">
-              <div class="badge badge-amber shortage-badge">SHORTAGE</div>
-              <p class="metric-label">Medical Staff Gap</p>
-              <div class="metric-value text-amber gap-val">12 <span class="metric-unit">doctors short</span></div>
-              <p class="metric-sublabel gap-details">Required 17 | Stock 5</p>
+            <!-- Gap 1: Medical Staff -->
+            <div class="gap-card">
+              <div class="gap-header">
+                <span class="metric-label">Medical Staff Deficit</span>
+                <span class="badge badge-critical">SHORTAGE</span>
+              </div>
+              <div class="gap-val" id="gap-doctors">12 <span class="gap-unit">doctors short</span></div>
+              <div class="gap-details">Required: 17 | Stock on Duty: 5</div>
             </div>
-            <div class="glass-card gap-card">
-              <div class="badge badge-amber shortage-badge">SHORTAGE</div>
-              <p class="metric-label">ORS Packet Gap</p>
-              <div class="metric-value text-amber gap-val">4,893 <span class="metric-unit">packets short</span></div>
-              <p class="metric-sublabel gap-details">Required 9,093 | Stock 4,200</p>
+
+            <!-- Gap 2: ORS Packets -->
+            <div class="gap-card">
+              <div class="gap-header">
+                <span class="metric-label">ORS Packet Deficit</span>
+                <span class="badge badge-critical">SHORTAGE</span>
+              </div>
+              <div class="gap-val" id="gap-ors">4,893 <span class="gap-unit">packets short</span></div>
+              <div class="gap-details">Required: 9,093 | Stock: 4,200</div>
             </div>
-            <div class="glass-card gap-card">
-              <div class="badge badge-amber shortage-badge">SHORTAGE</div>
-              <p class="metric-label">Chlorine Tablet Gap</p>
-              <div class="metric-value text-amber gap-val">6,500 <span class="metric-unit">tablets short</span></div>
-              <p class="metric-sublabel gap-details">Required 15,000 | Stock 8,500</p>
+
+            <!-- Gap 3: Chlorine Tablets -->
+            <div class="gap-card">
+              <div class="gap-header">
+                <span class="metric-label">Chlorine Tablet Deficit</span>
+                <span class="badge badge-critical">SHORTAGE</span>
+              </div>
+              <div class="gap-val" id="gap-chlorine">6,500 <span class="gap-unit">tablets short</span></div>
+              <div class="gap-details">Required: 15,000 | Stock: 8,500</div>
             </div>
           </div>
         </section>
 
-        <!-- ─────────────────────────────────────────────
-             SECTION 4: IMPACT SIMULATOR & INTERVENTION OPTIMIZER
-             ───────────────────────────────────────────── -->
-        <section id="section-impact" aria-labelledby="impact-heading" class="mt-32">
-          <h2 class="section-heading" id="impact-heading">
+        <!-- ═══════════════════════════════════════════════
+             STAGE 4: IMPACT SIMULATOR & RANKED INTERVENTIONS
+             ═══════════════════════════════════════════════ -->
+        <section aria-labelledby="stage4-heading">
+          <h2 class="section-heading" id="stage4-heading">
             <span class="dot"></span>
-            Impact Simulator & Ranked Interventions
+            4. Impact Simulator & Prioritized Interventions
           </h2>
-          
-          <div class="glass-card impact-simulator-hero">
-             <div class="impact-inner">
-                <div class="impact-before">
-                  <div class="metric-value text-red impact-val">84.0%</div>
-                  <div class="badge badge-critical badge-margin">CRITICAL</div>
-                </div>
-                <div class="impact-arrow">
-                  <div class="arrow-line">
-                     <div class="arrow-pointer"></div>
+
+          <!-- Hero Impact Widget -->
+          <div class="impact-simulator-hero">
+            <div class="impact-hero-grid">
+              <!-- Initial Risk -->
+              <div class="impact-box">
+                <span class="impact-box-label">Initial Outbreak Risk</span>
+                <div class="impact-box-val text-red" id="imp-initial">84.0%</div>
+                <span class="badge badge-critical">CRITICAL UNMITIGATED</span>
+              </div>
+
+              <!-- Risk Reduction Arrow -->
+              <div class="arrow-box">
+                <div class="arrow-row">
+                  <span class="arrow-value" id="imp-reduction">-37.0%</span>
+                  <div class="arrow-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <line x1="5" y1="12" x2="19" y2="12"/>
+                      <polyline points="12 5 19 12 12 19"/>
+                    </svg>
                   </div>
-                  <div class="reduction-pct">-37.0% Risk Reduction</div>
                 </div>
-                <div class="impact-after">
-                  <div class="metric-value text-green impact-val">47.0%</div>
-                  <div class="badge badge-moderate badge-margin">MODERATE CONTAINED</div>
-                </div>
-             </div>
+                <span class="arrow-subtext">Projected Risk Reduction</span>
+              </div>
+
+              <!-- Post-Intervention Risk -->
+              <div class="impact-box">
+                <span class="impact-box-label">Post-Intervention Risk</span>
+                <div class="impact-box-val text-green" id="imp-post">47.0%</div>
+                <span class="badge badge-moderate" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">MODERATE CONTAINED</span>
+              </div>
+            </div>
           </div>
 
-          <div class="glass-card intervention-list">
-            <ul class="intervention-ul">
-              <li class="intervention-li">
-                <span class="intervention-text">Action 1: Water Chlorination & Well Sealing</span>
-                <span class="text-green fw-bold efficacy-val">-18.0%</span>
-              </li>
-              <li class="intervention-li">
-                <span class="intervention-text">Action 2: Mobile Medical Camp & Triage Unit</span>
-                <span class="text-green fw-bold efficacy-val">-10.0%</span>
-              </li>
-              <li class="intervention-li">
-                <span class="intervention-text">Action 3: Mass ORS & Zinc Distribution</span>
-                <span class="text-green fw-bold efficacy-val">-5.0%</span>
-              </li>
-              <li class="intervention-li">
-                <span class="intervention-text">Action 4: ASHA Worker Door-to-Door Survey</span>
-                <span class="text-green fw-bold efficacy-val">-4.0%</span>
-              </li>
-            </ul>
+          <!-- Ranked Interventions List -->
+          <div class="intervention-list" id="intervention-list">
+            <!-- Rendered dynamically by JS -->
           </div>
         </section>
 
-        <!-- ─────────────────────────────────────────────
-             SECTION 5: RECOMMENDED ACTION TIMELINE
-             ───────────────────────────────────────────── -->
-        <section id="section-timeline" aria-labelledby="timeline-heading" class="mt-32">
-          <h2 class="section-heading" id="timeline-heading">
+        <!-- ═══════════════════════════════════════════════
+             STAGE 5: RECOMMENDED ACTION TIMELINE
+             ═══════════════════════════════════════════════ -->
+        <section aria-labelledby="stage5-heading">
+          <h2 class="section-heading" id="stage5-heading">
             <span class="dot"></span>
-            Recommended Action Timeline
+            5. Time-Bracketed Operational Schedule
           </h2>
 
-          <div class="glass-card timeline-container">
-            <div class="timeline-col timeline-col-1">
-              <h3 class="timeline-col-title">0-6h</h3>
-              <div class="badge badge-critical badge-priority">PRIORITY: CRITICAL</div>
-              <ul class="timeline-col-list">
-                <li>Immediate Response</li>
-                <li>Task 2</li>
-                <li>Task 3</li>
-                <li>Task 4</li>
-              </ul>
-            </div>
-            <div class="timeline-col timeline-col-2">
-              <h3 class="timeline-col-title">6-12h</h3>
-              <div class="badge badge-critical badge-priority">PRIORITY: CRITICAL</div>
-              <ul style="padding-left: 16px; font-size: 0.9rem; color: #7a8ba8; margin: 0; display: flex; flex-direction: column; gap: 8px;">
-                <li>Early Intervention</li>
-                <li>Task 2</li>
-                <li>Task 3</li>
-                <li>Task 4</li>
-              </ul>
-            </div>
-            <div class="timeline-col timeline-col-3">
-              <h3 class="timeline-col-title">12-24h</h3>
-              <div class="badge badge-high badge-priority">PRIORITY: HIGH</div>
-              <ul class="timeline-col-list">
-                <li>Containment</li>
-                <li>Task 2</li>
-                <li>Task 3</li>
-                <li>Task 4</li>
-              </ul>
-            </div>
-            <div class="timeline-col timeline-col-4">
-              <h3 class="timeline-col-title">24-48h</h3>
-              <div class="badge badge-high badge-priority">PRIORITY: HIGH</div>
-              <ul class="timeline-col-list">
-                <li>Stabilisation</li>
-                <li>Task 2</li>
-                <li>Task 3</li>
-                <li>Task 4</li>
-              </ul>
-            </div>
-            <div class="timeline-col timeline-col-5">
-              <h3 class="timeline-col-title">3-7d</h3>
-              <div class="badge badge-moderate badge-priority">PRIORITY: MODERATE</div>
-              <ul class="timeline-col-list">
-                <li>Sustain & Prepare</li>
-                <li>Task 2</li>
-                <li>Task 3</li>
-                <li>Task 4</li>
-              </ul>
-            </div>
+          <div class="timeline-grid" id="timeline-grid">
+            <!-- Rendered dynamically by JS -->
           </div>
         </section>
 
-        <!-- ─────────────────────────────────────────────
-             SECTION 6: EXECUTIVE NARRATIVE BRIEFING
-             ───────────────────────────────────────────── -->
-        <section id="section-narrative" class="mt-32 mb-40" aria-labelledby="narrative-heading">
-          <h2 class="section-heading" id="narrative-heading">
+        <!-- ═══════════════════════════════════════════════
+             STAGE 6: EXECUTIVE DECISION BRIEFING (GEMINI 2.0)
+             ═══════════════════════════════════════════════ -->
+        <section aria-labelledby="stage6-heading">
+          <h2 class="section-heading" id="stage6-heading">
             <span class="dot"></span>
-            Executive Decision Briefing
+            6. Executive Decision Briefing
           </h2>
 
-          <div class="glass-card narrative-panel">
+          <div class="glass-card briefing-card">
             <div class="briefing-header">
-              <h3 class="briefing-title">Briefing</h3>
-              <div class="badge badge-cyan briefing-badge">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
+              <span class="powered-by-badge" id="narrative-source-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
                 Powered by Gemini 2.0 Flash
-              </div>
+              </span>
             </div>
-            
-            <details class="briefing-details" open>
-              <summary class="briefing-summary">1. Executive Situation & Patient Load Forecast</summary>
-              <div class="briefing-content">
-                Based on current epidemiological models, the probability of an outbreak stands at a critical 84%. The primary threat identified is Cholera. Over the next 5 days, our models anticipate approximately 1,299 expected patients, driven by an estimated WHO attack rate of 8.0%.
-              </div>
-            </details>
-            
-            <details class="briefing-details">
-              <summary class="briefing-summary">2. Resource Bottleneck Analysis (Shortages & Gaps)</summary>
-              <div class="briefing-content">
-                A severe resource deficit is currently projected. There is an immediate shortage of 12 doctors (only 5 in stock against 17 required), a deficit of 4,893 ORS packets, and a gap of 6,500 chlorine tablets. Prompt procurement and deployment are essential.
-              </div>
-            </details>
-            
-            <details class="briefing-details">
-              <summary class="briefing-summary">3. Intervention Optimization & Impact Simulation (84% → 47%)</summary>
-              <div class="briefing-content">
-                Executing the recommended intervention strategy—prioritizing water chlorination and well sealing, followed by rapid deployment of mobile medical camps—will reduce the risk by 37.0%, bringing the outbreak probability down to a manageable 47.0%.
-              </div>
-            </details>
-            
-            <details class="briefing-details border-none">
-              <summary class="briefing-summary">4. Operational 24–48 Hour Execution Timeline</summary>
-              <div class="briefing-content">
-                Immediate action within the 0-6 hour window is critical to mount a response. The following 6-12 hours should focus on early intervention, transitioning to strict containment measures between 12-24 hours. Full stabilization efforts must be in effect by the 24-48 hour mark.
-              </div>
-            </details>
+
+            <div class="briefing-accordion" id="briefing-accordion">
+              <!-- Rendered dynamically by JS -->
+            </div>
           </div>
         </section>
 
-        <!-- ─────────────────────────────────────────────
+        <!-- ═══════════════════════════════════════════════
              FOOTER NAVIGATION
-             ───────────────────────────────────────────── -->
+             ═══════════════════════════════════════════════ -->
         <nav class="page-nav-footer" aria-label="Module navigation">
-          <a href="/prediction.html" class="nav-footer-btn secondary">
-            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+          <a href="prediction.html" class="nav-footer-btn secondary">
+            <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
             Prediction Module
           </a>
-          <span class="nav-footer-label">Module 7 of 7 — Decision Intelligence</span>
-          <a href="/index.html" class="nav-footer-btn primary">
+          <span class="nav-footer-label">Module 7 of 7 — AI Decision Intelligence</span>
+          <a href="index.html" class="nav-footer-btn primary">
             Overview Dashboard
-            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
           </a>
         </nav>
 
@@ -334,9 +302,7 @@
     </main>
   </div><!-- /.app-shell -->
 
-  <!-- ═══════════════════════════════════════════════════
-       SCRIPTS
-       ═══════════════════════════════════════════════════ -->
+  <!-- Scripts -->
   <script src="js/components/sidebar.js"></script>
   <script src="js/components/header.js"></script>
   <script src="js/dioe.js"></script>

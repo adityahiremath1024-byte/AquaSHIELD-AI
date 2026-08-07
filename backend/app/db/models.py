@@ -53,3 +53,44 @@ class HospitalRecord(Base):
             f"<HospitalRecord(village={self.village_name}, date={self.record_date}, "
             f"cases={self.total_cases}, tier={self.outbreak_threshold_level})>"
         )
+
+
+class CitizenReport(Base):
+    """Geotagged crowdsourced citizen water quality reports."""
+
+    __tablename__ = "citizen_reports"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    reporter_name = Column(String, nullable=False)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    latitude = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
+    condition = Column(String, nullable=True)
+    
+    # ── Computer Vision Ratios ──
+    silt_pct = Column(Float, default=0.0)
+    algae_pct = Column(Float, default=0.0)
+    sludge_pct = Column(Float, default=0.0)
+    laplacian_variance = Column(Float, default=0.0)
+    
+    # ── Scoring & Validation ──
+    r_water_score = Column(Float, default=15.0)
+    status = Column(String, default="ACCEPTED")  # ACCEPTED or REJECTED
+    reason = Column(String, nullable=True)
+    reliability = Column(String, default="badge-new")
+    photo_url = Column(String, nullable=True)
+    cluster_id = Column(String, nullable=True, index=True)
+
+
+class SpatialCluster(Base):
+    """200-meter aggregated spatial cluster metadata."""
+
+    __tablename__ = "spatial_clusters"
+
+    cluster_id = Column(String, primary_key=True, index=True)
+    latitude = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
+    reports_count = Column(Integer, default=1)
+    risk_level = Column(String, default="MODERATE")  # HIGH RISK or MODERATE
+    is_active = Column(Boolean, default=True)
+

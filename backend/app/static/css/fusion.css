@@ -473,3 +473,53 @@
     text-align: center;
   }
 }
+
+/* ============================================================
+   LIGHT THEME OVERRIDES FOR FUSION PAGE
+   ============================================================ */
+[data-theme="light"] .hero-fusion-section {
+  background: radial-gradient(circle at 50% 50%, #ffffff 0%, #f7f7f8 100%) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="light"] .risk-gauge-container::after {
+  border-color: rgba(0, 200, 150, 0.25) !important;
+}
+
+[data-theme="light"] .gauge-bg-ring {
+  stroke: rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-theme="light"] .gauge-risk-value {
+  color: #1a1a1a !important;
+}
+
+[data-theme="light"] .gauge-risk-suffix {
+  color: #707080 !important;
+}
+
+[data-theme="light"] .domain-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .domain-card:hover {
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+  transform: translateY(-2px) !important;
+}
+
+[data-theme="light"] .domain-name {
+  color: #555566 !important;
+}
+
+[data-theme="light"] .domain-value {
+  color: #1a1a1a !important;
+}
+
+[data-theme="light"] .domain-weight {
+  color: #888899 !important;
+}
+

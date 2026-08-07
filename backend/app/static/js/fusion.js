@@ -17,126 +17,6 @@
     ]
   };
 
-  // 2. RADAR/SPIDER CHART RENDERER (Custom HTML5 Canvas)
-  function renderRadarChart() {
-    const canvas = document.getElementById('radar-chart');
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    const width = canvas.width;
-    const height = canvas.height;
-    const centerX = width / 2;
-    const centerY = height / 2;
-    const maxRadius = Math.min(width, height) / 2 - 40;
-
-    // Resolve colors based on current theme variables if possible, or fallback
-    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-    const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
-    const textColor = isDark ? '#9090a0' : '#707080';
-    const labelColor = isDark ? '#ffffff' : '#000000';
-
-    ctx.clearRect(0, 0, width, height);
-
-    // Number of axes (4 risk domains)
-    const totalAxes = DATA.domains.length;
-    const angleStep = (Math.PI * 2) / totalAxes;
-
-    // Draw concentric scale rings (5 layers)
-    const concentricRings = 5;
-    ctx.strokeStyle = gridColor;
-    ctx.lineWidth = 1;
-    for (let r = 1; r <= concentricRings; r++) {
-      const radius = (maxRadius / concentricRings) * r;
-      ctx.beginPath();
-      for (let i = 0; i < totalAxes; i++) {
-        const angle = i * angleStep - Math.PI / 2;
-        const x = centerX + Math.cos(angle) * radius;
-        const y = centerY + Math.sin(angle) * radius;
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.closePath();
-      ctx.stroke();
-    }
-
-    // Draw axis lines and labels
-    DATA.domains.forEach((domain, i) => {
-      const angle = i * angleStep - Math.PI / 2;
-      const axisX = centerX + Math.cos(angle) * maxRadius;
-      const axisY = centerY + Math.sin(angle) * maxRadius;
-
-      // Draw axis line
-      ctx.beginPath();
-      ctx.moveTo(centerX, centerY);
-      ctx.lineTo(axisX, axisY);
-      ctx.stroke();
-
-      // Label positioning
-      const labelDistance = maxRadius + 20;
-      const labelX = centerX + Math.cos(angle) * labelDistance;
-      const labelY = centerY + Math.sin(angle) * labelDistance;
-
-      ctx.fillStyle = labelColor;
-      ctx.font = 'bold 11px Outfit, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      
-      // Fine-tune label offsets
-      let alignX = labelX;
-      if (Math.abs(Math.cos(angle)) > 0.1) {
-        alignX += Math.cos(angle) * 10;
-      }
-      ctx.fillText(domain.label.toUpperCase(), alignX, labelY);
-    });
-
-    // Draw data polygon
-    ctx.beginPath();
-    DATA.domains.forEach((domain, i) => {
-      const angle = i * angleStep - Math.PI / 2;
-      const scoreFraction = domain.value / 100;
-      const radius = maxRadius * scoreFraction;
-      const x = centerX + Math.cos(angle) * radius;
-      const y = centerY + Math.sin(angle) * radius;
-
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    });
-    ctx.closePath();
-
-    // Fill data polygon (semi-transparent teal-green gradient glow)
-    const fillGrad = ctx.createRadialGradient(centerX, centerY, 5, centerX, centerY, maxRadius);
-    fillGrad.addColorStop(0, 'rgba(0, 255, 170, 0.1)');
-    fillGrad.addColorStop(1, 'rgba(0, 242, 254, 0.35)');
-    ctx.fillStyle = fillGrad;
-    ctx.fill();
-
-    // Outline data polygon
-    ctx.strokeStyle = '#00ffaa';
-    ctx.lineWidth = 2.5;
-    ctx.shadowBlur = 15;
-    ctx.shadowColor = 'rgba(0, 255, 170, 0.5)';
-    ctx.stroke();
-    
-    // Reset shadow
-    ctx.shadowBlur = 0;
-
-    // Draw data points
-    DATA.domains.forEach((domain, i) => {
-      const angle = i * angleStep - Math.PI / 2;
-      const scoreFraction = domain.value / 100;
-      const radius = maxRadius * scoreFraction;
-      const x = centerX + Math.cos(angle) * radius;
-      const y = centerY + Math.sin(angle) * radius;
-
-      ctx.beginPath();
-      ctx.arc(x, y, 5, 0, Math.PI * 2);
-      ctx.fillStyle = domain.color;
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 1.5;
-      ctx.fill();
-      ctx.stroke();
-    });
-  }
 
   // 3. RADIAL RISK GAUGE ANIMATION
   function initRiskGauge(score) {
@@ -279,16 +159,8 @@
 
     // Run custom visuals
     initRiskGauge(DATA.fusionScore);
-    renderRadarChart();
     renderDataStreams();
 
-    // Re-render radar chart when theme changes
-    const themeBtn = document.getElementById('theme-toggle-btn');
-    if (themeBtn) {
-      themeBtn.addEventListener('click', () => {
-        setTimeout(renderRadarChart, 150);
-      });
-    }
 
     // Recalculate stream positions on window resize
     window.addEventListener('resize', renderDataStreams);
