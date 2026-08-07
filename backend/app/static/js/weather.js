@@ -622,7 +622,7 @@
       window.AquaShield.renderSidebar('/weather.html');
       window.AquaShield.renderHeader({
         title: 'Meteorological Intelligence Engine',
-        subtitle: 'Module 1 — 30-Day Precipitation, Heat Index & 6-Variable BGI Score Matrix',
+        subtitle: '30-Day Precipitation, Heat Index & 6-Variable BGI Score Matrix',
         stepCurrent: '1',
         stepTotal: '7'
       });
