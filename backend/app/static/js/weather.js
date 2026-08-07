@@ -323,6 +323,46 @@
     }
   }
 
+  let currentBGIVal = 64.0;
+  let animFrameId = null;
+
+  function animateBGIVal(targetVal) {
+    if (animFrameId) cancelAnimationFrame(animFrameId);
+    
+    const duration = 500; // ms
+    const startTime = performance.now();
+    const startVal = currentBGIVal;
+    
+    const zones = [
+      { min: 0, max: 30, color: '#10b981' },
+      { min: 30, max: 60, color: '#f59e0b' },
+      { min: 60, max: 80, color: '#f97316' },
+      { min: 80, max: 100, color: '#ef4444' }
+    ];
+
+    function step(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Ease-out cubic
+      const ease = 1 - Math.pow(1 - progress, 3);
+      currentBGIVal = startVal + (targetVal - startVal) * ease;
+      
+      // Re-draw canvas gauge
+      drawSemiGauge('bgi-gauge-canvas', currentBGIVal, 0, 100, zones);
+      
+      // Update BGI gauge text
+      const valEl = document.querySelector('.bgi-gauge-val');
+      if (valEl) valEl.textContent = `${currentBGIVal.toFixed(1)}%`;
+      
+      if (progress < 1) {
+        animFrameId = requestAnimationFrame(step);
+      }
+    }
+    
+    animFrameId = requestAnimationFrame(step);
+  }
+
   function renderRiskTiers() {
     const container = document.getElementById('risk-tiers-list');
     if (!container) return;
@@ -335,6 +375,20 @@
       const isActive = tier.level === currentLevel;
       const card = document.createElement('div');
       card.className = `tier-item-card${isActive ? ' active' : ''}`;
+      
+      // Setup dynamic coloring for active card on initial render
+      if (isActive) {
+        setTimeout(() => {
+          const badge = card.querySelector('.badge');
+          if (badge) {
+            const badgeColor = window.getComputedStyle(badge).color;
+            card.style.borderColor = badgeColor;
+            card.style.background = badgeColor.replace('rgb', 'rgba').replace(')', ', 0.1)');
+            card.style.boxShadow = `0 0 16px ${badgeColor.replace('rgb', 'rgba').replace(')', ', 0.15)')}`;
+          }
+        }, 50);
+      }
+
       card.innerHTML = `
         <div class="tier-item-left">
           <span class="tier-range">${tier.range}</span>
@@ -342,6 +396,46 @@
         </div>
         <span class="tier-protocol-text">${tier.protocol}</span>
       `;
+
+      card.addEventListener('click', () => {
+        // Remove active class and reset inline styles
+        document.querySelectorAll('.tier-item-card').forEach(el => {
+          el.classList.remove('active');
+          el.style.borderColor = '';
+          el.style.background = '';
+          el.style.boxShadow = '';
+        });
+
+        card.classList.add('active');
+        
+        // Match the border color to the badge color dynamically
+        const badge = card.querySelector('.badge');
+        if (badge) {
+          const badgeColor = window.getComputedStyle(badge).color;
+          card.style.borderColor = badgeColor;
+          card.style.background = badgeColor.replace('rgb', 'rgba').replace(')', ', 0.1)');
+          card.style.boxShadow = `0 0 16px ${badgeColor.replace('rgb', 'rgba').replace(')', ', 0.15)')}`;
+        }
+
+        // Animate BGI gauge to midpoint of range
+        const [lowVal, highVal] = tier.range.replace(/%/g, '').split('–').map(Number);
+        const midpoint = lowVal + (highVal - lowVal) / 2;
+        animateBGIVal(midpoint);
+
+        // Update hero gauge card badge text and class
+        const gaugeBadge = document.querySelector('.hero-gauge-card .badge');
+        if (gaugeBadge) {
+          gaugeBadge.textContent = `● ${tier.level} RISK LEVEL`;
+          gaugeBadge.className = `badge ${tier.badgeClass}`;
+        }
+
+        // Update score range description below badge
+        const rangeDesc = document.querySelector('.hero-gauge-card p');
+        if (rangeDesc) {
+          rangeDesc.textContent = `Bacteria Growth Index score range: ${tier.range}`;
+        }
+      });
+
       container.appendChild(card);
     });
   }
@@ -410,12 +504,8 @@
           { min: 32, max: 40, color: '#f97316' },
           { min: 40, max: 55, color: '#ef4444' }
         ]);
-        drawSemiGauge('bgi-gauge-canvas', 64.0, 0, 100, [
-          { min: 0, max: 30, color: '#10b981' },
-          { min: 30, max: 60, color: '#f59e0b' },
-          { min: 60, max: 80, color: '#f97316' },
-          { min: 80, max: 100, color: '#ef4444' }
-        ]);
+        currentBGIVal = 0;
+        animateBGIVal(64.0);
         renderScoreMatrix();
         renderRiskTiers();
       }, 1200);
@@ -451,12 +541,8 @@
         { min: 32, max: 40, color: '#f97316' },
         { min: 40, max: 55, color: '#ef4444' }
       ]);
-      drawSemiGauge('bgi-gauge-canvas', 64.0, 0, 100, [
-        { min: 0, max: 30, color: '#10b981' },
-        { min: 30, max: 60, color: '#f59e0b' },
-        { min: 60, max: 80, color: '#f97316' },
-        { min: 80, max: 100, color: '#ef4444' }
-      ]);
+      currentBGIVal = 0;
+      animateBGIVal(64.0);
       renderScoreMatrix();
       renderRiskTiers();
       initScrollAnimations();

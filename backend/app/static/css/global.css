@@ -1,10 +1,11 @@
 /* ============================================================
    AquaShield AI — Global Design System
-   Theme: Dual Dark/Light with Neon-Green Glassmorphism
+   Theme: OLED Dark (Default) / Light with Neon-Green Glassmorphism
    ============================================================ */
 
 /* ---------- Google Fonts ---------- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 
 /* ============================================================
    THEME TOKENS — Dark Theme (Default)
@@ -12,75 +13,75 @@
 :root,
 [data-theme="dark"] {
   /* ── Backgrounds ── */
-  --bg-primary:        #0a0e27;
-  --bg-secondary:      #0f1428;
-  --bg-tertiary:       #141b30;
-  --bg-card:           rgba(15, 20, 40, 0.6);
-  --bg-card-hover:     rgba(15, 20, 40, 0.8);
-  --bg-card-solid:     #0f1428;
-  --bg-input:          rgba(10, 14, 39, 0.6);
+  --bg-primary:        #000000; /* background */
+  --bg-secondary:      #0e0e0e; /* surface-container-lowest */
+  --bg-tertiary:       #1b1b1b; /* surface-container-low */
+  --bg-card:           rgba(255, 255, 255, 0.02); /* glass-card bg */
+  --bg-card-hover:     rgba(255, 255, 255, 0.05);
+  --bg-card-solid:     #1f1f1f; /* surface-container */
+  --bg-input:          rgba(0, 0, 0, 0.6);
 
   /* ── Glass ── */
-  --glass-bg:          rgba(15, 20, 40, 0.6);
-  --glass-border:      rgba(0, 255, 170, 0.15);
+  --glass-bg:          rgba(255, 255, 255, 0.02);
+  --glass-border:      rgba(255, 255, 255, 0.1);
   --glass-blur:        blur(12px);
 
   /* ── Borders ── */
-  --border-subtle:     1px solid rgba(0, 255, 170, 0.1);
-  --border-color:      rgba(0, 255, 170, 0.1);
-  --border-hover:      rgba(0, 255, 170, 0.4);
+  --border-subtle:     1px solid rgba(255, 255, 255, 0.05);
+  --border-color:      rgba(255, 255, 255, 0.1);
+  --border-hover:      #00ffc2; /* primary-container */
 
   /* ── Text ── */
-  --text-primary:      #e0e0e0;
-  --text-bright:       #ffffff;
-  --text-muted:        #9090a0;
-  --text-dimmed:       #5a5a70;
+  --text-primary:      #e2e2e2; /* on-surface */
+  --text-bright:       #fbfffa; /* primary */
+  --text-muted:        #b9cbc1; /* on-surface-variant */
+  --text-dimmed:       #83958c; /* outline */
 
   /* ── Neon Accent ── */
-  --neon-primary:      #00ffaa;
-  --neon-glow:         rgba(0, 255, 170, 0.3);
-  --neon-glow-strong:  rgba(0, 255, 170, 0.5);
-  --neon-10:           rgba(0, 255, 170, 0.10);
-  --neon-15:           rgba(0, 255, 170, 0.15);
-  --neon-20:           rgba(0, 255, 170, 0.20);
+  --neon-primary:      #00ffc2; /* primary-container */
+  --neon-glow:         rgba(0, 255, 194, 0.2);
+  --neon-glow-strong:  rgba(0, 255, 194, 0.5);
+  --neon-10:           rgba(0, 255, 194, 0.10);
+  --neon-15:           rgba(0, 255, 194, 0.15);
+  --neon-20:           rgba(0, 255, 194, 0.20);
 
-  /* ── Semantic Colors (preserved) ── */
-  --accent-cyan:       #00f2fe;
-  --accent-green:      #10b981;
+  /* ── Semantic Colors (adapted to match new palette) ── */
+  --accent-cyan:       #00daf8; /* tertiary-fixed-dim */
+  --accent-green:      #25e500; /* secondary-fixed-dim */
   --accent-amber:      #f59e0b;
-  --accent-red:        #ef4444;
+  --accent-red:        #ffb4ab; /* error */
   --accent-violet:     #a855f7;
 
   /* ── Semantic with Alpha ── */
-  --cyan-10:           rgba(0, 242, 254, 0.10);
-  --cyan-15:           rgba(0, 242, 254, 0.15);
-  --cyan-20:           rgba(0, 242, 254, 0.20);
-  --green-10:          rgba(16, 185, 129, 0.10);
-  --green-15:          rgba(16, 185, 129, 0.15);
+  --cyan-10:           rgba(0, 218, 248, 0.10);
+  --cyan-15:           rgba(0, 218, 248, 0.15);
+  --cyan-20:           rgba(0, 218, 248, 0.20);
+  --green-10:          rgba(37, 229, 0, 0.10);
+  --green-15:          rgba(37, 229, 0, 0.15);
   --amber-10:          rgba(245, 158, 11, 0.10);
   --amber-15:          rgba(245, 158, 11, 0.15);
-  --red-10:            rgba(239, 68, 68, 0.10);
-  --red-15:            rgba(239, 68, 68, 0.15);
+  --red-10:            rgba(255, 180, 171, 0.10);
+  --red-15:            rgba(255, 180, 171, 0.15);
   --violet-10:         rgba(168, 85, 247, 0.10);
   --violet-15:         rgba(168, 85, 247, 0.15);
 
   /* ── Gradients ── */
-  --gradient-accent:   linear-gradient(135deg, #00ffaa 0%, #00d8aa 100%);
-  --gradient-danger:   linear-gradient(135deg, #ef4444 0%, #f59e0b 100%);
-  --gradient-hero:     linear-gradient(135deg, #00ffaa 0%, #00d8aa 100%);
+  --gradient-accent:   linear-gradient(135deg, #00ffc2 0%, #00e1ab 100%);
+  --gradient-danger:   linear-gradient(135deg, #ffb4ab 0%, #f59e0b 100%);
+  --gradient-hero:     linear-gradient(135deg, #00ffc2 0%, #00e1ab 100%);
 
   /* ── Typography ── */
-  --font-heading:      'Outfit', sans-serif;
-  --font-body:         'Inter', sans-serif;
+  --font-heading:      'Sora', sans-serif;
+  --font-body:         'Geist', sans-serif;
   --font-mono:         'JetBrains Mono', monospace;
 
-  /* ── Sizing ── */
+  /* ── Sizing (Radius matches specs) ── */
   --sidebar-width:     72px;
-  --header-height:     64px;
-  --radius-sm:         6px;
-  --radius-md:         12px;
-  --radius-lg:         16px;
-  --radius-xl:         20px;
+  --header-height:     80px; /* Expanded from 64px to resolve typescale clipping */
+  --radius-sm:         0.125rem; /* DEFAULT */
+  --radius-md:         0.25rem;  /* lg */
+  --radius-lg:         0.5rem;   /* xl */
+  --radius-xl:         0.75rem;  /* full */
   --radius-full:       9999px;
 
   /* ── Shadows ── */
@@ -188,7 +189,7 @@
 }
 
 html {
-  font-size: 16px;
+  font-size: 18px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
@@ -197,14 +198,94 @@ html {
 body {
   font-family: var(--font-body);
   font-weight: 400;
-  color: var(--text-primary);
-  background: var(--bg-primary);
+  color: #e2e2e2;
+  background-color: #000000;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 64px 64px;
+  background-position: center center;
   min-height: 100vh;
   overflow-x: hidden;
   line-height: 1.6;
   transition:
     background-color var(--transition-theme),
     color var(--transition-theme);
+}
+
+/* ---------- Custom Visual System & Type Scale Utilities ---------- */
+.display-lg {
+  font-family: var(--font-heading) !important;
+  font-size: 76.8px !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.02em !important;
+  font-weight: 700 !important;
+}
+.headline-lg {
+  font-family: var(--font-heading) !important;
+  font-size: 38.4px !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.01em !important;
+  font-weight: 600 !important;
+}
+.headline-lg-mobile {
+  font-family: var(--font-heading) !important;
+  font-size: 28.8px !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+}
+.body-md {
+  font-family: var(--font-body) !important;
+  font-size: 19.2px !important;
+  line-height: 1.6 !important;
+  letter-spacing: 0em !important;
+  font-weight: 400 !important;
+}
+.label-sm {
+  font-family: var(--font-mono) !important;
+  font-size: 14.4px !important;
+  line-height: 1 !important;
+  letter-spacing: 0.05em !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+}
+.sm {
+  font-family: var(--font-body) !important;
+  font-size: 16.8px !important;
+  line-height: 1.25rem !important;
+}
+.lg {
+  font-family: var(--font-body) !important;
+  font-size: 21.6px !important;
+  line-height: 1.75rem !important;
+}
+.xl {
+  font-family: var(--font-body) !important;
+  font-size: 24px !important;
+  line-height: 1.75rem !important;
+}
+.3xl {
+  font-family: var(--font-body) !important;
+  font-size: 36px !important;
+  line-height: 2.25rem !important;
+}
+.4xl {
+  font-family: var(--font-body) !important;
+  font-size: 43.2px !important;
+  line-height: 2.5rem !important;
+}
+
+.hero-glow {
+  position: absolute;
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(0,255,194,0.15) 0%, rgba(0,0,0,0) 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.text-glow {
+  text-shadow: 0 0 20px rgba(0,255,194,0.4) !important;
 }
 
 a { color: var(--neon-primary); text-decoration: none; }
@@ -800,61 +881,83 @@ img { max-width: 100%; display: block; }
   filter: drop-shadow(0 0 8px var(--neon-glow-strong));
 }
 
-/* ============================================================
-   BUTTONS — Primary / Secondary / Tertiary Neon Treatment
-   ============================================================ */
-.btn-neon-primary {
+/* Primary Button (Filled Variant) */
+.btn-neon-primary,
+.btn-primary,
+.fetch-weather-btn,
+.btn-submit {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, #00ffaa, #00d8aa);
-  color: #000000;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 14px 32px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  transition: all var(--transition-base);
-  text-decoration: none;
+  background: #00ffc2 !important; /* primary-container */
+  color: #000000 !important;
+  font-family: var(--font-mono) !important; /* label-sm */
+  font-size: var(--fs-xs) !important; /* label-sm */
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  line-height: 1 !important;
+  padding: 12px 24px !important;
+  border-radius: 0.125rem !important; /* rounded-DEFAULT */
+  border: none !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
 }
 
-.btn-neon-primary:hover {
-  background: linear-gradient(135deg, #00ffcc, #00ffaa);
-  box-shadow: 0 12px 40px rgba(0, 255, 170, 0.4);
-  transform: scale(1.02);
-  filter: brightness(1.1);
-  text-decoration: none;
+.btn-neon-primary:hover,
+.btn-primary:hover,
+.fetch-weather-btn:hover,
+.btn-submit:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 0 20px rgba(0, 255, 194, 0.6) !important;
+  background: #00ffc2 !important;
+  color: #000000 !important;
+  text-decoration: none !important;
 }
 
-.btn-neon-primary:active {
-  transform: scale(0.98);
-  box-shadow: 0 4px 16px rgba(0, 255, 170, 0.3);
+.btn-neon-primary:active,
+.btn-primary:active,
+.fetch-weather-btn:active,
+.btn-submit:active {
+  transform: scale(0.98) !important;
 }
 
-.btn-neon-secondary {
+/* Secondary Button (Outlined Variant) */
+.btn-neon-secondary,
+.btn-secondary,
+.remove-preview-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  color: var(--text-muted);
-  font-size: 14px;
-  padding: 12px 28px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all var(--transition-base);
-  text-decoration: none;
+  background: transparent !important;
+  border: 1px solid #00ffc2 !important; /* primary-container */
+  color: #00ffc2 !important;
+  font-family: var(--font-mono) !important; /* label-sm */
+  font-size: var(--fs-xs) !important; /* label-sm */
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  line-height: 1 !important;
+  padding: 12px 24px !important;
+  border-radius: 0.125rem !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
 }
 
-.btn-neon-secondary:hover {
-  border-color: var(--border-hover);
-  color: var(--neon-primary);
-  background: var(--bg-card-hover);
-  box-shadow: 0 8px 24px var(--neon-glow);
-  text-decoration: none;
+.btn-neon-secondary:hover,
+.btn-secondary:hover,
+.remove-preview-btn:hover {
+  background: #00ffc2 !important; /* Fills to primary variant */
+  color: #000000 !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 0 20px rgba(0, 255, 194, 0.6) !important;
+  text-decoration: none !important;
 }
 
 .btn-neon-tertiary {
@@ -950,4 +1053,174 @@ img { max-width: 100%; display: block; }
   background: #1a1a1a !important;
   box-shadow: none !important;
 }
+
+/* ============================================================
+   SITE-WIDE DESIGN SYSTEM ENFORCEMENT & OVERFLOW FIXES
+   ============================================================ */
+
+/* ---------- 1. Typography Mappings ---------- */
+
+/* Headings & Section Titles -> Sora, headline-lg or headline-lg-mobile */
+h1, h2, h3, h4, h5, h6,
+.section-heading,
+.card-section-title,
+.header-title,
+.module-title,
+.workflow-title,
+.hero-title {
+  font-family: var(--font-heading) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.015em !important;
+}
+
+/* Page Titles */
+h1, .header-title, .hero-title {
+  font-size: var(--fs-2xl) !important; /* ~28.8px */
+}
+
+/* Section Headings */
+h2, .section-heading, .card-section-title, .workflow-title {
+  font-size: var(--fs-xl) !important; /* ~21.6px */
+}
+
+/* Subheadings & Inner Titles */
+h3, .module-title, .engine-title {
+  font-size: var(--fs-lg) !important; /* ~19.2px */
+}
+
+/* Body Copy -> Geist, body-md or sm */
+p, li, .engine-desc, .signal-desc, .loading-text, .card-sub, .form-desc, .hero-subtitle {
+  font-family: var(--font-body) !important;
+  font-size: var(--fs-base) !important; /* ~16.8px */
+  line-height: 1.55 !important;
+  color: var(--text-muted) !important;
+}
+
+/* Labels, Badges, Buttons, Eyebrows, Timestamps -> JetBrains Mono, label-sm uppercase */
+label,
+.input-label,
+.card-label,
+.metric-label,
+.stat-label,
+.signal-title,
+.signal-value-label,
+.badge,
+.tag-num,
+.header-sync,
+.live-indicator,
+.summary-gen-time,
+.header-step-badge,
+.tooltip,
+.hero-badge {
+  font-family: var(--font-mono) !important;
+  font-size: var(--fs-xs) !important; /* ~14.4px label-sm */
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* Large Numeric Displays (Scores, Percentages, Counters) -> JetBrains Mono, tabular-nums */
+.card-value,
+.metric-value,
+.stat-value,
+.signal-card-value,
+.gauge-risk-value,
+.domain-value,
+.number-val {
+  font-family: var(--font-mono) !important;
+  font-size: var(--fs-3xl) !important; /* ~36px display size */
+  font-weight: 700 !important;
+  font-variant-numeric: tabular-nums !important;
+  color: var(--text-bright) !important;
+}
+
+/* Supporting / meta text -> sm */
+.supporting-text,
+.meta-text,
+.footer-text,
+.platform-meta-footer {
+  font-family: var(--font-body) !important;
+  font-size: var(--fs-sm) !important; /* ~15.6px */
+  color: var(--text-dimmed) !important;
+}
+
+/* ---------- 2. Overflow Audits & Preventative Rules ---------- */
+
+/* 1. Prevent long card and section headings from pushing bounds */
+.engine-title, .card-section-title, .header-title, .module-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 2. Wrap text on buttons where necessary or prevent clipping */
+.btn-primary, .btn-secondary, .btn-neon-primary, .btn-neon-secondary, button {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 3. Clamp long description paragraphs in fixed-height cards */
+.engine-desc, .signal-desc, .card-sub {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 4. Let badges grow dynamically and truncate if too long */
+.badge, .workflow-tag, .header-step-badge {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 5. Force fixed layout elements to remain clean in horizontal context */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 6. Enforce root html/body bounds to prevent horizontal scroll bars */
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* ---------- Header Specific Visual Adjustments ---------- */
+.global-header {
+  height: var(--header-height) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.header-title {
+  font-size: var(--fs-lg) !important; /* ~19.2px: clean and compact */
+  line-height: 1.25 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  margin: 0 !important;
+}
+
+.header-subtitle {
+  font-size: var(--fs-xs) !important; /* ~14.4px: readable and compact */
+  line-height: 1.35 !important;
+  color: var(--text-muted) !important;
+  margin: 0 !important;
+  display: block !important;
+}
+
+/* Prevent header buttons and indicators from shrinking and cutting off */
+.live-indicator,
+.header-sync,
+.header-alerts-badge,
+.header-step-badge,
+.header-profile {
+  flex-shrink: 0 !important;
+  max-width: none !important; /* overrides standard badge constraints */
+}
+
 

@@ -19,12 +19,90 @@ class GeminiService:
     def __init__(self):
         self.api_key = os.getenv("GEMINI_API_KEY", "").strip()
         self.client = None
-        if GENAI_AVAILABLE and self.api_key:
+        self._init_client()
+
+    def _init_client(self):
+        if not self.api_key:
+            self.api_key = os.getenv("GEMINI_API_KEY", "").strip()
+        if GENAI_AVAILABLE and self.api_key and not self.client:
             try:
                 self.client = genai.Client(api_key=self.api_key)
                 logger.info("Gemini 2.0 Flash client initialized successfully.")
             except Exception as e:
                 logger.error(f"Failed to initialize Gemini client: {e}")
+
+    def analyze_water_image(self, photo_url: str, cv_stats: dict) -> dict:
+        """
+        Analyzes water report photo using Gemini 2.0 Flash for verification and captioning.
+        """
+        self._init_client()
+        if not self.client:
+            logger.warning("Gemini client not initialized. Skipping image analysis.")
+            return None
+
+        try:
+            import re
+            import base64
+
+            # Decode data URL
+            if photo_url.startswith("data:"):
+                match = re.match(r"^data:([^;]+);base64,(.+)$", photo_url)
+                if not match:
+                    logger.warning("Invalid image data URL format.")
+                    return None
+                mime_type = match.group(1)
+                base64_data = match.group(2)
+                image_bytes = base64.b64decode(base64_data)
+            else:
+                logger.warning("Photo URL is not a base64 data URL.")
+                return None
+
+            prompt = f"""
+            You are an expert public health officer and computer vision system for AquaShield AI.
+            Analyze the provided user-submitted image of suspected water contamination or water issue.
+            
+            We ran a local OpenCV feature extraction which yielded:
+            - Silt Ratio: {cv_stats.get('silt_pct', 0.0):.2f}%
+            - Algae Ratio: {cv_stats.get('algae_pct', 0.0):.2f}%
+            - Sludge Ratio: {cv_stats.get('sludge_pct', 0.0):.2f}%
+            - Blue Water Ratio: {cv_stats.get('blue_pct', 0.0):.2f}%
+            - Grayscale Laplacian Variance (Texture Variance): {cv_stats.get('laplacian_variance', 0.0):.2f}
+
+            Your tasks:
+            1. Determine if the photo is a valid environmental/outdoor water report (e.g. water bodies, flooded areas, pipelines, sewage leak, stagnant puddles).
+               If the image is a selfie of a person, a domestic pet, an indoor document/room, or completely irrelevant, set `is_valid` to false.
+            2. Generate a professional, medical-grade public health caption describing the water quality, observed contamination (if any), and potential environmental hazards (e.g., mosquito breeding risk, cholera risk). Be specific and concise (1-2 sentences).
+            3. Estimate a confidence score (0.0 to 1.0) for your validation decision.
+
+            Return ONLY a valid JSON object matching this structure:
+            {{
+              "is_valid": true,
+              "caption": "A standing water pool with high algae concentration near a pathway, presenting a high risk for vector-borne diseases.",
+              "confidence_score": 0.95
+            }}
+            """
+
+            response = self.client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=[
+                    types.Part.from_bytes(
+                        data=image_bytes,
+                        mime_type=mime_type,
+                    ),
+                    prompt
+                ],
+                config=types.GenerateContentConfig(
+                    temperature=0.1,
+                    response_mime_type="application/json"
+                )
+            )
+
+            result = json.loads(response.text)
+            logger.info(f"Gemini image analysis result: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"Gemini image analysis failed: {e}")
+            return None
 
     def generate_action_plan(
         self,

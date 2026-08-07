@@ -5,7 +5,9 @@ Endpoints:
   POST /api/citizen/reports  — Submit crowdsourced water report
   GET  /api/citizen/summary  — Query metrics & cluster list
 """
+# pyrefly: ignore [missing-import]
 from fastapi import APIRouter, Depends, HTTPException
+# pyrefly: ignore [missing-import]
 from sqlalchemy.orm import Session
 from typing import List
 
