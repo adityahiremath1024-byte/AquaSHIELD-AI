@@ -10,19 +10,21 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ENV_PATH = os.path.join(BASE_DIR, ".env")
 load_dotenv(ENV_PATH)
 
-from app.api.prediction import router as prediction_router
-from app.api.dioe import router as dioe_router
-from app.api.hospital import router as hospital_router
 from app.api.weather import router as weather_router
+from app.api.satellite import router as satellite_router
+from app.api.hospital import router as hospital_router
 from app.api.citizen import router as citizen_router
 from app.api.fusion import router as fusion_router
+from app.api.prediction import router as prediction_router
+from app.api.dioe import router as dioe_router
+
 from app.db.database import engine, SessionLocal
 from app.db.models import Base, HospitalRecord, CitizenReport, SpatialCluster
 
 app = FastAPI(
-    title="AquaShield AI — Outbreak Risk Engine & Decision Intelligence Backend",
-    description="Production backend for Module 3 (Hospital Surveillance), Module 6 (XGBoost + SHAP + Gemini) and Module 7 (DIOE WHO Decision Optimizer).",
-    version="1.1.0"
+    title="AquaShield AI — Satellite & Outbreak Intelligence Engine",
+    description="Production backend for Planet Satellite Imagery Engine and Modules.",
+    version="1.2.0"
 )
 
 # CORS configuration
@@ -35,12 +37,13 @@ app.add_middleware(
 )
 
 # Include API Routers
+app.include_router(weather_router)
+app.include_router(satellite_router)
 app.include_router(hospital_router)
 app.include_router(citizen_router)
 app.include_router(fusion_router)
 app.include_router(prediction_router)
 app.include_router(dioe_router)
-app.include_router(weather_router)
 
 
 # ── Database Initialization & Seed Data ──────────────────────────────────────
@@ -60,7 +63,6 @@ def _seed_hospital_data():
         if existing_count > 0:
             return  # Already seeded
 
-        # 7-day realistic hospital admission data (ascending trend)
         seed_data = [
             {"days_ago": 6, "diarrhea": 5,  "typhoid": 3, "cholera": 1, "fever": 3,  "total": 12, "beds_occ": 410, "docs": 22, "med": 88.0},
             {"days_ago": 5, "diarrhea": 6,  "typhoid": 3, "cholera": 1, "fever": 4,  "total": 14, "beds_occ": 418, "docs": 24, "med": 85.0},
@@ -78,10 +80,8 @@ def _seed_hospital_data():
             rec_date = today - timedelta(days=row["days_ago"])
             total = row["total"]
 
-            # Growth rate
             growth = round((total - prev_total) / max(prev_total, 1) * 100, 1) if prev_total > 0 else 0.0
 
-            # Outbreak tier
             if total >= 50 or growth >= 100.0:
                 tier = "EMERGENCY"
             elif total >= 25 or growth >= 60.0:
@@ -91,13 +91,11 @@ def _seed_hospital_data():
             else:
                 tier = "NORMAL"
 
-            # Capacity metrics
             total_beds = 520
             beds_occ = row["beds_occ"]
             beds_avail = max(0, total_beds - beds_occ)
             occ_pct = round(beds_occ / total_beds * 100, 1)
 
-            # Risk score
             risk = 3.0
             if occ_pct > 80.0:
                 risk += 3.0
@@ -109,7 +107,6 @@ def _seed_hospital_data():
                 risk += 1.0
             risk = min(10.0, risk)
 
-            # Stars
             if risk <= 2.0:
                 stars = 5
             elif risk <= 4.0:
@@ -133,7 +130,7 @@ def _seed_hospital_data():
                 total_cases=total,
                 yesterday_cases=prev_total,
                 growth_rate_pct=growth,
-                moving_avg_7d=0.0,  # will be recalculated
+                moving_avg_7d=0.0,
                 outbreak_threshold_level=tier,
                 total_beds=total_beds,
                 occupied_beds=beds_occ,
@@ -151,7 +148,6 @@ def _seed_hospital_data():
 
         db.commit()
 
-        # Recalculate 7-day moving averages for all seeded records
         all_records = (
             db.query(HospitalRecord)
             .order_by(HospitalRecord.record_date)
@@ -173,9 +169,8 @@ def _seed_citizen_data():
     db = SessionLocal()
     try:
         if db.query(CitizenReport).count() > 0:
-            return  # Already seeded
+            return
 
-        # 1. Create clusters
         cluster_high = SpatialCluster(
             cluster_id="CLUSTER-12971-77594",
             latitude=12.9716,
@@ -196,7 +191,6 @@ def _seed_citizen_data():
         db.add(cluster_mod)
         db.commit()
 
-        # 2. Add reports
         reports = [
             CitizenReport(
                 reporter_name="Anjali Kurup",
@@ -289,7 +283,6 @@ def _seed_citizen_data():
             )
         ]
         
-        # Set default SVGs
         for r in reports:
             if r.status == "ACCEPTED":
                 r.photo_url = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%231b223c'><rect width='100' height='100'/><path d='M10 80 Q 30 50, 50 80 T 90 80' fill='none' stroke='%23d97706' stroke-width='3'/><path d='M10 60 Q 30 40, 50 60 T 90 60' fill='none' stroke='%23059669' stroke-width='2'/></svg>"
@@ -302,7 +295,6 @@ def _seed_citizen_data():
         db.close()
 
 
-# Mount Static Files (HTML/CSS/JS dashboard) — MUST be last
 STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
 if os.path.exists(STATIC_DIR):
     app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")
@@ -314,6 +306,7 @@ def health_check():
         "system": "AquaShield AI Engine",
         "modules": [
             "Module 1: Meteorological Intelligence",
+            "Module 2: Satellite Imagery Engine",
             "Module 3: Hospital Surveillance",
             "Module 6: Prediction",
             "Module 7: DIOE"
