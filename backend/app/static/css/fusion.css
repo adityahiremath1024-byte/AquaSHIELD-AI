@@ -1,0 +1,475 @@
+/* ============================================================
+   AquaShield AI — Module 5: Multi-Signal Data Fusion Engine
+   ============================================================ */
+
+.fusion-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ---------- SECTION 1: Top Raw Feeds Grid ---------- */
+.signals-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.signal-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 120px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  transition: all 200ms var(--ease-smooth);
+  box-shadow: var(--shadow-card);
+}
+
+.signal-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.signal-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.signal-card-icon {
+  width: 24px;
+  height: 24px;
+  stroke-width: 1.5;
+  transition: all 250ms var(--ease-smooth);
+}
+
+.signal-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.signal-title {
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.signal-desc {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.signal-metrics {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 14px;
+}
+
+.signal-value-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.signal-card-value {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Card-specific borders and icons */
+.signal-card-weather { border-left: 3px solid var(--accent-green) !important; }
+.signal-card-weather .signal-card-icon { color: var(--accent-green); }
+
+.signal-card-satellite { border-left: 3px solid var(--accent-cyan) !important; }
+.signal-card-satellite .signal-card-icon { color: var(--accent-cyan); }
+
+.signal-card-hospital { border-left: 3px solid var(--accent-amber) !important; }
+.signal-card-hospital .signal-card-icon { color: var(--accent-amber); }
+
+.signal-card-citizen { border-left: 3px solid var(--accent-violet) !important; }
+.signal-card-citizen .signal-card-icon { color: var(--accent-violet); }
+
+/* Hover effects */
+.signal-card:hover {
+  transform: translateY(-4px);
+  background: var(--bg-card-hover);
+}
+
+.signal-card-weather:hover {
+  border-color: var(--accent-green) !important;
+  box-shadow: 0 12px 32px rgba(16, 185, 129, 0.15), 0 0 15px rgba(16, 185, 129, 0.1) !important;
+}
+.signal-card-satellite:hover {
+  border-color: var(--accent-cyan) !important;
+  box-shadow: 0 12px 32px rgba(0, 242, 254, 0.15), 0 0 15px rgba(0, 242, 254, 0.1) !important;
+}
+.signal-card-hospital:hover {
+  border-color: var(--accent-amber) !important;
+  box-shadow: 0 12px 32px rgba(245, 158, 11, 0.15), 0 0 15px rgba(245, 158, 11, 0.1) !important;
+}
+.signal-card-citizen:hover {
+  border-color: var(--accent-violet) !important;
+  box-shadow: 0 12px 32px rgba(168, 85, 247, 0.15), 0 0 15px rgba(168, 85, 247, 0.1) !important;
+}
+
+.signal-card:hover .signal-card-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* ---------- SECTION 2: Unified Fusion Hero Section ---------- */
+.hero-fusion-section {
+  position: relative;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 50%, rgba(10, 14, 39, 0.8) 0%, rgba(6, 8, 15, 0.95) 100%) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--shadow-card);
+  padding: 32px;
+}
+
+/* Animated particle/data stream paths overlay */
+.data-particles-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-gauge-wrapper {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* SVG Gauge Styling */
+.risk-gauge-container {
+  width: 280px;
+  height: 280px;
+  position: relative;
+}
+
+.risk-gauge-svg-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.gauge-bg-ring {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.05);
+  stroke-width: 10;
+}
+
+[data-theme="light"] .gauge-bg-ring {
+  stroke: rgba(0, 0, 0, 0.05);
+}
+
+.gauge-color-ring {
+  fill: none;
+  stroke: url(#gaugeGradient);
+  stroke-width: 10;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dashoffset 2s cubic-bezier(0.23, 1, 0.320, 1);
+  filter: drop-shadow(0 0 10px rgba(0, 255, 170, 0.3));
+}
+
+.gauge-center-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 80%;
+}
+
+.gauge-risk-title {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.gauge-risk-value-wrapper {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.gauge-risk-value {
+  font-family: var(--font-heading);
+  font-size: 4.2rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text-bright);
+}
+
+.gauge-risk-suffix {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-left: 2px;
+}
+
+/* Pulsing outline around the gauge for warning effect */
+.risk-gauge-container::after {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  border: 1px dashed rgba(0, 255, 170, 0.15);
+  pointer-events: none;
+  animation: rotate-dashed 20s linear infinite;
+}
+
+@keyframes rotate-dashed {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- SECTION 3: Semantic Risk Domains ---------- */
+.domains-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.domain-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 200ms var(--ease-smooth);
+}
+
+.domain-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-hover);
+  background: var(--bg-card-hover);
+  box-shadow: var(--shadow-neon);
+}
+
+.domain-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.domain-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.domain-name {
+  font-family: var(--font-heading);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  flex: 1;
+}
+
+.domain-value {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.domain-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.domain-weight {
+  font-size: 0.68rem;
+  color: var(--text-dimmed);
+  font-family: var(--font-mono);
+}
+
+.progress-env { background: var(--accent-green); }
+.progress-water { background: var(--accent-cyan); }
+.progress-health { background: var(--accent-amber); }
+.progress-community { background: var(--accent-violet); }
+
+/* ---------- Visuals Row (Radar & Normalization) ---------- */
+.visuals-row {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 20px;
+}
+
+.radar-panel, .norm-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+}
+
+.panel-subtitle {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.canvas-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+#radar-chart {
+  max-width: 100%;
+}
+
+/* Normalization Pipeline */
+.norm-pipeline {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: center;
+  flex: 1;
+}
+
+.norm-step {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(15, 20, 40, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  transition: all 200ms var(--ease-smooth);
+}
+
+[data-theme="light"] .norm-step {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.05);
+}
+
+.norm-step:hover {
+  background: rgba(15, 20, 40, 0.7);
+  border-color: rgba(0, 255, 170, 0.2);
+  box-shadow: inset 0 0 10px var(--neon-10);
+  transform: translateX(4px);
+}
+
+.norm-raw, .norm-normalized {
+  display: flex;
+  flex-direction: column;
+}
+
+.norm-normalized {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.norm-lbl {
+  font-size: 0.68rem;
+  color: var(--text-dimmed);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.norm-val {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.norm-arrow {
+  color: var(--neon-primary);
+  display: flex;
+  align-items: center;
+}
+
+.norm-arrow svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* ---------- Platform Metadata Footer ---------- */
+.platform-meta-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.7rem;
+  color: var(--text-dimmed);
+  margin-top: 12px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="light"] .platform-meta-footer {
+  border-top-color: rgba(0, 0, 0, 0.05);
+}
+
+/* ---------- Responsive Breakpoints ---------- */
+@media (max-width: 1200px) {
+  .signals-grid, .domains-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .visuals-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .signals-grid, .domains-grid {
+    grid-template-columns: 1fr;
+  }
+  .risk-gauge-container {
+    width: 240px;
+    height: 240px;
+  }
+  .gauge-risk-value {
+    font-size: 3.5rem;
+  }
+  .norm-lbl {
+    font-size: 0.62rem;
+  }
+  .norm-val {
+    font-size: 0.85rem;
+  }
+  .norm-step {
+    padding: 10px 14px;
+  }
+  .platform-meta-footer {
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+  }
+}

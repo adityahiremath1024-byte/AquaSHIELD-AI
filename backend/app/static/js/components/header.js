@@ -57,6 +57,11 @@ function renderHeader({ title, subtitle, stepCurrent, stepTotal, alertCount = 12
   } else {
     document.body.appendChild(header);
   }
+
+  // Inject theme toggle button if component is loaded
+  if (window.AquaShield && typeof window.AquaShield.renderThemeToggle === 'function') {
+    window.AquaShield.renderThemeToggle();
+  }
 }
 
 // Export

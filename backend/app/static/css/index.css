@@ -1,0 +1,363 @@
+/* ============================================================
+   AquaShield AI — Home Page
+   Theme-aware with Neon Glassmorphism
+   ============================================================ */
+
+/* ---------- Layout ---------- */
+body.home-page {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-image:
+    radial-gradient(circle at 50% 0%, var(--neon-10) 0%, transparent 50%),
+    radial-gradient(circle at 100% 100%, var(--violet-10) 0%, transparent 50%);
+  background-attachment: fixed;
+  transition:
+    background-color var(--transition-theme),
+    color var(--transition-theme);
+}
+
+/* Grid overlay */
+body.home-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+[data-theme="light"] body.home-page::before {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+}
+
+/* ---------- Navbar ---------- */
+.home-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 4rem;
+  font-family: var(--font-heading);
+}
+
+.home-nav .logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--text-bright);
+  transition: color var(--transition-theme);
+}
+
+.home-nav .logo-wrapper svg {
+  width: 28px;
+  height: 28px;
+  color: var(--neon-primary);
+  filter: drop-shadow(0 0 6px var(--neon-glow));
+  transition: all var(--transition-base);
+}
+
+.home-nav .logo-wrapper:hover svg {
+  filter: drop-shadow(0 0 12px var(--neon-glow-strong));
+}
+
+.home-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.home-nav .nav-link {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all var(--transition-base);
+}
+
+.home-nav .nav-link:hover {
+  color: var(--neon-primary);
+  text-shadow: 0 0 10px var(--neon-glow);
+}
+
+/* ---------- Main Content ---------- */
+.home-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ---------- Hero Section ---------- */
+.hero-section {
+  text-align: center;
+  max-width: 800px;
+  margin-bottom: 5rem;
+  animation: fadeIn 1s ease-out forwards;
+}
+
+.hero-badge {
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  transition:
+    background-color var(--transition-theme),
+    border-color var(--transition-theme),
+    color var(--transition-theme);
+}
+
+.hero-title {
+  font-family: var(--font-heading);
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--text-bright);
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+  transition: color var(--transition-theme);
+}
+
+.hero-title .highlight {
+  background: linear-gradient(135deg, var(--neon-primary) 0%, #00d8ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  font-size: 1.125rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: color var(--transition-theme);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  border-radius: var(--radius-full);
+  background: var(--neon-primary);
+  color: #000;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all var(--transition-base);
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px var(--neon-glow-strong);
+  filter: brightness(1.1);
+}
+
+.btn-primary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* ---------- Engines Grid ---------- */
+.engines-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 5rem;
+  width: 100%;
+}
+
+.engine-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: var(--glass-blur);
+  padding: 2rem;
+  text-decoration: none;
+  transition: all 200ms ease-out;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.engine-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: transparent;
+  transition: background var(--transition-base);
+}
+
+.engine-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-hover);
+  box-shadow:
+    0 16px 48px var(--neon-glow),
+    inset 0 0 20px var(--neon-10);
+  background: var(--bg-card-hover);
+  text-decoration: none;
+}
+
+.engine-card:hover::before {
+  background: linear-gradient(90deg, var(--neon-primary), transparent);
+}
+
+.engine-card:hover .engine-icon {
+  filter: drop-shadow(0 0 10px var(--neon-glow-strong));
+  transform: rotate(5deg) scale(1.1);
+}
+
+.engine-card:hover .engine-title {
+  color: var(--neon-primary);
+  text-shadow: 0 0 10px var(--neon-glow);
+}
+
+.engine-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--neon-primary);
+  transition: all var(--transition-base);
+}
+
+.engine-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  transition: all var(--transition-base);
+}
+
+.engine-desc {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  transition: color var(--transition-theme);
+}
+
+/* ---------- Workflow Section ---------- */
+.workflow-section {
+  text-align: center;
+  width: 100%;
+}
+
+.workflow-title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  margin-bottom: 2rem;
+  transition: color var(--transition-theme);
+}
+
+.workflow-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+
+.workflow-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: all var(--transition-base);
+}
+
+.workflow-tag:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-hover);
+  color: var(--neon-primary);
+  box-shadow: 0 0 15px var(--neon-glow);
+  text-decoration: none;
+}
+
+.tag-num {
+  font-family: var(--font-mono);
+  color: var(--neon-primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-full);
+  background: var(--neon-10);
+  color: var(--neon-primary);
+  border: 1px solid var(--neon-primary);
+  font-weight: 500;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: all var(--transition-base);
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: var(--neon-20);
+  box-shadow: 0 0 25px var(--neon-glow);
+}
+
+/* ---------- Animations ---------- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+  .engines-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 3rem;
+  }
+  .engines-grid {
+    grid-template-columns: 1fr;
+  }
+  .home-nav {
+    padding: 1.5rem 2rem;
+  }
+}

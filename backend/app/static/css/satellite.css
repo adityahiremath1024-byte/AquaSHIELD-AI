@@ -1053,3 +1053,122 @@
     gap: 12px;
   }
 }
+
+/* ============================================================
+   NEON GLASSMORPHISM ENHANCEMENTS — MODULE 2 (SATELLITE)
+   ============================================================ */
+
+/* Metric Cards & Timeline Cards */
+.metric-card, .timeline-card {
+  background: linear-gradient(135deg, rgba(15, 20, 40, 0.6) 0%, rgba(15, 20, 40, 0.3) 100%) !important;
+  border: 1px solid rgba(0, 255, 170, 0.15) !important;
+  backdrop-filter: blur(10px) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  border-radius: 12px !important;
+  transition: all 200ms ease-out !important;
+}
+
+.metric-card:hover, .timeline-card:hover {
+  background: linear-gradient(135deg, rgba(15, 20, 40, 0.8) 0%, rgba(15, 20, 40, 0.5) 100%) !important;
+  border-color: rgba(0, 255, 170, 0.4) !important;
+  box-shadow: 
+    0 12px 48px rgba(0, 255, 170, 0.2), 
+    inset 0 0 20px rgba(0, 255, 170, 0.1),
+    0 0 20px rgba(0, 255, 170, 0.3) !important;
+  transform: scale(1.02) !important;
+}
+
+.metric-card:hover .metric-value {
+  color: #00ffaa !important;
+}
+
+.metric-card:hover .metric-label {
+  text-shadow: 0 0 10px rgba(0, 255, 170, 0.3) !important;
+}
+
+/* Water Expansion Rate Hero */
+.expansion-hero {
+  background: linear-gradient(135deg, rgba(15, 20, 40, 0.6) 0%, rgba(15, 20, 40, 0.3) 100%) !important;
+  border: 1px solid rgba(0, 255, 170, 0.15) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  border-radius: 12px !important;
+  transition: all 200ms ease-out !important;
+}
+
+.expansion-hero:hover {
+  background: linear-gradient(135deg, rgba(15, 20, 40, 0.8) 0%, rgba(15, 20, 40, 0.5) 100%) !important;
+  border-color: rgba(0, 255, 170, 0.4) !important;
+  box-shadow: 
+    0 12px 48px rgba(0, 255, 170, 0.2), 
+    inset 0 0 20px rgba(0, 255, 170, 0.1),
+    0 0 20px rgba(0, 255, 170, 0.3) !important;
+  transform: scale(1.02) !important;
+}
+
+/* Timeline Thumbnails / Timeline Row Cards */
+.timeline-card {
+  border: 2px solid rgba(0, 255, 170, 0.2) !important;
+  transition: all 200ms ease-out !important;
+}
+
+.timeline-card:hover {
+  border-color: rgba(0, 255, 170, 0.4) !important;
+  box-shadow: 
+    0 8px 24px rgba(0, 255, 170, 0.2),
+    0 0 15px rgba(0, 255, 170, 0.4) !important;
+  transform: scale(1.05) !important;
+}
+
+.timeline-card.active {
+  border-color: #00ffaa !important;
+  box-shadow: 0 0 20px rgba(0, 255, 170, 0.5) !important;
+}
+
+/* Map Viewer / Comparison Panels */
+.comparison-panel {
+  border: 2px solid rgba(0, 255, 170, 0.2) !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  box-shadow: inset 0 0 20px rgba(0, 255, 170, 0.1) !important;
+  transition: all 200ms ease-out !important;
+}
+
+.comparison-panel:hover {
+  border-color: rgba(0, 255, 170, 0.5) !important;
+  box-shadow: 
+    0 8px 32px rgba(0, 255, 170, 0.15),
+    0 0 20px rgba(0, 255, 170, 0.25) !important;
+}
+
+/* Overlay Indicators */
+.panel-date-badge, .panel-scene-badge {
+  background: rgba(15, 20, 40, 0.8) !important;
+  border: 1px solid rgba(0, 255, 170, 0.2) !important;
+  transition: all 200ms ease-out !important;
+}
+
+.comparison-panel:hover .panel-date-badge,
+.comparison-panel:hover .panel-scene-badge {
+  border-color: rgba(0, 255, 170, 0.5) !important;
+  box-shadow: 0 0 15px rgba(0, 255, 170, 0.3) !important;
+}
+
+.panel-date-badge:hover, .panel-scene-badge:hover {
+  color: #00ffaa !important;
+}
+
+/* Detection Confidence Gauge */
+.confidence-gauge {
+  transition: all 300ms ease !important;
+}
+
+.confidence-gauge:hover {
+  transform: scale(1.05) !important;
+  filter: drop-shadow(0 0 15px rgba(0, 255, 170, 0.4)) !important;
+}
+
+.confidence-gauge-wrapper:hover .gauge-pct {
+  color: #00ffaa !important;
+  text-shadow: 0 0 15px rgba(0, 255, 170, 0.5) !important;
+}
+

@@ -689,3 +689,212 @@
     text-align: center;
   }
 }
+
+/* ============================================================
+   NEON GLASSMORPHISM ENHANCEMENTS — MODULE 6 (PREDICTION)
+   ============================================================ */
+
+/* Run Prediction Button */
+.run-prediction-btn {
+  background: linear-gradient(135deg, #00ffaa, #00d8aa) !important;
+  color: #000000 !important;
+  font-weight: 600 !important;
+  transition: all var(--transition-base) !important;
+}
+
+.run-prediction-btn:hover {
+  background: linear-gradient(135deg, #00ffcc, #00ffaa) !important;
+  box-shadow: 0 12px 40px rgba(0, 255, 170, 0.4) !important;
+  transform: scale(1.02) !important;
+  filter: brightness(1.1) !important;
+}
+
+.run-prediction-btn:active {
+  transform: scale(0.98) !important;
+  box-shadow: 0 4px 16px rgba(0, 255, 170, 0.3) !important;
+}
+
+/* Dropdown / Location Selector */
+.input-select, .input-field {
+  background: rgba(15, 20, 40, 0.8) !important;
+  border: 1px solid rgba(0, 255, 170, 0.3) !important;
+  border-radius: 8px !important;
+  color: #e0e0e0 !important;
+  transition: all var(--transition-base) !important;
+}
+
+.input-select:hover, .input-field:hover {
+  border-color: rgba(0, 255, 170, 0.6) !important;
+  background: rgba(15, 20, 40, 0.9) !important;
+  box-shadow: 0 0 15px rgba(0, 255, 170, 0.2) !important;
+}
+
+.input-select:focus, .input-field:focus {
+  outline: none !important;
+  border-color: #00ffaa !important;
+  box-shadow: 0 0 20px rgba(0, 255, 170, 0.4) !important;
+}
+
+/* Risk Score Gauge */
+.risk-gauge-svg-wrapper {
+  transition: all 300ms ease !important;
+}
+
+.risk-gauge-svg-wrapper:hover {
+  transform: scale(1.05) !important;
+}
+
+.gauge-color-ring {
+  stroke-width: 12px !important;
+  stroke-linecap: round !important;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 170, 0.6)) !important;
+}
+
+.risk-gauge-section:hover .gauge-risk-value {
+  color: #00ffaa !important;
+  text-shadow: 0 0 20px rgba(0, 255, 170, 0.5) !important;
+}
+
+/* SHAP Bar Chart Elements */
+.shap-bar-item {
+  margin: 16px 0 !important;
+  transition: all 200ms ease !important;
+}
+
+.shap-bar-label {
+  font-size: 13px !important;
+  color: #9090a0 !important;
+  transition: color 200ms !important;
+}
+
+.shap-bar-track {
+  height: 20px !important;
+  background: rgba(0, 255, 170, 0.1) !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
+}
+
+.shap-bar-fill {
+  height: 100% !important;
+  border-radius: 4px !important;
+  transition: width 1s ease-out, filter 200ms, transform 200ms !important;
+}
+
+.shap-bar-fill[data-color="blue"] { background: linear-gradient(90deg, #3b82f6, #00f2fe) !important; }
+.shap-bar-fill[data-color="cyan"] { background: linear-gradient(90deg, #00f2fe, #00ffaa) !important; }
+.shap-bar-fill[data-color="violet"] { background: linear-gradient(90deg, #a855f7, #ec4899) !important; }
+.shap-bar-fill[data-color="red"] { background: linear-gradient(90deg, #ef4444, #f59e0b) !important; }
+.shap-bar-fill[data-color="amber"] { background: linear-gradient(90deg, #f59e0b, #eab308) !important; }
+.shap-bar-fill[data-color="green"] { background: linear-gradient(90deg, #10b981, #00ffaa) !important; }
+
+.shap-bar-pct {
+  font-size: 12px !important;
+  color: #9090a0 !important;
+  transition: all 200ms !important;
+}
+
+/* Hover over a SHAP bar row */
+.shap-bar-item:hover {
+  transform: translateX(4px) scaleY(1.05) !important;
+}
+
+.shap-bar-item:hover .shap-bar-label {
+  color: #00ffaa !important;
+  text-shadow: 0 0 10px rgba(0, 255, 170, 0.3) !important;
+}
+
+.shap-bar-item:hover .shap-bar-pct {
+  color: #00ffaa !important;
+  text-shadow: 0 0 10px rgba(0, 255, 170, 0.3) !important;
+}
+
+.shap-bar-item:hover .shap-bar-fill {
+  filter: brightness(1.2) drop-shadow(0 0 15px rgba(0, 255, 170, 0.5)) !important;
+}
+
+/* Signal Cards (Weather, Satellite, Hospital, Citizen) */
+.signal-card {
+  background: rgba(15, 20, 40, 0.5) !important;
+  border-radius: 16px !important;
+  padding: 20px !important;
+  backdrop-filter: blur(15px) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+  transition: all 200ms ease-out !important;
+}
+
+.signal-card-weather { border: 2px solid rgba(16, 185, 129, 0.3) !important; }
+.signal-card-satellite { border: 2px solid rgba(0, 242, 254, 0.3) !important; }
+.signal-card-hospital { border: 2px solid rgba(245, 158, 11, 0.3) !important; }
+.signal-card-citizen { border: 2px solid rgba(168, 85, 247, 0.3) !important; }
+
+.signal-card:hover {
+  transform: translateY(-4px) !important;
+}
+
+.signal-card-weather:hover {
+  border-color: rgba(16, 185, 129, 0.6) !important;
+  box-shadow: 
+    0 16px 48px rgba(16, 185, 129, 0.25),
+    inset 0 0 20px rgba(16, 185, 129, 0.1),
+    0 0 25px rgba(16, 185, 129, 0.4) !important;
+}
+
+.signal-card-satellite:hover {
+  border-color: rgba(0, 242, 254, 0.6) !important;
+  box-shadow: 
+    0 16px 48px rgba(0, 242, 254, 0.25),
+    inset 0 0 20px rgba(0, 242, 254, 0.1),
+    0 0 25px rgba(0, 242, 254, 0.4) !important;
+}
+
+.signal-card-hospital:hover {
+  border-color: rgba(245, 158, 11, 0.6) !important;
+  box-shadow: 
+    0 16px 48px rgba(245, 158, 11, 0.25),
+    inset 0 0 20px rgba(245, 158, 11, 0.1),
+    0 0 25px rgba(245, 158, 11, 0.4) !important;
+}
+
+.signal-card-citizen:hover {
+  border-color: rgba(168, 85, 247, 0.6) !important;
+  box-shadow: 
+    0 16px 48px rgba(168, 85, 247, 0.25),
+    inset 0 0 20px rgba(168, 85, 247, 0.1),
+    0 0 25px rgba(168, 85, 247, 0.4) !important;
+}
+
+.signal-card-icon {
+  width: 48px;
+  height: 48px;
+  transition: all 250ms ease !important;
+}
+
+.signal-card:hover .signal-card-icon {
+  transform: rotate(10deg) scale(1.1) !important;
+}
+
+.signal-card-weather:hover .signal-card-icon { filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.6)) !important; }
+.signal-card-satellite:hover .signal-card-icon { filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.6)) !important; }
+.signal-card-hospital:hover .signal-card-icon { filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.6)) !important; }
+.signal-card-citizen:hover .signal-card-icon { filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.6)) !important; }
+
+.signal-card-value {
+  font-size: 28px !important;
+  color: #00ffaa !important;
+  transition: all 250ms ease !important;
+}
+
+.signal-card:hover .signal-card-value {
+  text-shadow: 0 0 15px rgba(0, 255, 170, 0.4) !important;
+}
+
+.signal-card-desc {
+  font-size: 13px !important;
+  color: #9090a0 !important;
+  transition: color 250ms ease !important;
+}
+
+.signal-card:hover .signal-card-desc {
+  color: #e0e0e0 !important;
+}
+

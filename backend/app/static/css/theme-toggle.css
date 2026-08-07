@@ -1,0 +1,108 @@
+/* ============================================================
+   AquaShield AI — Theme Toggle Component
+   Sun/Moon icon toggle with smooth rotation animation
+   ============================================================ */
+
+/* ---------- Toggle Button ---------- */
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(0, 255, 170, 0.2);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition:
+    border-color var(--transition-base),
+    background-color var(--transition-base),
+    color var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.theme-toggle:hover {
+  border-color: var(--neon-primary);
+  color: var(--neon-primary);
+  box-shadow:
+    0 0 20px var(--neon-glow),
+    inset 0 0 10px var(--neon-10);
+}
+
+.theme-toggle:active {
+  animation: toggle-pulse 300ms ease-out;
+}
+
+@keyframes toggle-pulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+/* ---------- Icon Container ---------- */
+.theme-toggle-icons {
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+
+/* Sun icon (visible in dark mode) */
+.theme-icon-sun,
+.theme-icon-moon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform 300ms cubic-bezier(0.23, 1, 0.320, 1),
+    opacity 300ms ease;
+}
+
+.theme-icon-sun svg,
+.theme-icon-moon svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Dark theme: show sun, hide moon */
+[data-theme="dark"] .theme-icon-sun {
+  opacity: 1;
+  transform: rotate(0deg);
+}
+
+[data-theme="dark"] .theme-icon-moon {
+  opacity: 0;
+  transform: rotate(-90deg);
+}
+
+/* Light theme: show moon, hide sun */
+[data-theme="light"] .theme-icon-sun {
+  opacity: 0;
+  transform: rotate(90deg);
+}
+
+[data-theme="light"] .theme-icon-moon {
+  opacity: 1;
+  transform: rotate(0deg);
+}
+
+/* ---------- Light Theme Toggle Adjustments ---------- */
+[data-theme="light"] .theme-toggle {
+  border-color: rgba(0, 200, 150, 0.25);
+}
+
+[data-theme="light"] .theme-toggle:hover {
+  border-color: var(--neon-primary);
+  box-shadow:
+    0 0 15px var(--neon-glow),
+    inset 0 0 8px var(--neon-10);
+}

@@ -727,3 +727,327 @@
     font-size: 1.4rem;
   }
 }
+
+/* ============================================================
+   NEON GLASSMORPHISM ENHANCEMENTS — MODULE 7 (DIOE)
+   ============================================================ */
+
+.mt-32 { margin-top: 32px !important; }
+.mb-40 { margin-bottom: 40px !important; }
+
+/* Situation Assessment Cards */
+.situation-card {
+  background: rgba(15, 20, 40, 0.7) !important;
+  border: 1px solid rgba(0, 255, 170, 0.2) !important;
+  border-radius: 10px !important;
+  padding: 20px !important;
+  transition: all 200ms ease-out !important;
+}
+
+.situation-card:hover {
+  background: rgba(15, 20, 40, 0.85) !important;
+  border-color: rgba(0, 255, 170, 0.5) !important;
+  box-shadow: 0 8px 24px rgba(0, 255, 170, 0.15) !important;
+}
+
+.situation-card .metric-label {
+  font-size: 11px !important;
+  color: #9090a0 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  margin-bottom: 8px !important;
+}
+
+.situation-card .situation-val {
+  font-size: 32px !important;
+  font-weight: 600 !important;
+  transition: all 200ms ease !important;
+}
+
+.situation-card:hover .situation-val {
+  text-shadow: 0 0 15px currentColor !important;
+}
+
+/* Specific glows */
+.situation-risk .situation-val { color: #ff6464 !important; text-shadow: 0 0 10px rgba(255, 100, 100, 0.2); }
+.situation-threat .situation-val { color: #ffaa00 !important; text-shadow: 0 0 10px rgba(255, 170, 0, 0.2); }
+.situation-disease .situation-val { color: #00d8ff !important; text-shadow: 0 0 10px rgba(0, 216, 255, 0.2); }
+.situation-horizon .situation-val { color: #00aaff !important; text-shadow: 0 0 10px rgba(0, 170, 255, 0.2); }
+.situation-confidence .situation-val { color: #00ffaa !important; text-shadow: 0 0 10px rgba(0, 255, 170, 0.2); }
+
+/* Resource Estimator Boxes */
+.resource-card {
+  background: rgba(15, 20, 40, 0.7) !important;
+  border: 1px solid rgba(0, 255, 170, 0.2) !important;
+  border-radius: 10px !important;
+  padding: 20px !important;
+  text-align: center !important;
+  transition: all 250ms ease-out !important;
+}
+
+.resource-card:hover {
+  border-color: rgba(0, 255, 170, 0.5) !important;
+  box-shadow: 
+    0 8px 32px rgba(0, 255, 170, 0.15),
+    0 0 25px rgba(0, 255, 170, 0.3) !important;
+  transform: scale(1.05) !important;
+  background: rgba(15, 20, 40, 0.85) !important;
+}
+
+.resource-val {
+  font-size: 36px !important;
+  font-weight: 600 !important;
+  color: #00ffaa !important;
+  transition: all 250ms ease !important;
+}
+
+.resource-card:hover .resource-val {
+  text-shadow: 0 0 20px rgba(0, 255, 170, 0.5) !important;
+}
+
+.resource-formula {
+  font-size: 11px !important;
+  color: #7080a0 !important;
+  margin-top: 8px !important;
+  transition: all 250ms ease !important;
+}
+
+.resource-card:hover .resource-formula {
+  text-shadow: 0 0 10px rgba(0, 255, 170, 0.3) !important;
+  color: #00ffaa !important;
+}
+
+/* Resource Gap Analysis Shortage Indicators */
+.gap-card {
+  background: rgba(15, 20, 40, 0.7) !important;
+  border: 1px solid rgba(255, 100, 100, 0.3) !important;
+  border-radius: 10px !important;
+  padding: 20px !important;
+  transition: all 250ms ease-out !important;
+}
+
+.gap-card:hover {
+  border-color: rgba(0, 255, 170, 0.4) !important;
+  background: rgba(15, 20, 40, 0.85) !important;
+  box-shadow: 0 0 20px rgba(0, 255, 170, 0.3) !important;
+}
+
+.shortage-badge {
+  background: rgba(255, 100, 100, 0.1) !important;
+  border: 1px solid rgba(255, 100, 100, 0.4) !important;
+  color: #ff6464 !important;
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  font-size: 11px !important;
+  margin-bottom: 8px !important;
+}
+
+.shortage-badge:hover {
+  box-shadow: 0 0 10px rgba(255, 100, 100, 0.3) !important;
+}
+
+.gap-val {
+  font-size: 32px !important;
+  font-weight: 600 !important;
+  color: #ff6464 !important;
+  transition: all 250ms ease !important;
+}
+
+.gap-card:hover .gap-val {
+  text-shadow: 0 0 15px rgba(255, 100, 100, 0.4) !important;
+}
+
+/* Impact Simulator */
+.impact-simulator-hero {
+  background: rgba(15, 20, 40, 0.6) !important;
+  border: 1px solid rgba(0, 255, 170, 0.15) !important;
+  padding: 24px !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(10px) !important;
+  transition: all 300ms ease !important;
+}
+
+.impact-simulator-hero:hover {
+  background: rgba(15, 20, 40, 0.8) !important;
+  box-shadow: 0 12px 48px rgba(0, 255, 170, 0.25) !important;
+  border-color: rgba(0, 255, 170, 0.4) !important;
+}
+
+.impact-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+.impact-before, .impact-after {
+  text-align: center;
+}
+
+.impact-val {
+  font-size: 48px !important;
+  font-weight: 700 !important;
+  transition: all 300ms ease !important;
+}
+
+.impact-simulator-hero:hover .impact-val {
+  text-shadow: 0 0 15px currentColor !important;
+}
+
+.badge-margin {
+  margin-top: 8px !important;
+}
+
+.impact-arrow {
+  text-align: center;
+  flex: 1;
+  padding: 0 30px;
+  transition: all 300ms ease !important;
+}
+
+.arrow-line {
+  background: linear-gradient(90deg, #ef4444, #10b981);
+  height: 6px;
+  border-radius: 3px;
+  margin: 10px 0;
+  position: relative;
+}
+
+.arrow-pointer {
+  position: absolute;
+  right: -2px;
+  top: -5px;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 12px solid #10b981;
+}
+
+.reduction-pct {
+  color: #00ff00 !important;
+  font-weight: 600;
+  font-size: 28px !important;
+  transition: all 300ms ease !important;
+}
+
+.impact-simulator-hero:hover .reduction-pct {
+  text-shadow: 0 0 15px rgba(0, 255, 0, 0.6) !important;
+}
+
+.impact-simulator-hero:hover .arrow-line {
+  animation: arrow-pulse 1s infinite alternate;
+}
+
+@keyframes arrow-pulse {
+  to { transform: scale(1.05); }
+}
+
+/* Timeline Phase Cards */
+.timeline-col {
+  background: rgba(15, 20, 40, 0.7) !important;
+  border-radius: 10px !important;
+  padding: 16px !important;
+  transition: all 250ms ease-out !important;
+}
+
+.timeline-col-title {
+  margin-top: 0;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding-bottom: 8px;
+  font-size: 1.2rem;
+  color: #f0f4f8;
+  transition: all 250ms ease !important;
+}
+
+.badge-priority {
+  font-size: 0.7rem !important;
+  margin-bottom: 16px !important;
+}
+
+.timeline-col-list {
+  padding-left: 16px;
+  font-size: 0.9rem;
+  color: #7a8ba8;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Color codes */
+.timeline-col-1 { border: 2px solid #ef4444 !important; }
+.timeline-col-2 { border: 2px solid #f97316 !important; }
+.timeline-col-3 { border: 2px solid #f59e0b !important; }
+.timeline-col-4 { border: 2px solid #3b82f6 !important; }
+.timeline-col-5 { border: 2px solid #a855f7 !important; }
+
+.timeline-col:hover {
+  background: rgba(15, 20, 40, 0.85) !important;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    0 0 20px currentColor !important;
+  transform: scale(1.02) !important;
+}
+
+.timeline-col:hover .timeline-col-title {
+  color: #00ffaa !important;
+}
+
+/* Executive Briefing Accordion */
+.briefing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+}
+
+.briefing-title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.briefing-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem !important;
+  background: rgba(0,242,254,0.1) !important;
+  color: #00f2fe !important;
+  padding: 6px 12px !important;
+  border-radius: 20px !important;
+  border: 1px solid rgba(0,242,254,0.2) !important;
+}
+
+.briefing-details {
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding-bottom: 12px;
+}
+
+.briefing-summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.05rem;
+  padding: 8px 0;
+  outline: none;
+  transition: color 200ms ease;
+}
+
+.briefing-summary:hover {
+  color: #00ffaa;
+  text-shadow: 0 0 10px rgba(0, 255, 170, 0.3);
+}
+
+.briefing-content {
+  padding: 12px 0 8px 16px;
+  color: #7a8ba8;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.border-none {
+  border-bottom: none !important;
+}
+
