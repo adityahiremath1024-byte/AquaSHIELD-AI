@@ -1172,3 +1172,96 @@
   text-shadow: 0 0 15px rgba(0, 255, 170, 0.5) !important;
 }
 
+
+/* ---------- Input Command Bar ---------- */
+.satellite-input-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  padding: 20px 24px;
+  margin-bottom: 8px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.input-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.input-field,
+.input-select {
+  background: var(--bg-input, rgba(6, 8, 15, 0.6));
+  border: var(--border-subtle, 1px solid rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-sm, 8px);
+  color: var(--text-primary, #f0f4f8);
+  font-family: var(--font-body, Inter);
+  font-size: 0.9rem;
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-select {
+  cursor: pointer;
+}
+
+.input-select option {
+  background: var(--bg-card-solid, #0e1628);
+  color: var(--text-primary, #f0f4f8);
+}
+
+.input-field:focus,
+.input-select:focus {
+  border-color: var(--accent-cyan, #00f2fe);
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.25);
+}
+
+.run-satellite-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--gradient-accent, linear-gradient(135deg, #00f2fe, #10b981));
+  color: #06080f;
+  font-weight: 700;
+  font-family: var(--font-heading, Outfit);
+  font-size: 0.85rem;
+  padding: 11px 28px;
+  border-radius: var(--radius-sm, 8px);
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 242, 254, 0.2);
+}
+
+.run-satellite-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 242, 254, 0.35);
+}
+
+.run-satellite-btn:active {
+  transform: translateY(1px);
+}
+
+.run-satellite-btn svg {
+  stroke: #06080f;
+}
+
+@media (max-width: 768px) {
+  .satellite-input-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+}
+
+

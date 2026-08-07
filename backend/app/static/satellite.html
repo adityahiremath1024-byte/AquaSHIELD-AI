@@ -37,6 +37,42 @@
       <div class="page-body satellite-page">
 
         <!-- ─────────────────────────────────────────────
+             INPUT COMMAND BAR
+             ───────────────────────────────────────────── -->
+        <section aria-labelledby="input-heading">
+          <div class="glass-card satellite-input-bar">
+            <div class="input-group">
+              <label for="input-village" class="input-label">Village Name</label>
+              <select id="input-village" class="input-select">
+                <option value="West Kainakary" selected>West Kainakary</option>
+                <option value="Kuttanad">Kuttanad</option>
+                <option value="Alappuzha">Alappuzha</option>
+                <option value="Kottayam">Kottayam</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label for="input-lat" class="input-label">Latitude</label>
+              <input type="text" id="input-lat" class="input-field" value="9.4981" />
+            </div>
+            <div class="input-group">
+              <label for="input-lon" class="input-label">Longitude</label>
+              <input type="text" id="input-lon" class="input-field" value="76.3388" />
+            </div>
+            <div class="input-group">
+              <label for="input-radius" class="input-label">Radius (km)</label>
+              <input type="text" id="input-radius" class="input-field" value="15.0" />
+            </div>
+            <button id="run-satellite-btn" class="run-satellite-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right: 2px;">
+                <circle cx="12" cy="12" r="10"/>
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+              </svg>
+              RUN SATELLITE ENGINE
+            </button>
+          </div>
+        </section>
+
+        <!-- ─────────────────────────────────────────────
              SECTION 1: Before / After Satellite Comparison
              ───────────────────────────────────────────── -->
         <section aria-labelledby="comparison-heading">

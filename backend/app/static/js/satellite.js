@@ -6,6 +6,14 @@
 (function () {
   'use strict';
 
+  // Village coordinate registry
+  const VILLAGE_COORDS = {
+    'West Kainakary': { lat: 9.4981, lon: 76.3388 },
+    'Kuttanad':       { lat: 9.5124, lon: 76.3532 },
+    'Alappuzha':      { lat: 9.4981, lon: 76.3388 },
+    'Kottayam':       { lat: 9.5916, lon: 76.5221 }
+  };
+
   const DATA = {
     baseline: {
       date:        '2026-06-26',
@@ -21,7 +29,7 @@
       waterPct:    36.0,
       areaSqKm:    254.4,
       label:       'Post-Flood Scene',
-      imageUrl:    'assets/images/satellite/postflood_scene.png',
+      imageUrl:    '/api/ndwi/mask/20260715_143721_PSScene',
     },
     analysis: {
       waterExpansionRatePct: 100.0,
@@ -122,17 +130,57 @@
 
     const postOverlay = document.getElementById('overlay-postflood-pct');
     if (postOverlay) animateValue(postOverlay, 0, DATA.postFlood.waterPct, 1200, '%', 1);
+
+    // Timeline hero comparative section elements
+    const fromEl = document.querySelector('.expansion-from .ex-value');
+    if (fromEl) fromEl.textContent = DATA.baseline.waterPct.toFixed(1) + '%';
+    const toEl = document.querySelector('.expansion-to .ex-value');
+    if (toEl) toEl.textContent = DATA.postFlood.waterPct.toFixed(1) + '%';
+
+    // Summary Table Updates
+    const tbody = document.querySelector('#summary-table tbody');
+    if (tbody) {
+      tbody.innerHTML = `
+        <tr>
+          <td class="td-metric">Baseline water coverage</td>
+          <td class="td-value text-green">${DATA.baseline.waterPct.toFixed(1)}%</td>
+          <td class="td-detail">${DATA.baseline.areaSqKm.toFixed(1)} sq km</td>
+        </tr>
+        <tr>
+          <td class="td-metric">Post-flood water coverage</td>
+          <td class="td-value text-red">${DATA.postFlood.waterPct.toFixed(1)}%</td>
+          <td class="td-detail">${DATA.postFlood.areaSqKm.toFixed(1)} sq km</td>
+        </tr>
+        <tr>
+          <td class="td-metric">Water expansion rate</td>
+          <td class="td-value text-red">+${DATA.analysis.waterExpansionRatePct.toFixed(1)}%</td>
+          <td class="td-detail">${DATA.analysis.severityDescription}</td>
+        </tr>
+        <tr>
+          <td class="td-metric">Severity level</td>
+          <td class="td-value">
+            <span class="badge badge-very-high">${DATA.analysis.severityLevel}</span>
+          </td>
+          <td class="td-detail">Epidemic alert threshold</td>
+        </tr>
+        <tr>
+          <td class="td-metric">Detection confidence</td>
+          <td class="td-value text-cyan">${DATA.analysis.detectionConfidence.toFixed(2)}%</td>
+          <td class="td-detail">Cloud: ${DATA.analysis.cloudCoverPct}% · GSD: 3.0 m/pixel</td>
+        </tr>
+      `;
+    }
   }
 
   function initFactorBars() {
     const d = DATA.analysis;
     const cloudBar = document.getElementById('factor-cloud-bar');
     if (cloudBar) {
-      setTimeout(() => { cloudBar.style.width = (100 - d.cloudCoverPct) + '%'; }, 400);
+      cloudBar.style.width = (100 - d.cloudCoverPct) + '%';
     }
     const gsdBar = document.getElementById('factor-gsd-bar');
     if (gsdBar) {
-      setTimeout(() => { gsdBar.style.width = '85%'; }, 500);
+      gsdBar.style.width = '85%';
     }
   }
 
@@ -170,6 +218,9 @@
 
   function persistSatelliteSession() {
     saveSession({
+      village_name:        document.getElementById('input-village').value,
+      latitude:            parseFloat(document.getElementById('input-lat').value),
+      longitude:           parseFloat(document.getElementById('input-lon').value),
       flood_water_pct:     DATA.postFlood.waterPct,
       flood_increase_pct:  DATA.analysis.waterExpansionRatePct,
       flood_baseline_pct:  DATA.baseline.waterPct,
@@ -180,14 +231,45 @@
   }
 
   // ─── Fetch Compare Metrics from Backend API ────────────────────────────────
-  async function fetchCompareData() {
+  async function runSatelliteEngine() {
+    showLoading();
+
+    const village = document.getElementById('input-village').value;
+    const lat = parseFloat(document.getElementById('input-lat').value);
+    const lon = parseFloat(document.getElementById('input-lon').value);
+    const radius = parseFloat(document.getElementById('input-radius').value);
+
     try {
-      const res = await fetch(`/api/ndwi/compare?baseline_image_id=20260626_143522_PSScene&flood_image_id=20260715_143721_PSScene`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const apiData = await res.json();
-      
+      // 1. Search matching scenes for the given coordinates
+      const searchRes = await fetch(`/api/satellite/search?latitude=${lat}&longitude=${lon}&radius_km=${radius}`);
+      if (!searchRes.ok) throw new Error("Search API failed");
+      const searchData = await searchRes.json();
+
+      let baselineId = "20260626_143522_PSScene";
+      let floodId = "20260715_143721_PSScene";
+
+      // If we find scenes from Planet Labs, map baseline and flood scenes
+      if (searchData.scenes && searchData.scenes.length >= 2) {
+        floodId = searchData.scenes[0].id;
+        baselineId = searchData.scenes[1].id;
+      }
+
+      // 2. Perform NDWI Compare
+      const compareRes = await fetch(`/api/ndwi/compare?baseline_image_id=${baselineId}&flood_image_id=${floodId}&radius_km=${radius}`);
+      if (!compareRes.ok) throw new Error("Compare API failed");
+      const apiData = await compareRes.json();
+
+      // 3. Update local state
       DATA.baseline.waterPct = apiData.baseline_water_pct;
+      DATA.baseline.areaSqKm = (apiData.baseline_water_pct / 100.0) * Math.PI * (radius ** 2);
+      DATA.baseline.imageUrl = `/api/ndwi/mask/${baselineId}`;
+      DATA.baseline.dateDisplay = baselineId.substring(0, 4) + '-' + baselineId.substring(4, 6) + '-' + baselineId.substring(6, 8);
+
       DATA.postFlood.waterPct = apiData.flood_water_pct;
+      DATA.postFlood.areaSqKm = (apiData.flood_water_pct / 100.0) * Math.PI * (radius ** 2);
+      DATA.postFlood.imageUrl = `/api/ndwi/mask/${floodId}`;
+      DATA.postFlood.dateDisplay = floodId.substring(0, 4) + '-' + floodId.substring(4, 6) + '-' + floodId.substring(6, 8);
+
       DATA.analysis.waterExpansionRatePct = apiData.water_expansion_rate_pct;
       DATA.analysis.expandedAreaSqKm = apiData.expanded_area_sq_km;
       DATA.analysis.severityLevel = apiData.severity_level;
@@ -195,16 +277,64 @@
       DATA.analysis.detectionConfidence = apiData.detection_confidence_pct;
       DATA.analysis.stagnantPockets = apiData.stagnant_water_pockets;
 
-      // Update source indicators
+      // 4. Update elements in UI
+      document.querySelector('#panel-baseline img').src = DATA.baseline.imageUrl;
+      document.querySelector('#panel-postflood img').src = DATA.postFlood.imageUrl;
+      document.querySelector('#panel-baseline .panel-date-badge').innerHTML = `
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+        ${DATA.baseline.dateDisplay}
+      `;
+      document.querySelector('#panel-postflood .panel-date-badge').innerHTML = `
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+        ${DATA.postFlood.dateDisplay}
+      `;
+
+      // Update baseline & post water area values in bottom bars
+      document.querySelector('#panel-baseline .panel-info-bar .info-value').textContent = `${DATA.baseline.areaSqKm.toFixed(1)} sq km`;
+      document.querySelector('#panel-postflood .panel-info-bar .info-value').textContent = `${DATA.postFlood.areaSqKm.toFixed(1)} sq km`;
+
+      // Update active risk tag details
+      const badge = document.querySelector('#severity-card .badge');
+      if (badge) {
+        badge.className = `badge badge-${apiData.severity_level.toLowerCase().replace(' ', '-')}`;
+        badge.textContent = `${apiData.severity_level} SEVERITY`;
+      }
+      const sevLevelText = document.querySelector('.severity-level-text');
+      if (sevLevelText) sevLevelText.textContent = apiData.severity_level;
+      const sevDesc = document.querySelector('.severity-description');
+      if (sevDesc) sevDesc.textContent = apiData.severity_description;
+
+      // Update stagnant pocket text badge
+      const stagnantTag = document.querySelector('.vector-alert-tags .vector-tag:nth-child(3)');
+      if (stagnantTag) stagnantTag.textContent = `${apiData.stagnant_water_pockets} Stagnant Pockets`;
+
+      // Re-init visuals
+      initMetricCounters();
+      initConfidenceGauge(DATA.analysis.detectionConfidence);
+      initFactorBars();
+      persistSatelliteSession();
+
       const statusBadge = document.getElementById('api-status-badge');
       if (statusBadge) {
         statusBadge.innerHTML = `
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-          Planet API Engine Live
+          Planet API Engine Live (Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)})
         `;
       }
     } catch (err) {
-      console.warn("Backend satellite compare offline. Reverting to local fallback data.", err);
+      console.error("Satellite search execution failed:", err);
+    } finally {
+      hideLoading();
+    }
+  }
+
+  // Restore coordinates based on village selection dropdown
+  function onVillageChange() {
+    const dropdown = document.getElementById('input-village');
+    const coords = VILLAGE_COORDS[dropdown.value];
+    if (coords) {
+      document.getElementById('input-lat').value = coords.lat;
+      document.getElementById('input-lon').value = coords.lon;
     }
   }
 
@@ -219,18 +349,27 @@
       });
     }
 
-    showLoading();
-    
-    fetchCompareData().then(() => {
-      setTimeout(() => {
-        hideLoading();
-        initMetricCounters();
-        initConfidenceGauge(DATA.analysis.detectionConfidence);
-        initFactorBars();
-        initScrollAnimations();
-        persistSatelliteSession();
-      }, 800);
-    });
+    // Set up form change listeners
+    const dropdown = document.getElementById('input-village');
+    if (dropdown) {
+      dropdown.addEventListener('change', onVillageChange);
+    }
+
+    const runBtn = document.getElementById('run-satellite-btn');
+    if (runBtn) {
+      runBtn.addEventListener('click', runSatelliteEngine);
+    }
+
+    // Restore any existing session coordinates if present
+    const session = loadSession();
+    if (session.village_name) {
+      if (dropdown) dropdown.value = session.village_name;
+      if (session.latitude) document.getElementById('input-lat').value = session.latitude;
+      if (session.longitude) document.getElementById('input-lon').value = session.longitude;
+    }
+
+    // Initial run to load default K Kainkary values
+    runSatelliteEngine();
   });
 
 })();
