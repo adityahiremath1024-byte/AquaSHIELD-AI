@@ -331,7 +331,7 @@ Each module is independently testable and contributes a defined output to the fu
 
 ---
 
-## 12. Hackathon Timeline & Milestones
+<!-- ## 12. Hackathon Timeline & Milestones
 
 | Phase | Milestone |  | Owner |
 |---|---|---|---|
@@ -342,7 +342,7 @@ Each module is independently testable and contributes a defined output to the fu
 | **Integration** | Full pipeline tested across 3 scenarios; fallback modes verified | Full team |
 | **Polish** | UI polish, PDF export, responsive testing, demo script | Full team
 
----
+--- -->
 
 <!-- ## 13. Future Roadmap (Post-MVP)
 
