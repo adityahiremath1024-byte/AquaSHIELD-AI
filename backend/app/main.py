@@ -11,7 +11,7 @@ ENV_PATH = os.path.join(BASE_DIR, ".env")
 load_dotenv(ENV_PATH)
 
 from app.api.weather import router as weather_router
-from app.api.satellite import router as satellite_router
+from app.api.satellite import router as satellite_router, module2_router
 from app.api.hospital import router as hospital_router
 from app.api.citizen import router as citizen_router
 from app.api.fusion import router as fusion_router
@@ -39,6 +39,7 @@ app.add_middleware(
 # Include API Routers
 app.include_router(weather_router)
 app.include_router(satellite_router)
+app.include_router(module2_router)
 app.include_router(hospital_router)
 app.include_router(citizen_router)
 app.include_router(fusion_router)

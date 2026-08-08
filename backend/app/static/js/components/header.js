@@ -14,11 +14,14 @@
  */
 function renderHeader({ title, subtitle, stepCurrent, stepTotal, alertCount = 12 }) {
   const now = new Date();
-  const syncTime = now.toLocaleString('en-IN', {
-    day: '2-digit', month: 'short', year: 'numeric',
-    hour: '2-digit', minute: '2-digit', second: '2-digit',
-    hour12: false
-  }) + ' IST';
+  const formatTime = (d) => {
+    return d.toLocaleString('en-IN', {
+      day: '2-digit', month: 'short', year: 'numeric',
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+      hour12: false
+    }) + ' IST';
+  };
+  const syncTime = formatTime(now);
 
   const header = document.createElement('header');
   header.className = 'global-header';
@@ -28,13 +31,15 @@ function renderHeader({ title, subtitle, stepCurrent, stepTotal, alertCount = 12
   header.innerHTML = `
     <div class="header-left">
       <h1 class="header-title">${title}</h1>
-      <p class="header-subtitle">${subtitle}</p>
     </div>
     <div class="header-right">
       <div class="live-indicator" aria-label="System status: live">
         <span class="live-dot"></span>
         LIVE
       </div>
+<<<<<<< HEAD
+      <span class="header-sync" aria-label="Current date and time" id="header-current-clock">${syncTime}</span>
+=======
       <span class="header-sync" aria-label="Last sync time">Last Sync: ${syncTime}</span>
       <button class="header-alerts-badge" aria-label="${alertCount} active alerts" id="header-alerts-btn">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -51,6 +56,7 @@ function renderHeader({ title, subtitle, stepCurrent, stepTotal, alertCount = 12
       <div class="header-profile" title="User Profile" aria-label="User profile">
         DP
       </div>
+>>>>>>> 39e2e8c0f242d544bb272b71bd28545be9ad1df2
     </div>
   `;
 
@@ -84,6 +90,14 @@ function renderHeader({ title, subtitle, stepCurrent, stepTotal, alertCount = 12
   if (window.AquaShield && typeof window.AquaShield.renderThemeToggle === 'function') {
     window.AquaShield.renderThemeToggle();
   }
+
+  // Live ticking clock updating the current date/time every second
+  setInterval(() => {
+    const clockEl = document.getElementById('header-current-clock');
+    if (clockEl) {
+      clockEl.textContent = formatTime(new Date());
+    }
+  }, 1000);
 }
 
 // Export

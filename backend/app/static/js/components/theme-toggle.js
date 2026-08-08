@@ -89,13 +89,7 @@
 
     btn.addEventListener('click', toggleTheme);
 
-    // Insert before the alerts badge (or as first child)
-    const alertsBadge = headerRight.querySelector('.header-alerts-badge');
-    if (alertsBadge) {
-      headerRight.insertBefore(btn, alertsBadge);
-    } else {
-      headerRight.prepend(btn);
-    }
+    headerRight.appendChild(btn);
   }
 
   // ── Apply theme immediately (before DOM paint) ──

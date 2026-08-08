@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<<<<<<< HEAD
   <title>Module 2: High-Resolution Satellite & NDWI Analysis — AquaShield AI</title>
   <meta name="description" content="Module 2: High-resolution satellite flood analysis with PlanetScope 3m scenes, NDWI water masking, and standing water disease vector risk estimation." />
+=======
+  <title>Satellite Flood Analysis — AquaShield AI</title>
+  <meta name="description"
+    content="Satellite-based flood inundation analysis using PlanetScope 3m imagery. Before/after comparison, NDWI water detection, and disease vector risk assessment." />
+>>>>>>> 5b438faaf4f1ae8787984c7b1ba31c1f6e8cb725
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/global.css" />
@@ -15,8 +22,10 @@
   <script src="js/components/theme-toggle.js"></script>
 
   <!-- Favicon (shield icon inline) -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300f2fe' stroke-width='2'><path d='M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z'/></svg>" />
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300f2fe' stroke-width='2'><path d='M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z'/></svg>" />
 </head>
+
 <body>
 
   <!-- LOADING OVERLAY -->
@@ -36,11 +45,17 @@
         <section aria-labelledby="hero-heading">
           <div class="glass-card hero-description-card">
             <h2 class="hero-title" id="hero-heading">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><circle cx="12" cy="12" r="4"/></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2">
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                <circle cx="12" cy="12" r="4" />
+              </svg>
               Module 2: High-Resolution Satellite & NDWI Analysis
             </h2>
             <p class="hero-desc">
-              Searches PlanetScope 3-meter commercial optical satellite scenes, enforces an <strong>Image Quality Control Gate</strong> (Cloud Cover &le; 20%, Res &le; 5m, Age &le; 90d), computes NDWI Water Masks, evaluates <strong>Water Expansion Matrix</strong> (Before vs After), detects <strong>Standing Water Pockets</strong>, and calculates <strong>Flood Severity & Confidence %</strong>.
+              Searches PlanetScope 3-meter commercial optical satellite scenes, enforces an <strong>Image Quality
+                Control Gate</strong> (Cloud Cover &le; 20%, Res &le; 5m, Age &le; 90d), computes NDWI Water Masks,
+              evaluates <strong>Water Expansion Matrix</strong> (Before vs After), detects <strong>Standing Water
+                Pockets</strong>, and calculates <strong>Flood Severity & Confidence %</strong>.
             </p>
           </div>
         </section>
@@ -79,13 +94,53 @@
             </div>
             <div class="search-action-row">
               <button id="search-btn" class="search-btn">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
                 SEARCH PLANET SATELLITE SCENES
               </button>
             </div>
           </div>
         </section>
 
+<<<<<<< HEAD
+=======
+        <!-- SECTION 2: IMAGE QUALITY CONTROL GATE -->
+
+
+        <section aria-labelledby="gate-heading">
+          <div class="glass-card gate-card">
+            <div class="gate-header">
+              <h3 class="panel-heading" id="gate-heading" style="margin-bottom: 0;">
+                <span class="dot"></span> Image Quality Control Gate
+              </h3>
+              <div class="gate-warning-badge" id="gate-warning">
+                WARNING: Some quality checks may not pass
+              </div>
+            </div>
+            <div class="gate-grid">
+              <div class="gate-metric-card" id="gate-cloud">
+                <span class="gate-metric-label">Cloud Cover Limit (&le;20%)</span>
+                <span class="gate-metric-value" id="gate-cloud-val">—</span>
+              </div>
+              <div class="gate-metric-card" id="gate-resolution">
+                <span class="gate-metric-label">Spatial Resolution (&le;5m)</span>
+                <span class="gate-metric-value" id="gate-res-val">—</span>
+              </div>
+              <div class="gate-metric-card" id="gate-recency">
+                <span class="gate-metric-label">Imagery Recency (&le;90 days)</span>
+                <span class="gate-metric-value" id="gate-age-val">—</span>
+              </div>
+              <div class="gate-metric-card" id="gate-confidence">
+                <span class="gate-metric-label">Detection Confidence Score</span>
+                <span class="gate-metric-value glow-text text-cyan" id="gate-confidence-val">—</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+>>>>>>> 5b438faaf4f1ae8787984c7b1ba31c1f6e8cb725
         <!-- SECTION 3: STEP-BY-STEP NDWI PROCESSING PIPELINE -->
         <section aria-labelledby="pipeline-heading">
           <div class="glass-card pipeline-card">
@@ -96,67 +151,101 @@
               <div class="pipeline-step-box">
                 <span class="step-num">STEP 1</span>
                 <h4 class="step-title">Raw Optical Imagery</h4>
-                <p class="step-text">Ingest PlanetScope 3m commercial optical satellite imagery or ArcGIS World Imagery fallback.</p>
+                <p class="step-text">Ingest PlanetScope 3m commercial optical satellite imagery or ArcGIS World Imagery
+                  fallback.</p>
               </div>
               <div class="pipeline-step-box">
                 <span class="step-num">STEP 2</span>
                 <h4 class="step-title">Cloud &amp; Shadow Masking</h4>
-                <p class="step-text">Exclude bright cloud pixels (brightness &gt; 200) and deep shadows (brightness &lt; 20) to prevent false detections.</p>
+                <p class="step-text">Exclude bright cloud pixels (brightness &gt; 200) and deep shadows (brightness &lt;
+                  20) to prevent false detections.</p>
               </div>
               <div class="pipeline-step-box">
                 <span class="step-num">STEP 3</span>
                 <h4 class="step-title">NDWI Computation</h4>
-                <p class="step-text">Compute (Green &minus; NIR) / (Green + NIR) from 8-band analytic data, or (Green &minus; Red) / (Green + Red) from RGB with strict multi-spectral constraints.</p>
+                <p class="step-text">Compute (Green &minus; NIR) / (Green + NIR) from 8-band analytic data, or (Green
+                  &minus; Red) / (Green + Red) from RGB with strict multi-spectral constraints.</p>
               </div>
               <div class="pipeline-step-box">
                 <span class="step-num">STEP 4</span>
                 <h4 class="step-title">Morphological Cleanup</h4>
-                <p class="step-text">OpenCV opening &amp; closing with 5&times;5 kernel to remove salt-and-pepper noise and fill small gaps within water bodies.</p>
+                <p class="step-text">OpenCV opening &amp; closing with 5&times;5 kernel to remove salt-and-pepper noise
+                  and fill small gaps within water bodies.</p>
               </div>
               <div class="pipeline-step-box">
                 <span class="step-num">STEP 5</span>
                 <h4 class="step-title">Connected Component Filter</h4>
-                <p class="step-text">Label all contiguous water regions and remove every connected component smaller than 80 pixels, eliminating isolated false positives.</p>
+                <p class="step-text">Label all contiguous water regions and remove every connected component smaller
+                  than 80 pixels, eliminating isolated false positives.</p>
               </div>
               <div class="pipeline-step-box">
                 <span class="step-num">STEP 6</span>
                 <h4 class="step-title">Flood Statistics &amp; Risk</h4>
-                <p class="step-text">Compute surface water %, flooded area sq km, mean NDWI, stagnant water pockets, and flood severity from the cleaned mask.</p>
+                <p class="step-text">Compute surface water %, flooded area sq km, stagnant water pockets, and
+                  outbreak triggers from the final water mask.</p>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- SECTION 4: WATER EXPANSION MATRIX -->
+        <!-- SECTION 3: COMPARATIVE WATER INUNDATION MATRIX -->
         <section aria-labelledby="matrix-heading">
           <div class="glass-card matrix-card">
             <h3 class="panel-heading" id="matrix-heading">
-              <span class="dot"></span> Water Expansion Matrix (Before vs After Flood)
+              <span class="dot"></span> Comparative Water Inundation Matrix (PlanetScope vs Sentinel/Baseline)
             </h3>
             <div class="matrix-grid">
-              <div class="matrix-data-card">
-                <span class="matrix-label">Water Area Before (Pre-Flood)</span>
-                <span class="matrix-value text-green" id="matrix-before-val">11.9%</span>
-                <span class="matrix-subtext" id="matrix-before-area">~84.1 sq km</span>
+              <div class="matrix-col">
+                <div class="matrix-label">Surface Water (Baseline)</div>
+                <div class="matrix-value text-green" id="matrix-before-val">—</div>
+                <div class="matrix-sub-label" id="matrix-before-area">—</div>
               </div>
-              <div class="matrix-data-card">
-                <span class="matrix-label">Water Area After (Post-Flood)</span>
-                <span class="matrix-value text-red" id="matrix-after-val">6.5%</span>
-                <span class="matrix-subtext" id="matrix-after-area">~45.7 sq km</span>
+              <div class="matrix-col">
+                <div class="matrix-label">Surface Water (Post-Flood)</div>
+                <div class="matrix-value text-red" id="matrix-after-val">—</div>
+                <div class="matrix-sub-label" id="matrix-after-area">—</div>
               </div>
-              <div class="matrix-data-card">
-                <span class="matrix-label">Surface Water Expansion %</span>
-                <span class="matrix-value text-cyan" id="matrix-expansion-val">-45.6%</span>
-                <span class="matrix-subtext">Inundation decrease</span>
-              </div>
-              <div class="matrix-data-card">
-                <span class="matrix-label">Flood Severity Tier</span>
-                <div class="matrix-badge-row">
-                  <span class="badge badge-low" id="matrix-severity-badge">LOW RISK 🟢</span>
+              <div class="matrix-col">
+                <div class="matrix-label">Water Expansion Rate</div>
+                <div class="matrix-value text-red" id="matrix-expansion-val">—</div>
+                <div class="matrix-sub-label">
+                  <span class="badge" id="matrix-severity-badge" style="display: none;">—</span>
                 </div>
-                <p class="matrix-desc-text" id="matrix-severity-desc">
-                  Surface water expanded by -45.6% (Before: 11.9% -> After: 6.5%), expanding power <-3.0 sq km (Low Severity).
-                </p>
+              </div>
+            </div>
+            <div class="matrix-description" id="matrix-severity-desc">
+              Awaiting satellite search and analysis to compute comparative inundation matrix.
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 4: SIDE-BY-SIDE INUNDATION ANALYSIS -->
+        <section aria-labelledby="compare-heading">
+          <h2 class="section-heading" id="compare-heading">
+            <span class="dot"></span>
+            Side-by-Side Inundation Analysis
+          </h2>
+          <div class="compare-panels">
+            <div class="glass-card panel-card">
+              <div class="panel-header text-green">PRE-FLOOD BASELINE VIEW</div>
+              <div class="panel-media-wrapper">
+                <img id="img-baseline" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300' fill='%23111'><rect width='400' height='300' rx='8'/><text x='50% ' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%23555' font-family='sans-serif'>Baseline thumbnail awaiting search</text></svg>" alt="Pre-flood baseline" />
+                <div class="overlay-badge base-badge" id="overlay-baseline-pct">—</div>
+              </div>
+              <div class="panel-footer">
+                <span class="panel-info-label">Footprint Area:</span>
+                <span class="panel-info-val" id="info-baseline-area">—</span>
+              </div>
+            </div>
+            <div class="glass-card panel-card">
+              <div class="panel-header text-red">POST-FLOOD ACTIVE VIEW</div>
+              <div class="panel-media-wrapper">
+                <img id="img-postflood" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300' fill='%23111'><rect width='400' height='300' rx='8'/><text x='50% ' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%23555' font-family='sans-serif'>Post-flood thumbnail awaiting search</text></svg>" alt="Post-flood active" />
+                <div class="overlay-badge flood-badge" id="overlay-postflood-pct">—</div>
+              </div>
+              <div class="panel-footer">
+                <span class="panel-info-label">Footprint Area:</span>
+                <span class="panel-info-val" id="info-postflood-area">—</span>
               </div>
             </div>
           </div>
@@ -170,9 +259,16 @@
                 <span class="dot"></span> Satellite Scenes Found (<span id="scenes-count">0</span>)
               </h3>
               <div class="api-status-tag" id="api-status-badge">
-                Planet API: Active (Key: PLAKe95c...)
+                Planet API: Active
               </div>
             </div>
+
+            <!-- Status Panel for Empty / Loading / Error States -->
+            <div id="scenes-status-panel" class="status-panel" style="margin-bottom: 20px; padding: 18px; border-radius: 8px; background: rgba(255,255,255,0.01); border: 1px dashed rgba(255,255,255,0.08); text-align: center;">
+              <h4 id="status-title" style="font-size: 0.95rem; font-weight: 700; color: var(--accent-cyan); margin-bottom: 6px;">No satellite data loaded</h4>
+              <p id="status-desc" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0;">Enter a location and date range to retrieve satellite imagery.</p>
+            </div>
+
             <div class="scenes-grid" id="scenes-grid-container">
               <!-- Dynamically populated via JS -->
             </div>
@@ -201,6 +297,7 @@
                 <tbody>
                   <tr>
                     <td class="td-metric">Baseline water coverage</td>
+<<<<<<< HEAD
                     <td class="td-value text-green">--</td>
                     <td class="td-detail">--</td>
                   </tr>
@@ -223,6 +320,30 @@
                     <td class="td-metric">Detection confidence</td>
                     <td class="td-value text-cyan">--</td>
                     <td class="td-detail">--</td>
+=======
+                    <td class="td-value text-green" id="summary-base-val">—</td>
+                    <td class="td-detail" id="summary-base-detail">—</td>
+                  </tr>
+                  <tr>
+                    <td class="td-metric">Post-flood water coverage</td>
+                    <td class="td-value text-red" id="summary-post-val">—</td>
+                    <td class="td-detail" id="summary-post-detail">—</td>
+                  </tr>
+                  <tr>
+                    <td class="td-metric">Water expansion rate</td>
+                    <td class="td-value text-red" id="summary-expansion-val">—</td>
+                    <td class="td-detail" id="summary-expansion-detail">—</td>
+                  </tr>
+                  <tr>
+                    <td class="td-metric">Severity level</td>
+                    <td class="td-value" id="summary-severity-val">—</td>
+                    <td class="td-detail" id="summary-severity-detail">—</td>
+                  </tr>
+                  <tr>
+                    <td class="td-metric">Detection confidence</td>
+                    <td class="td-value text-cyan" id="summary-confidence-val">—</td>
+                    <td class="td-detail" id="summary-confidence-detail">—</td>
+>>>>>>> 5b438faaf4f1ae8787984c7b1ba31c1f6e8cb725
                   </tr>
                 </tbody>
               </table>
@@ -230,6 +351,7 @@
           </div>
         </section>
 
+<<<<<<< HEAD
         <!-- FOOTER NAVIGATION -->
         <nav class="page-nav-footer" aria-label="Module navigation">
           <a href="/weather.html" class="nav-footer-btn secondary">
@@ -242,6 +364,8 @@
             <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
           </a>
         </nav>
+=======
+>>>>>>> 5b438faaf4f1ae8787984c7b1ba31c1f6e8cb725
 
       </div><!-- /.page-body -->
     </main>
@@ -255,4 +379,5 @@
   <script src="js/satellite.js"></script>
 
 </body>
+
 </html>
