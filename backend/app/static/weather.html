@@ -25,7 +25,7 @@
   <!-- ═══════════════════════════════════════════════════
        LOADING OVERLAY
        ═══════════════════════════════════════════════════ -->
-  <div id="loading-overlay" class="loading-overlay">
+  <div id="loading-overlay" class="loading-overlay hidden">
     <div class="loading-spinner"></div>
     <p class="loading-text">Fetching weather intelligence…</p>
   </div>
@@ -423,6 +423,7 @@
   <!-- ═══════════════════════════════════════════════════
        SCRIPTS — shared components, then page-specific
        ═══════════════════════════════════════════════════ -->
+  <script src="js/components/safeFetch.js"></script>
   <script src="js/components/session.js"></script>
   <script src="js/components/sidebar.js"></script>
   <script src="js/components/header.js"></script>

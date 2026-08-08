@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, HTTPException
 from typing import Optional
 
 from app.schemas.prediction import PredictionRequest, PredictionFullResponse
@@ -21,22 +21,29 @@ def analyze_prediction_get(
     citizen_reports_count: Optional[int] = Query(None, description="Citizen reports count"),
     water_stagnation_index: Optional[float] = Query(None, description="Stagnation index")
 ):
-    req = PredictionRequest(
-        village_name=village_name,
-        latitude=latitude,
-        longitude=longitude,
-        rainfall_mm=rainfall_mm,
-        temperature_c=temperature_c,
-        humidity_pct=humidity_pct,
-        flood_pct_increase=flood_pct_increase,
-        hospital_cases_7d=hospital_cases_7d,
-        case_surge_pct=case_surge_pct,
-        citizen_reports_count=citizen_reports_count,
-        water_stagnation_index=water_stagnation_index
-    )
-    return prediction_engine.analyze(req)
+    try:
+        req = PredictionRequest(
+            village_name=village_name,
+            latitude=latitude,
+            longitude=longitude,
+            rainfall_mm=rainfall_mm,
+            temperature_c=temperature_c,
+            humidity_pct=humidity_pct,
+            flood_pct_increase=flood_pct_increase,
+            hospital_cases_7d=hospital_cases_7d,
+            case_surge_pct=case_surge_pct,
+            citizen_reports_count=citizen_reports_count,
+            water_stagnation_index=water_stagnation_index
+        )
+        return prediction_engine.analyze(req)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Prediction analysis failed: {str(e)}")
 
 
 @router.post("/run")
 def run_prediction_post(req: PredictionRequest):
-    return prediction_engine.analyze(req)
+    try:
+        return prediction_engine.analyze(req)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Prediction run failed: {str(e)}")
+

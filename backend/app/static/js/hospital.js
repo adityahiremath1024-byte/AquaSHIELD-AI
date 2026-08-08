@@ -46,7 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
 async function fetchSurgeData(villageName) {
   showLoading(true);
   try {
-    const res = await fetch(`${API_BASE}/api/hospital/surge-summary?village_name=${encodeURIComponent(villageName)}`);
+    const fetchFn = window.AquaShieldUtils ? window.AquaShieldUtils.safeFetch : fetch;
+    const res = await fetchFn(`${API_BASE}/api/hospital/surge-summary?village_name=${encodeURIComponent(villageName)}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     renderAllPanels(data);
@@ -98,7 +99,8 @@ async function handleSubmit() {
   };
 
   try {
-    const res = await fetch(`${API_BASE}/api/hospital/records`, {
+    const fetchFn = window.AquaShieldUtils ? window.AquaShieldUtils.safeFetch : fetch;
+    const res = await fetchFn(`${API_BASE}/api/hospital/records`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)

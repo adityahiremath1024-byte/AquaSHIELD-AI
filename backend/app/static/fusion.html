@@ -20,7 +20,7 @@
 <body>
 
   <!-- Loading Overlay -->
-  <div id="loading-overlay" class="loading-overlay">
+  <div id="loading-overlay" class="loading-overlay hidden">
     <div class="loading-spinner"></div>
     <p class="loading-text">Fusing multi-signal data feeds...</p>
   </div>
@@ -130,14 +130,6 @@
             </div>
           </div>
         </section>
-
-        <!-- SECTION 2: Unified Outbreak Fusion Score Hero -->
-        <section aria-labelledby="fusion-hero-heading" style="margin-top: 28px;">
-          <div class="glass-card hero-fusion-section">
-            <!-- Background particle stream visualization -->
-            <div class="data-particles-container">
-              <svg id="particles-svg" width="100%" height="100%"></svg>
-            </div>
 
         <!-- SECTION 2: Unified Outbreak Fusion Score Hero -->
         <section aria-labelledby="fusion-hero-heading" style="margin-top: 28px;">
@@ -272,6 +264,7 @@
   </div><!-- /.app-shell -->
 
   <!-- Scripts -->
+  <script src="js/components/safeFetch.js"></script>
   <script src="js/components/session.js"></script>
   <script src="js/components/sidebar.js"></script>
   <script src="js/components/header.js"></script>

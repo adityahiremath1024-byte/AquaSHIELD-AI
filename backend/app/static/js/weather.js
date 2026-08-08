@@ -478,123 +478,7 @@
     if (overlay) overlay.classList.add('hidden');
   }
 
-  async function fetchAndRender(lat, lon, city) {
-    showLoading();
-    try {
-      const response = await fetch(`/api/weather/current?latitude=${lat}&longitude=${lon}`);
-      if (!response.ok) {
-        throw new Error(`API error: ${response.status} ${response.statusText}`);
-      }
-      const data = await response.json();
-      
-      // Update the global state that charts and tables rely on
-      window.MOCK_WEATHER_DATA = data;
-      
-      // 1. Update generated timestamp
-      const elTime = document.getElementById('generated-timestamp');
-      if (elTime) elTime.textContent = `Generated on: ${data.assessment.generatedAt}`;
-      
-      // 2. Update BGI score and risk level
-      const elScore = document.getElementById('bgi-score-val');
-      if (elScore) elScore.textContent = `${Math.round(data.assessment.bacteriaGrowthIndex)}%`;
-      
-      const elRisk = document.getElementById('bgi-risk-label');
-      if (elRisk) {
-        elRisk.textContent = data.assessment.riskLevelLabel;
-        elRisk.className = 'risk-label';
-        if (data.assessment.riskLevel === 'LOW') elRisk.classList.add('text-green');
-        else if (data.assessment.riskLevel === 'MODERATE') elRisk.classList.add('text-cyan');
-        else if (data.assessment.riskLevel === 'HIGH') elRisk.classList.add('text-orange');
-        else if (data.assessment.riskLevel === 'CRITICAL') elRisk.classList.add('text-red');
-      }
-      
-      // 3. Update stars list
-      const elStarsContainer = document.getElementById('stars-container');
-      if (elStarsContainer) {
-        elStarsContainer.innerHTML = '';
-        for (let i = 1; i <= 5; i++) {
-          const filled = i <= data.assessment.riskStars;
-          elStarsContainer.innerHTML += `
-            <svg class="star-svg${filled ? ' filled' : ''}" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          `;
-        }
-      }
-      const elStarsNum = document.getElementById('summary-stars-val');
-      if (elStarsNum) elStarsNum.textContent = data.assessment.riskStars;
-      
-      // 4. Update Card 1: Accumulated Rain
-      const elPast7 = document.getElementById('summary-past7-val');
-      if (elPast7) elPast7.textContent = `${data.precipitation.past7_mm.toFixed(1)} mm`;
-      
-      const elPast15 = document.getElementById('summary-past15-val');
-      if (elPast15) elPast15.textContent = `${data.precipitation.past15_mm.toFixed(1)} mm`;
-      
-      const elPast30 = document.getElementById('summary-past30-val');
-      if (elPast30) elPast30.textContent = `${data.precipitation.past30_mm.toFixed(1)} mm`;
-      
-      // 5. Update Card 2: Rainfall Trend
-      const elTrendVal = document.getElementById('summary-trend-val');
-      if (elTrendVal) elTrendVal.textContent = `${data.precipitation.trendPct >= 0 ? '+' : ''}${data.precipitation.trendPct.toFixed(1)}%`;
-      
-      const elTrendDir = document.getElementById('summary-trend-dir');
-      if (elTrendDir) {
-        elTrendDir.textContent = data.precipitation.trendDirection;
-        elTrendDir.className = 'footer-status';
-        if (data.precipitation.trendDirection === 'Increasing') elTrendDir.classList.add('text-red');
-        else elTrendDir.classList.add('text-cyan');
-      }
-      
-      // 6. Update Card 3: Rainfall Anomaly
-      const elAnomaly7 = document.getElementById('summary-anomaly7d-val');
-      if (elAnomaly7) elAnomaly7.textContent = data.precipitation.anomaly7d;
-      
-      const elAnomaly15 = document.getElementById('summary-anomaly15d-val');
-      if (elAnomaly15) elAnomaly15.textContent = data.precipitation.anomaly15d;
-      
-      const elAnomaly30 = document.getElementById('summary-anomaly30d-val');
-      if (elAnomaly30) elAnomaly30.textContent = data.precipitation.anomaly30d;
-      
-      const elAnomalyStatus = document.getElementById('summary-anomaly-status');
-      if (elAnomalyStatus) {
-        elAnomalyStatus.textContent = data.precipitation.anomalyStatus;
-        elAnomalyStatus.className = 'footer-status';
-        if (data.precipitation.anomalyStatus === 'Above Normal') elAnomalyStatus.classList.add('text-red');
-        else elAnomalyStatus.classList.add('text-cyan');
-      }
-      
-      // 7. Update Card 4: Consecutive Rain Streak
-      const elStreakVal = document.getElementById('summary-streak-val');
-      if (elStreakVal) elStreakVal.innerHTML = `${data.precipitation.consecutiveRainyDays} <span class="unit">Days</span>`;
-      
-      const elStreakStatus = document.getElementById('summary-streak-status');
-      if (elStreakStatus) {
-        elStreakStatus.textContent = data.precipitation.streakStatus;
-        elStreakStatus.className = 'footer-status';
-        elStreakStatus.classList.add('text-cyan');
-      }
-      
-      // 8. Re-render charts, gauges, tables, matrices
-      renderDailyPrecipChart();
-      renderAccumulatedChart();
-      
-      drawSemiGauge('heat-gauge-canvas', data.heatIndex.heatIndex_c, 20, 55, [
-        { min: 20, max: 27, color: '#10b981' },
-        { min: 27, max: 32, color: '#f59e0b' },
-        { min: 32, max: 40, color: '#f97316' },
-        { min: 40, max: 55, color: '#ef4444' }
-      ]);
-      currentBGIVal = 0;
-      animateBGIVal(data.assessment.bacteriaGrowthIndex);
-      renderScoreMatrix();
-      renderRiskTiers();
-      
-    } catch (error) {
-      console.error('Error loading weather data:', error);
-      alert('Error querying weather engine: ' + error.message);
-    } finally {
-      hideLoading();
-    }
-  }
+
 
   function setupFetchButton() {
     const btn = document.getElementById('fetch-weather-btn');
@@ -744,7 +628,8 @@
   async function fetchAndRender(lat, lon, city) {
     showLoading();
     try {
-      const response = await fetch(`/api/weather/current?latitude=${lat}&longitude=${lon}`);
+      const fetchFn = window.AquaShieldUtils ? window.AquaShieldUtils.safeFetch : fetch;
+      const response = await fetchFn(`/api/weather/current?latitude=${lat}&longitude=${lon}`);
       if (!response.ok) {
         throw new Error(`API error: ${response.status} ${response.statusText}`);
       }
@@ -759,7 +644,11 @@
 
     } catch (error) {
       console.error('Error loading weather data:', error);
-      alert('Error querying weather engine: ' + error.message);
+      if (window.AquaShieldUtils) {
+        window.AquaShieldUtils.showErrorToast('Weather Engine Error: ' + error.message, 'error');
+      } else {
+        alert('Error querying weather engine: ' + error.message);
+      }
     } finally {
       hideLoading();
     }

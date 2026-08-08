@@ -34,7 +34,8 @@
   // 2. FETCH DASHBOARD DATA FROM BACKEND API
   async function fetchDashboardData() {
     try {
-      const res = await fetch('/api/citizen/summary');
+      const fetchFn = window.AquaShieldUtils ? window.AquaShieldUtils.safeFetch : fetch;
+      const res = await fetchFn('/api/citizen/summary');
       if (!res.ok) throw new Error("Failed to load summary");
       const data = await res.json();
       
@@ -73,6 +74,9 @@
       updateDashboardUI();
     } catch (err) {
       console.error("Error fetching citizen reports data from backend:", err);
+      if (window.AquaShieldUtils) {
+        window.AquaShieldUtils.showErrorToast("Failed to load citizen water reports", "warn");
+      }
     }
   }
 
@@ -292,8 +296,15 @@
         photo_url: photoDataUrl
       };
 
+      const btnSubmit = document.getElementById('btn-submit-report');
+      if (btnSubmit) {
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = 'Submitting...';
+      }
+
       try {
-        const res = await fetch('/api/citizen/reports', {
+        const fetchFn = window.AquaShieldUtils ? window.AquaShieldUtils.safeFetch : fetch;
+        const res = await fetchFn('/api/citizen/reports', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -315,11 +326,24 @@
         const removePhotoBtn = document.getElementById('btn-remove-photo');
         if (removePhotoBtn) removePhotoBtn.click();
 
+        if (window.AquaShieldUtils) {
+          window.AquaShieldUtils.showErrorToast("Water report submitted successfully!", "info");
+        }
+
         // Refresh dashboard from backend database
         await fetchDashboardData();
 
       } catch (err) {
-        alert("Submission error: " + err.message);
+        if (window.AquaShieldUtils) {
+          window.AquaShieldUtils.showErrorToast("Submission error: " + err.message, "error");
+        } else {
+          alert("Submission error: " + err.message);
+        }
+      } finally {
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = 'Submit Water Report';
+        }
       }
     });
   }

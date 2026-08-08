@@ -63,8 +63,9 @@
 
     try {
       // Search scenes matching parameters
+      const fetchFn = window.AquaShieldUtils ? window.AquaShieldUtils.safeFetch : fetch;
       const url = `/api/satellite/search?latitude=${lat}&longitude=${lon}&radius_km=${radius}&start_date=2025-01-01`;
-      const res = await fetch(url);
+      const res = await fetchFn(url);
       if (!res.ok) throw new Error("Search API failed");
       const data = await res.json();
 
@@ -224,7 +225,8 @@
     if (!resultsContainer) return;
 
     try {
-      const res = await fetch(`/api/ndwi/analyze?image_id=${imageId}`);
+      const fetchFn = window.AquaShieldUtils ? window.AquaShieldUtils.safeFetch : fetch;
+      const res = await fetchFn(`/api/ndwi/analyze?image_id=${imageId}`);
       if (!res.ok) throw new Error("NDWI Analysis endpoint error");
       const data = await res.json();
 
@@ -265,49 +267,11 @@
         </div>
       `;
 
-      // Update the Quality Control Gate if this is the active analyzed scene
-      if (role === 'flood') {
-        const cloudPassed = data.cloud_cover_pct <= 20.0;
-        const resPassed = data.resolution_gsd_meters <= 5.0;
-        const ageDays = calculateAgeInDays(data.image_date);
-        const agePassed = ageDays <= 90;
-
-        document.getElementById('gate-cloud').innerHTML = `
-          <span class="gate-metric-label">Cloud Cover Limit (&le;20%)</span>
-          <span class="gate-metric-value">${data.cloud_cover_pct.toFixed(1)}% avg 
-            <span class="badge ${cloudPassed ? 'badge-pass' : 'badge-fail'}">${cloudPassed ? 'PASSED 🟢' : 'FAILED 🔴'}</span>
-          </span>
-        `;
-
-        document.getElementById('gate-resolution').innerHTML = `
-          <span class="gate-metric-label">Spatial Resolution (&le;5m)</span>
-          <span class="gate-metric-value">${data.resolution_gsd_meters.toFixed(1)}m GSD 
-            <span class="badge ${resPassed ? 'badge-pass' : 'badge-fail'}">${resPassed ? 'PASSED 🟢' : 'FAILED 🔴'}</span>
-          </span>
-        `;
-
-        document.getElementById('gate-recency').innerHTML = `
-          <span class="gate-metric-label">Imagery Recency (&le;90 days)</span>
-          <span class="gate-metric-value">${ageDays}d newest 
-            <span class="badge ${agePassed ? 'badge-pass' : 'badge-fail'}">${agePassed ? 'PASSED 🟢' : 'FAILED 🔴'}</span>
-          </span>
-        `;
-
-        // Update confidence percentage
-        const confVal = document.getElementById('gate-confidence-val');
-        confVal.textContent = data.detection_confidence_pct.toFixed(1) + '%';
-
-        // Toggle warning box
-        const warningBox = document.getElementById('gate-warning');
-        if (!cloudPassed || !resPassed || !agePassed) {
-          warningBox.style.display = 'block';
-        } else {
-          warningBox.style.display = 'none';
-        }
-      }
-
     } catch (e) {
       console.error("Analysis trigger failed:", e);
+      if (window.AquaShieldUtils) {
+        window.AquaShieldUtils.showErrorToast(`NDWI Analysis Error: ${e.message}`, 'error');
+      }
     }
   }
 
@@ -320,7 +284,8 @@
       const lon = parseFloat(document.getElementById('input-lon').value);
       const radius = parseFloat(document.getElementById('input-radius').value);
 
-      const res = await fetch(`/api/ndwi/compare?baseline_image_id=${selectedBaselineId}&flood_image_id=${selectedFloodId}&radius_km=${radius}`);
+      const fetchFn = window.AquaShieldUtils ? window.AquaShieldUtils.safeFetch : fetch;
+      const res = await fetchFn(`/api/ndwi/compare?baseline_image_id=${selectedBaselineId}&flood_image_id=${selectedFloodId}&radius_km=${radius}`);
       if (!res.ok) throw new Error("Compare API error");
       const data = await res.json();
 
@@ -405,16 +370,6 @@
     }
   }
 
-  // ─── Input Selection listeners ──────────────────────────────────────────
-  function onVillageChange() {
-    const dropdown = document.getElementById('input-village');
-    const coords = VILLAGE_COORDS[dropdown.value];
-    if (coords) {
-      document.getElementById('input-lat').value = coords.lat.toFixed(4);
-      document.getElementById('input-lon').value = coords.lon.toFixed(4);
-    }
-  }
-
   window.addEventListener('DOMContentLoaded', () => {
     if (window.AquaShield) {
       window.AquaShield.renderSidebar('/satellite.html');
@@ -432,14 +387,7 @@
       searchBtn.addEventListener('click', performSearch);
     }
 
-    // Bind quick selection
-    const dropdown = document.getElementById('input-village');
-    if (dropdown) {
-      dropdown.addEventListener('change', onVillageChange);
-    }
-
-    // Load initial values on DOM ready
-    performSearch();
+    // Do NOT auto-search on load — wait for user to click Search
   });
 
 })();

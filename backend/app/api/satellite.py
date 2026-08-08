@@ -24,7 +24,10 @@ async def satellite_health():
     """
     Verify Planet Data API authentication credentials.
     """
-    return await planet_service.verify_health()
+    try:
+        return await planet_service.verify_health()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Satellite health check failed: {str(e)}")
 
 
 @router.get("/search", response_model=SearchResponse)
@@ -119,14 +122,19 @@ def analyze_ndwi(
 @router.get("/ndwi/mask/{image_id}")
 def get_ndwi_mask(image_id: str):
     """Streams generated NDWI water mask JPEG overlay from memory cache."""
-    if image_id not in MASK_CACHE:
-        analyze_scene_ndwi(image_id)
-    
-    mask_data = MASK_CACHE.get(image_id)
-    if not mask_data:
-        raise HTTPException(status_code=404, detail=f"Water mask not found for image: {image_id}")
-    
-    return Response(content=mask_data, media_type="image/jpeg")
+    try:
+        if image_id not in MASK_CACHE:
+            analyze_scene_ndwi(image_id)
+        
+        mask_data = MASK_CACHE.get(image_id)
+        if not mask_data:
+            raise HTTPException(status_code=404, detail=f"Water mask not found for image: {image_id}")
+        
+        return Response(content=mask_data, media_type="image/jpeg")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to generate mask: {str(e)}")
 
 
 @router.get("/ndwi/compare", response_model=FloodComparisonResponse)

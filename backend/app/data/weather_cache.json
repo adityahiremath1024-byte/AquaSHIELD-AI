@@ -1,14 +1,14 @@
 {
   "9.35_76.43": {
-    "timestamp": 1786129710.7401679,
+    "timestamp": 1786154020.0145524,
     "data": {
       "latitude": 9.35,
       "longitude": 76.43,
       "current": {
         "temperature_c": 24.0,
         "humidity_pct": 99.0,
-        "wind_speed_kmh": 13.3,
-        "precipitation_mm": 0.3
+        "wind_speed_kmh": 8.8,
+        "precipitation_mm": 0.2
       },
       "advanced_risk_assessment": {
         "bacteria_growth_index_pct": 81.5,
@@ -26,7 +26,7 @@
         "riskLevel": "CRITICAL",
         "riskLevelLabel": "Critical Risk",
         "riskStars": 5,
-        "generatedAt": "08 Aug 2026 00:38:30 IST",
+        "generatedAt": "08 Aug 2026 07:23:40 IST",
         "protocol": "Issue emergency boil-water advisory"
       },
       "precipitation": {
@@ -82,13 +82,13 @@
         "humidity_pct": 99,
         "vaporPressure_hpa": 29.48,
         "heatIndex_c": 34.8,
-        "formula": "e = 6.11 \u00d7 10^(7.5\u00d724.0 / (237.7+24.0)) \u00d7 99/100 = 29.48 hPa\nHI = 24.0 + 0.5555 \u00d7 (29.48 \u2212 10.0) = 34.8\u00b0C"
+        "formula": "e = 6.11 x 10^(7.5x24.0 / (237.7+24.0)) x 99/100 = 29.48 hPa\nHI = 24.0 + 0.5555 x (29.48 - 10.0) = 34.8\u00b0C"
       },
       "scoreMatrix": [
         {
           "variable": "Temperature",
           "rawValue": "24.0\u00b0C",
-          "condition": "20\u00b0C < T \u2264 25\u00b0C",
+          "condition": "20\u00b0C < T <= 25\u00b0C",
           "score": 50,
           "weightPct": "30%",
           "weight": 0.3,
@@ -108,7 +108,7 @@
         {
           "variable": "Heat Index",
           "rawValue": "34.8\u00b0C",
-          "condition": "32\u00b0C < HI \u2264 38\u00b0C",
+          "condition": "32\u00b0C < HI <= 38\u00b0C",
           "score": 80,
           "weightPct": "10%",
           "weight": 0.1,
@@ -118,7 +118,7 @@
         {
           "variable": "Past 30-Day Rain",
           "rawValue": "373.1 mm",
-          "condition": "R\u2083\u2080 > 300 mm",
+          "condition": "R30 > 300 mm",
           "score": 100,
           "weightPct": "20%",
           "weight": 0.2,
@@ -148,25 +148,25 @@
       ],
       "riskTiers": [
         {
-          "range": "0%\u201330%",
+          "range": "0%-30%",
           "level": "LOW",
           "badgeClass": "badge-low",
           "protocol": "Routine water monitoring"
         },
         {
-          "range": "31%\u201360%",
+          "range": "31%-60%",
           "level": "MODERATE",
           "badgeClass": "badge-moderate",
           "protocol": "Test PHC water samples"
         },
         {
-          "range": "61%\u201380%",
+          "range": "61%-80%",
           "level": "HIGH",
           "badgeClass": "badge-high",
           "protocol": "Pre-chlorinate public drinking water & alert medical teams"
         },
         {
-          "range": "81%\u2013100%",
+          "range": "81%-100%",
           "level": "CRITICAL",
           "badgeClass": "badge-critical",
           "protocol": "Issue emergency boil-water advisory"

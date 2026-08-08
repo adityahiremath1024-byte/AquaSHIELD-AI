@@ -22,7 +22,7 @@
   <!-- ═══════════════════════════════════════════════════
        LOADING OVERLAY
        ═══════════════════════════════════════════════════ -->
-  <div id="loading-overlay" class="loading-overlay">
+  <div id="loading-overlay" class="loading-overlay hidden">
     <div class="loading-spinner"></div>
     <p class="loading-text">Running prediction engine…</p>
   </div>
@@ -43,11 +43,7 @@
           <div class="glass-card prediction-input-bar">
             <div class="input-group">
               <label for="input-village" class="input-label">Village Name</label>
-              <select id="input-village" class="input-select">
-                <option value="West Kainakary" selected>West Kainakary</option>
-                <option value="Kuttanad">Kuttanad</option>
-                <option value="Alappuzha">Alappuzha</option>
-              </select>
+              <input type="text" id="input-village" class="input-field" value="West Kainakary" placeholder="Enter village name" />
             </div>
             <div class="input-group">
               <label for="input-lat" class="input-label">Latitude</label>
@@ -226,6 +222,7 @@
   <!-- ═══════════════════════════════════════════════════
        SCRIPTS — shared components, then page-specific
        ═══════════════════════════════════════════════════ -->
+  <script src="js/components/safeFetch.js"></script>
   <script src="js/components/session.js"></script>
   <script src="js/components/sidebar.js"></script>
   <script src="js/components/header.js"></script>

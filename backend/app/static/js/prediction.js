@@ -340,7 +340,8 @@
         }
       }
 
-      const res = await fetch('/api/prediction/run', {
+      const fetchFn = window.AquaShieldUtils ? window.AquaShieldUtils.safeFetch : fetch;
+      const res = await fetchFn('/api/prediction/run', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(reqPayload)
@@ -399,6 +400,9 @@
       return true;
     } catch (err) {
       console.warn('Backend API connection failed or offline. Using local simulation engine.', err);
+      if (window.AquaShieldUtils) {
+        window.AquaShieldUtils.showErrorToast("Prediction API fallback active: " + err.message, "warn");
+      }
       return false;
     }
   }
@@ -420,14 +424,14 @@
       const lon = lonInput ? parseFloat(lonInput.value) : MOCK_PREDICTION_DATA.input.longitude;
 
       showLoading();
-      await fetchPredictionFromBackend(village, lat, lon);
-      
-      setTimeout(() => {
-        hideLoading();
+      try {
+        await fetchPredictionFromBackend(village, lat, lon);
         renderSHAPChart();
         initRiskGauge(MOCK_PREDICTION_DATA.prediction.riskScore);
         renderActionPlan();
-      }, 600);
+      } finally {
+        hideLoading();
+      }
     });
   }
 

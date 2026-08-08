@@ -337,7 +337,8 @@
         }
       };
 
-      const res = await fetch('/api/dioe/optimize', {
+      const fetchFn = window.AquaShieldUtils ? window.AquaShieldUtils.safeFetch : fetch;
+      const res = await fetchFn('/api/dioe/optimize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -365,6 +366,9 @@
       }
     } catch (err) {
       console.warn('Backend DIOE connection warning. Using local engine.', err);
+      if (window.AquaShieldUtils) {
+        window.AquaShieldUtils.showErrorToast('DIOE API fallback active: ' + err.message, 'warn');
+      }
     }
   }
 
@@ -403,12 +407,16 @@
     renderInterventions();
     renderTimeline();
 
-    fetchBackendData().then(() => {
-      renderBriefingAccordion();
-      setTimeout(() => {
+    fetchBackendData()
+      .then(() => {
+        renderBriefingAccordion();
         initCounters();
-        hideLoading();
-      }, 400);
-    });
+      })
+      .catch((err) => {
+        console.error("DIOE init error:", err);
+      })
+      .finally(() => {
+        setTimeout(hideLoading, 300);
+      });
   });
 })();
