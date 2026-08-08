@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<<<<<<< HEAD
-  <title>Module 2: High-Resolution Satellite & NDWI Analysis — AquaShield AI</title>
-  <meta name="description" content="Module 2: High-resolution satellite flood analysis with PlanetScope 3m scenes, Image Quality Control Gate, NDWI water masking, and standing water disease vector risk estimation." />
-=======
   <title>Satellite Flood Analysis — AquaShield AI</title>
-  <meta name="description" content="Satellite-based flood inundation analysis using PlanetScope 3m imagery. Before/after comparison, NDWI water detection, and disease vector risk assessment." />
->>>>>>> e7c5d9aeb693277778f72367894570c9923bac89
+  <meta name="description"
+    content="Satellite-based flood inundation analysis using PlanetScope 3m imagery. Before/after comparison, NDWI water detection, and disease vector risk assessment." />
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/global.css" />
@@ -20,8 +17,10 @@
   <script src="js/components/theme-toggle.js"></script>
 
   <!-- Favicon (shield icon inline) -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300f2fe' stroke-width='2'><path d='M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z'/></svg>" />
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300f2fe' stroke-width='2'><path d='M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z'/></svg>" />
 </head>
+
 <body>
 
   <!-- LOADING OVERLAY -->
@@ -41,11 +40,17 @@
         <section aria-labelledby="hero-heading">
           <div class="glass-card hero-description-card">
             <h2 class="hero-title" id="hero-heading">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><circle cx="12" cy="12" r="4"/></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2">
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                <circle cx="12" cy="12" r="4" />
+              </svg>
               Module 2: High-Resolution Satellite & NDWI Analysis
             </h2>
             <p class="hero-desc">
-              Searches PlanetScope 3-meter commercial optical satellite scenes, enforces an <strong>Image Quality Control Gate</strong> (Cloud Cover &le; 20%, Res &le; 5m, Age &le; 90d), computes NDWI Water Masks, evaluates <strong>Water Expansion Matrix</strong> (Before vs After), detects <strong>Standing Water Pockets</strong>, and calculates <strong>Flood Severity & Confidence %</strong>.
+              Searches PlanetScope 3-meter commercial optical satellite scenes, enforces an <strong>Image Quality
+                Control Gate</strong> (Cloud Cover &le; 20%, Res &le; 5m, Age &le; 90d), computes NDWI Water Masks,
+              evaluates <strong>Water Expansion Matrix</strong> (Before vs After), detects <strong>Standing Water
+                Pockets</strong>, and calculates <strong>Flood Severity & Confidence %</strong>.
             </p>
           </div>
         </section>
@@ -88,7 +93,10 @@
             </div>
             <div class="search-action-row">
               <button id="search-btn" class="search-btn">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
                 SEARCH PLANET SATELLITE SCENES
               </button>
             </div>
@@ -111,15 +119,18 @@
             <div class="gate-grid">
               <div class="gate-metric-card" id="gate-cloud">
                 <span class="gate-metric-label">Cloud Cover Limit (&le;20%)</span>
-                <span class="gate-metric-value" id="gate-cloud-val">15.0% avg <span class="badge badge-pass">PASSED 🟢</span></span>
+                <span class="gate-metric-value" id="gate-cloud-val">15.0% avg <span class="badge badge-pass">PASSED
+                    🟢</span></span>
               </div>
               <div class="gate-metric-card" id="gate-resolution">
                 <span class="gate-metric-label">Spatial Resolution (&le;5m)</span>
-                <span class="gate-metric-value" id="gate-res-val">3.0m GSD <span class="badge badge-pass">PASSED 🟢</span></span>
+                <span class="gate-metric-value" id="gate-res-val">3.0m GSD <span class="badge badge-pass">PASSED
+                    🟢</span></span>
               </div>
               <div class="gate-metric-card" id="gate-recency">
                 <span class="gate-metric-label">Imagery Recency (&le;90 days)</span>
-                <span class="gate-metric-value" id="gate-age-val">329d newest <span class="badge badge-fail">FAILED 🔴</span></span>
+                <span class="gate-metric-value" id="gate-age-val">329d newest <span class="badge badge-fail">FAILED
+                    🔴</span></span>
               </div>
               <div class="gate-metric-card" id="gate-confidence">
                 <span class="gate-metric-label">Detection Confidence Score</span>
@@ -139,32 +150,38 @@
               <div class="pipeline-step-box">
                 <span class="step-num">STEP 1</span>
                 <h4 class="step-title">Raw Optical Imagery</h4>
-                <p class="step-text">Ingest PlanetScope 3m commercial optical satellite imagery or ArcGIS World Imagery fallback.</p>
+                <p class="step-text">Ingest PlanetScope 3m commercial optical satellite imagery or ArcGIS World Imagery
+                  fallback.</p>
               </div>
               <div class="pipeline-step-box">
                 <span class="step-num">STEP 2</span>
                 <h4 class="step-title">Cloud &amp; Shadow Masking</h4>
-                <p class="step-text">Exclude bright cloud pixels (brightness &gt; 200) and deep shadows (brightness &lt; 20) to prevent false detections.</p>
+                <p class="step-text">Exclude bright cloud pixels (brightness &gt; 200) and deep shadows (brightness &lt;
+                  20) to prevent false detections.</p>
               </div>
               <div class="pipeline-step-box">
                 <span class="step-num">STEP 3</span>
                 <h4 class="step-title">NDWI Computation</h4>
-                <p class="step-text">Compute (Green &minus; NIR) / (Green + NIR) from 8-band analytic data, or (Green &minus; Red) / (Green + Red) from RGB with strict multi-spectral constraints.</p>
+                <p class="step-text">Compute (Green &minus; NIR) / (Green + NIR) from 8-band analytic data, or (Green
+                  &minus; Red) / (Green + Red) from RGB with strict multi-spectral constraints.</p>
               </div>
               <div class="pipeline-step-box">
                 <span class="step-num">STEP 4</span>
                 <h4 class="step-title">Morphological Cleanup</h4>
-                <p class="step-text">OpenCV opening &amp; closing with 5&times;5 kernel to remove salt-and-pepper noise and fill small gaps within water bodies.</p>
+                <p class="step-text">OpenCV opening &amp; closing with 5&times;5 kernel to remove salt-and-pepper noise
+                  and fill small gaps within water bodies.</p>
               </div>
               <div class="pipeline-step-box">
                 <span class="step-num">STEP 5</span>
                 <h4 class="step-title">Connected Component Filter</h4>
-                <p class="step-text">Label all contiguous water regions and remove every connected component smaller than 80 pixels, eliminating isolated false positives.</p>
+                <p class="step-text">Label all contiguous water regions and remove every connected component smaller
+                  than 80 pixels, eliminating isolated false positives.</p>
               </div>
               <div class="pipeline-step-box">
                 <span class="step-num">STEP 6</span>
                 <h4 class="step-title">Flood Statistics &amp; Risk</h4>
-                <p class="step-text">Compute surface water %, flooded area sq km, mean NDWI, stagnant water pockets, and flood severity from the cleaned mask.</p>
+                <p class="step-text">Compute surface water %, flooded area sq km, mean NDWI, stagnant water pockets, and
+                  flood severity from the cleaned mask.</p>
               </div>
             </div>
           </div>
@@ -198,8 +215,8 @@
                   <span class="badge badge-low" id="matrix-severity-badge">LOW RISK 🟢</span>
                 </div>
                 <p class="matrix-desc-text" id="matrix-severity-desc">
-                  Surface water expanded by -45.6% (Before: 11.9% -> After: 6.5%), expanding power <-3.0 sq km (Low Severity).
-                </p>
+                  Surface water expanded by -45.6% (Before: 11.9% -> After: 6.5%), expanding power <-3.0 sq km (Low
+                    Severity). </p>
               </div>
             </div>
           </div>
@@ -222,10 +239,6 @@
           </div>
         </section>
 
-<<<<<<< HEAD
-        <!-- FOOTER NAVIGATION -->
-        <nav class="page-nav-footer" aria-label="Module navigation">
-=======
         <!-- ─────────────────────────────────────────────
              SECTION 6: Assessment Summary Table
              ───────────────────────────────────────────── -->
@@ -279,11 +292,8 @@
           </div>
         </section>
 
-        <!-- ─────────────────────────────────────────────
-             FOOTER NAVIGATION
-             ───────────────────────────────────────────── -->
+        <!-- FOOTER NAVIGATION -->
         <nav class="page-nav-footer" aria-label="Navigation">
->>>>>>> e7c5d9aeb693277778f72367894570c9923bac89
           <a href="/weather.html" class="nav-footer-btn secondary">
             <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
             Weather
@@ -295,6 +305,7 @@
           </a>
         </nav>
 
+
       </div><!-- /.page-body -->
     </main>
   </div><!-- /.app-shell -->
@@ -305,4 +316,5 @@
   <script src="js/satellite.js"></script>
 
 </body>
+
 </html>

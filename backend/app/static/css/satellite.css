@@ -583,7 +583,7 @@
 .scene-thumbnail-wrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 4 / 3;
   overflow: hidden;
   background: #06080f;
 }
@@ -606,13 +606,39 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.35s ease;
   z-index: 2;
+  display: block;
 }
 
 .scene-mask-overlay.active {
-  opacity: 1 !important;
+  opacity: 0.82;
+}
+
+/* NDWI label badge on thumbnail */
+.ndwi-label-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(0, 242, 254, 0.12);
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  color: var(--accent-cyan, #00f2fe);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  z-index: 3;
+  transition: opacity 0.3s;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scene-thumbnail-wrapper.mask-active .ndwi-label-badge {
+  opacity: 1;
 }
 
 
@@ -703,23 +729,33 @@
   gap: 6px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  color: var(--text-primary, #ffffff);
+  color: var(--text-muted, #7a8ba8);
   font-size: 0.75rem;
+  font-weight: 600;
   padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 
-.btn-toggle-mask:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.15);
+.btn-toggle-mask:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
-.btn-toggle-mask input {
-  margin: 0;
-  cursor: pointer;
+.btn-toggle-mask:not(:disabled):hover {
+  background: rgba(0, 242, 254, 0.06);
+  border-color: rgba(0, 242, 254, 0.2);
+  color: var(--accent-cyan, #00f2fe);
 }
+
+.btn-toggle-mask.active {
+  background: rgba(0, 242, 254, 0.12);
+  border-color: var(--accent-cyan, #00f2fe);
+  color: var(--accent-cyan, #00f2fe);
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.15);
+}
+
 
 /* Expandable nested results pane */
 .ndwi-results-panel {

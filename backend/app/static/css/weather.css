@@ -9,6 +9,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  padding-bottom: 0;
 }
 
 .card-section-title {
@@ -451,7 +452,7 @@
 .heat-index-grid {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
-  gap: 24px;
+  gap: 28px;
   align-items: center;
 }
 
@@ -464,8 +465,8 @@
 
 .heat-gauge-svg-wrapper {
   position: relative;
-  width: 220px;
-  height: 130px;
+  width: 240px;
+  height: 140px;
 }
 
 .heat-gauge-center {
@@ -478,15 +479,18 @@
 
 .heat-gauge-num {
   font-family: var(--font-heading);
-  font-size: 2.2rem;
-  font-weight: 800;
+  font-size: 2.6rem;
+  font-weight: 900;
   color: var(--text-bright);
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 24px rgba(249, 115, 22, 0.5);
 }
 
 .heat-gauge-unit {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   color: var(--text-muted);
   text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
 .heat-metrics-column {
@@ -498,16 +502,22 @@
 .heat-metric-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
+  gap: 14px;
+  padding: 12px 16px;
   border-radius: var(--radius-md);
-  background: rgba(6, 8, 15, 0.4);
-  border: var(--border-subtle);
+  background: rgba(6, 8, 15, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.heat-metric-row:hover {
+  border-color: rgba(0, 242, 254, 0.25);
+  box-shadow: 0 0 16px rgba(0, 242, 254, 0.06);
 }
 
 .heat-icon {
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -515,25 +525,32 @@
   flex-shrink: 0;
 }
 
-.heat-icon.temp { background: var(--amber-15); color: var(--accent-amber); }
-.heat-icon.rh   { background: var(--cyan-15); color: var(--accent-cyan); }
-.heat-icon.vp   { background: var(--violet-15); color: var(--accent-violet); }
+.heat-icon.temp { background: var(--amber-15); color: var(--accent-amber); box-shadow: 0 0 12px rgba(245, 158, 11, 0.2); }
+.heat-icon.rh   { background: var(--cyan-15);  color: var(--accent-cyan);  box-shadow: 0 0 12px rgba(0, 242, 254, 0.15); }
+.heat-icon.vp   { background: var(--violet-15); color: var(--accent-violet); box-shadow: 0 0 12px rgba(139, 92, 246, 0.2); }
 
 .heat-icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; }
 
-.heat-info { display: flex; flex-direction: column; }
-.heat-info-label { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; }
-.heat-info-val { font-family: var(--font-mono); font-size: 1.1rem; font-weight: 700; color: var(--text-bright); }
+.heat-info { display: flex; flex-direction: column; gap: 2px; }
+.heat-info-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.heat-info-val {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  letter-spacing: -0.01em;
+}
 
 .steadman-formula-box {
-  padding: 12px 14px;
+  padding: 14px 16px;
   border-radius: var(--radius-md);
-  background: rgba(16, 185, 129, 0.06);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.07), rgba(0, 242, 254, 0.04));
+  border: 1px solid rgba(16, 185, 129, 0.25);
   font-family: var(--font-mono);
   font-size: 0.72rem;
   color: var(--text-muted);
-  line-height: 1.6;
+  line-height: 1.8;
+  box-shadow: inset 0 0 20px rgba(16, 185, 129, 0.04);
 }
 
 /* ---------- Score Matrix Table ---------- */
@@ -550,61 +567,70 @@
 }
 
 .matrix-table th {
-  font-size: 0.7rem;
-  font-weight: 700;
+  font-size: 0.68rem;
+  font-weight: 800;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 12px 16px;
-  background: rgba(6, 8, 15, 0.6);
-  border-bottom: var(--border-subtle);
+  letter-spacing: 0.1em;
+  padding: 13px 16px;
+  background: rgba(4, 6, 12, 0.85);
+  border-bottom: 1px solid rgba(0, 242, 254, 0.15);
 }
 
 .matrix-table td {
-  padding: 12px 16px;
+  padding: 13px 16px;
   font-size: 0.85rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   color: var(--text-primary);
+  transition: background 0.2s;
 }
 
-.matrix-table tr:hover td {
-  background: rgba(255, 255, 255, 0.02);
+.matrix-table tbody tr:hover td {
+  background: rgba(0, 242, 254, 0.04);
+}
+
+.matrix-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .matrix-var-cell {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 .matrix-dot {
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
+  box-shadow: 0 0 6px currentColor;
 }
 
 .matrix-table tfoot td {
   font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 0.95rem;
-  padding: 14px 16px;
-  background: rgba(6, 8, 15, 0.8);
+  font-weight: 800;
+  font-size: 1rem;
+  padding: 15px 16px;
+  background: linear-gradient(90deg, rgba(0, 242, 254, 0.08), rgba(4, 6, 12, 0.9));
   border-top: 2px solid var(--accent-cyan);
+  color: var(--text-bright);
 }
 
 .stacked-bar-container {
   display: flex;
-  height: 20px;
+  height: 22px;
   border-radius: var(--radius-sm);
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.04);
   margin-top: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .stacked-segment {
   height: 100%;
-  transition: width 1s ease;
+  transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ---------- BGI Hero Gauge & Risk Tiers ---------- */
@@ -652,10 +678,10 @@
 }
 
 .tier-item-card {
-  padding: 12px 16px;
+  padding: 13px 18px;
   border-radius: var(--radius-md);
-  border: var(--border-subtle);
-  background: rgba(6, 8, 15, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(6, 8, 15, 0.5);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -665,15 +691,15 @@
 
 .tier-item-card:hover {
   transform: translateY(-2px);
-  border-color: var(--neon-primary);
-  background: rgba(0, 255, 194, 0.04);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-color: rgba(0, 255, 194, 0.3);
+  background: rgba(0, 255, 194, 0.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 0 0 16px rgba(0, 255, 194, 0.06);
 }
 
 .tier-item-card.active {
   border-color: #f97316;
   background: rgba(249, 115, 22, 0.1);
-  box-shadow: 0 0 16px rgba(249, 115, 22, 0.15);
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.2), inset 0 0 16px rgba(249, 115, 22, 0.05);
 }
 
 .tier-item-left {

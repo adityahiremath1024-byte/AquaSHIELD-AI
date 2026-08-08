@@ -153,9 +153,10 @@
       card.id = `card-${sceneId}`;
 
       card.innerHTML = `
-        <div class="scene-thumbnail-wrapper">
-          <img class="scene-thumbnail" id="thumb-${sceneId}" src="${thumbUrl}" alt="Satellite preview" />
-          <img class="scene-mask-overlay" id="mask-${sceneId}" src="/api/ndwi/mask/${sceneId}" alt="NDWI Mask" />
+        <div class="scene-thumbnail-wrapper" id="wrapper-${sceneId}">
+          <img class="scene-thumbnail" id="thumb-${sceneId}" src="${thumbUrl}" alt="Satellite preview" loading="lazy" />
+          <img class="scene-mask-overlay" id="mask-${sceneId}" src="" alt="NDWI Water Mask" />
+          <span class="ndwi-label-badge">NDWI Mask</span>
         </div>
         <div class="scene-details">
           <div class="scene-id-row">
@@ -181,9 +182,9 @@
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               RUN NDWI ANALYSIS
             </button>
-            <button class="btn-toggle-mask" id="btn-mask-${sceneId}">
-              <input type="checkbox" id="chk-mask-${sceneId}" />
-              <label for="chk-mask-${sceneId}" style="cursor:pointer; margin-left:4px;">TOGGLE MASK</label>
+            <button class="btn-toggle-mask" id="btn-mask-${sceneId}" disabled title="Run NDWI first">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              TOGGLE MASK
             </button>
           </div>
           <div class="results-container" id="results-${sceneId}"></div>
@@ -192,26 +193,33 @@
 
       container.appendChild(card);
 
-      // Event Listeners
+      // RUN NDWI button
       const runBtn = card.querySelector(`#btn-run-${sceneId}`);
+      const maskBtn = card.querySelector(`#btn-mask-${sceneId}`);
+      const maskImg = card.querySelector(`#mask-${sceneId}`);
+      const wrapper = card.querySelector(`#wrapper-${sceneId}`);
+
       if (runBtn) {
-        runBtn.addEventListener('click', () => {
+        runBtn.addEventListener('click', async () => {
           selectedFloodId = sceneId;
-          triggerAnalysis(sceneId, 'flood').then(() => updateComparisonMatrix());
+          await triggerAnalysis(sceneId, 'flood');
+          // Load mask image src after analysis fills the cache
+          maskImg.src = `/api/ndwi/mask/${sceneId}?t=${Date.now()}`;
+          // Enable toggle button
+          if (maskBtn) {
+            maskBtn.disabled = false;
+            maskBtn.title = '';
+          }
+          await updateComparisonMatrix();
         });
       }
 
-      const maskCheckbox = card.querySelector(`#chk-mask-${sceneId}`);
-      if (maskCheckbox) {
-        maskCheckbox.addEventListener('change', (e) => {
-          const overlay = card.querySelector(`#mask-${sceneId}`);
-          if (overlay) {
-            if (e.target.checked) {
-              overlay.classList.add('active');
-            } else {
-              overlay.classList.remove('active');
-            }
-          }
+      // TOGGLE MASK button
+      if (maskBtn) {
+        maskBtn.addEventListener('click', () => {
+          const isActive = maskImg.classList.toggle('active');
+          wrapper.classList.toggle('mask-active', isActive);
+          maskBtn.classList.toggle('active', isActive);
         });
       }
     });
