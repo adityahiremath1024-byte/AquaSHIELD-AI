@@ -614,6 +614,157 @@
     });
   }
 
+  function renderEmptyState() {
+    const elTime = document.getElementById('generated-timestamp');
+    if (elTime) elTime.textContent = 'Status: Waiting for user input...';
+
+    const elScore = document.getElementById('bgi-score-val');
+    if (elScore) elScore.textContent = '--%';
+
+    const elRisk = document.getElementById('bgi-risk-label');
+    if (elRisk) {
+      elRisk.textContent = 'NOT ANALYZED';
+      elRisk.className = 'risk-label text-muted';
+    }
+
+    const elPast7 = document.getElementById('summary-past7-val');
+    if (elPast7) elPast7.textContent = '-- mm';
+    const elPast15 = document.getElementById('summary-past15-val');
+    if (elPast15) elPast15.textContent = '-- mm';
+    const elPast30 = document.getElementById('summary-past30-val');
+    if (elPast30) elPast30.textContent = '-- mm';
+
+    const elTrendVal = document.getElementById('summary-trend-val');
+    if (elTrendVal) elTrendVal.textContent = '--%';
+    const elAnomaly30 = document.getElementById('summary-anomaly30d-val');
+    if (elAnomaly30) elAnomaly30.textContent = '--%';
+    const elStreakVal = document.getElementById('summary-streak-val');
+    if (elStreakVal) elStreakVal.textContent = '-- Days';
+
+    const tbody = document.getElementById('matrix-tbody');
+    if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 24px; color: #7a8ba8;">Please click "FETCH METEOROLOGICAL DATA" above to run live analysis.</td></tr>';
+  }
+
+  function applyDataToUI(data) {
+    window.MOCK_WEATHER_DATA = data;
+
+    const elTime = document.getElementById('generated-timestamp');
+    if (elTime && data.assessment) elTime.textContent = `Generated on: ${data.assessment.generatedAt}`;
+
+    const elScore = document.getElementById('bgi-score-val');
+    if (elScore && data.assessment) elScore.textContent = `${Math.round(data.assessment.bacteriaGrowthIndex)}%`;
+
+    const elRisk = document.getElementById('bgi-risk-label');
+    if (elRisk && data.assessment) {
+      elRisk.textContent = data.assessment.riskLevelLabel;
+      elRisk.className = 'risk-label';
+      if (data.assessment.riskLevel === 'LOW') elRisk.classList.add('text-green');
+      else if (data.assessment.riskLevel === 'MODERATE') elRisk.classList.add('text-cyan');
+      else if (data.assessment.riskLevel === 'HIGH') elRisk.classList.add('text-orange');
+      else if (data.assessment.riskLevel === 'CRITICAL') elRisk.classList.add('text-red');
+    }
+
+    const elStarsContainer = document.getElementById('stars-container');
+    if (elStarsContainer && data.assessment) {
+      elStarsContainer.innerHTML = '';
+      for (let i = 1; i <= 5; i++) {
+        const filled = i <= data.assessment.riskStars;
+        elStarsContainer.innerHTML += `
+          <svg class="star-svg${filled ? ' filled' : ''}" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        `;
+      }
+    }
+    const elStarsNum = document.getElementById('summary-stars-val');
+    if (elStarsNum && data.assessment) elStarsNum.textContent = data.assessment.riskStars;
+
+    if (data.precipitation) {
+      const elPast7 = document.getElementById('summary-past7-val');
+      if (elPast7) elPast7.textContent = `${data.precipitation.past7_mm.toFixed(1)} mm`;
+      const elPast15 = document.getElementById('summary-past15-val');
+      if (elPast15) elPast15.textContent = `${data.precipitation.past15_mm.toFixed(1)} mm`;
+      const elPast30 = document.getElementById('summary-past30-val');
+      if (elPast30) elPast30.textContent = `${data.precipitation.past30_mm.toFixed(1)} mm`;
+
+      const elTrendVal = document.getElementById('summary-trend-val');
+      if (elTrendVal) elTrendVal.textContent = `${data.precipitation.trendPct >= 0 ? '+' : ''}${data.precipitation.trendPct.toFixed(1)}%`;
+
+      const elTrendDir = document.getElementById('summary-trend-dir');
+      if (elTrendDir) {
+        elTrendDir.textContent = data.precipitation.trendDirection;
+        elTrendDir.className = 'footer-status';
+        if (data.precipitation.trendDirection === 'Increasing') elTrendDir.classList.add('text-red');
+        else elTrendDir.classList.add('text-cyan');
+      }
+
+      const elAnomaly7 = document.getElementById('summary-anomaly7d-val');
+      if (elAnomaly7) elAnomaly7.textContent = data.precipitation.anomaly7d;
+      const elAnomaly15 = document.getElementById('summary-anomaly15d-val');
+      if (elAnomaly15) elAnomaly15.textContent = data.precipitation.anomaly15d;
+      const elAnomaly30 = document.getElementById('summary-anomaly30d-val');
+      if (elAnomaly30) elAnomaly30.textContent = data.precipitation.anomaly30d;
+
+      const elAnomalyStatus = document.getElementById('summary-anomaly-status');
+      if (elAnomalyStatus) {
+        elAnomalyStatus.textContent = data.precipitation.anomalyStatus;
+        elAnomalyStatus.className = 'footer-status';
+        if (data.precipitation.anomalyStatus === 'Above Normal') elAnomalyStatus.classList.add('text-red');
+        else elAnomalyStatus.classList.add('text-cyan');
+      }
+
+      const elStreakVal = document.getElementById('summary-streak-val');
+      if (elStreakVal) elStreakVal.innerHTML = `${data.precipitation.consecutiveRainyDays} <span class="unit">Days</span>`;
+
+      const elStreakStatus = document.getElementById('summary-streak-status');
+      if (elStreakStatus) {
+        elStreakStatus.textContent = data.precipitation.streakStatus;
+        elStreakStatus.className = 'footer-status';
+        elStreakStatus.classList.add('text-cyan');
+      }
+    }
+
+    renderDailyPrecipChart();
+    renderAccumulatedChart();
+
+    if (data.heatIndex) {
+      drawSemiGauge('heat-gauge-canvas', data.heatIndex.heatIndex_c, 20, 55, [
+        { min: 20, max: 27, color: '#10b981' },
+        { min: 27, max: 32, color: '#f59e0b' },
+        { min: 32, max: 40, color: '#f97316' },
+        { min: 40, max: 55, color: '#ef4444' }
+      ]);
+    }
+    if (data.assessment) {
+      currentBGIVal = 0;
+      animateBGIVal(data.assessment.bacteriaGrowthIndex);
+    }
+    renderScoreMatrix();
+    renderRiskTiers();
+  }
+
+  async function fetchAndRender(lat, lon, city) {
+    showLoading();
+    try {
+      const response = await fetch(`/api/weather/current?latitude=${lat}&longitude=${lon}`);
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status} ${response.statusText}`);
+      }
+      const data = await response.json();
+
+      // Save to central session manager
+      if (window.AquaShieldSession) {
+        window.AquaShieldSession.saveModuleResult('module1_weather', { village_name: city, latitude: lat, longitude: lon }, data);
+      }
+
+      applyDataToUI(data);
+
+    } catch (error) {
+      console.error('Error loading weather data:', error);
+      alert('Error querying weather engine: ' + error.message);
+    } finally {
+      hideLoading();
+    }
+  }
+
   /* ================================================================
      INITIALIZATION ON DOMContentLoaded
      ================================================================ */
@@ -631,18 +782,16 @@
     restoreInputs();
     setupFetchButton();
     initWaveCanvas();
-    
-    // Initial fetch based on restored inputs
-    const elCity = document.getElementById('input-village');
-    const elLat = document.getElementById('input-lat');
-    const elLon = document.getElementById('input-lon');
-    const city = elCity ? elCity.value : 'Alappuzha, Kerala, India';
-    const lat = elLat ? parseFloat(elLat.value) : 9.4981;
-    const lon = elLon ? parseFloat(elLon.value) : 76.3388;
-    
-    fetchAndRender(lat, lon, city).then(() => {
+
+    // Check if current run has completed module1
+    const m1 = window.AquaShieldSession ? window.AquaShieldSession.getModuleResult('module1_weather') : null;
+    if (m1 && m1.result) {
+      applyDataToUI(m1.result);
       initScrollAnimations();
-    });
+    } else {
+      renderEmptyState();
+      initScrollAnimations();
+    }
   });
 })();
 

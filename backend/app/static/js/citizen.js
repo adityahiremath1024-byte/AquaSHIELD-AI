@@ -325,6 +325,16 @@
   }
 
   function updateDashboardUI() {
+    if (window.AquaShieldSession) {
+      window.AquaShieldSession.saveModuleResult('module4_citizen', {
+        total_reports: stats.total_reports
+      }, {
+        total_reports: stats.total_reports,
+        total_clusters: stats.total_clusters,
+        average_risk_score: stats.avg_risk_score,
+        clusters: clusters
+      });
+    }
     renderMetrics();
     renderClustersTable();
     renderReportsFeed();

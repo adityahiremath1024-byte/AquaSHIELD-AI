@@ -43,12 +43,34 @@ function renderHeader({ title, subtitle, stepCurrent, stepTotal, alertCount = 12
         </svg>
         ALERTS ${alertCount}
       </button>
+      <button class="header-reset-btn" id="header-reset-run-btn" title="Reset Session / Start New Assessment" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 4px; font-family: Inter, sans-serif; font-weight: 500;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Reset Run
+      </button>
       <span class="header-step-badge">Step ${stepCurrent} of ${stepTotal}</span>
       <div class="header-profile" title="User Profile" aria-label="User profile">
         DP
       </div>
     </div>
   `;
+
+  // Bind click listener to Reset Run button
+  setTimeout(() => {
+    const btn = document.getElementById('header-reset-run-btn');
+    if (btn) {
+      btn.addEventListener('click', () => {
+        if (confirm('Start a new assessment run? This will clear all data from current Modules 1–7 run.')) {
+          if (window.AquaShieldSession) {
+            window.AquaShieldSession.resetRun();
+          } else {
+            localStorage.removeItem('aquashield_run');
+            localStorage.removeItem('aquashield_session');
+          }
+          window.location.href = '/weather.html';
+        }
+      });
+    }
+  }, 100);
 
   // Insert after sidebar, before main content
   const mainContent = document.querySelector('.main-content');

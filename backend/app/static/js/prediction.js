@@ -327,8 +327,25 @@
      ================================================================ */
   async function fetchPredictionFromBackend(villageName, latitude, longitude) {
     try {
-      const url = `/api/prediction/analyze?village_name=${encodeURIComponent(villageName)}&latitude=${latitude}&longitude=${longitude}`;
-      const res = await fetch(url);
+      let reqPayload = {
+        village_name: villageName,
+        latitude: latitude,
+        longitude: longitude
+      };
+
+      if (window.AquaShieldSession) {
+        const accVector = window.AquaShieldSession.getAccumulatedVectorForPrediction();
+        if (accVector) {
+          reqPayload = { ...accVector, village_name: villageName, latitude: latitude, longitude: longitude };
+        }
+      }
+
+      const res = await fetch('/api/prediction/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reqPayload)
+      });
+
       if (!res.ok) throw new Error(`HTTP error ${res.status}`);
       const data = await res.json();
       
@@ -348,6 +365,11 @@
       }
       if (data.actionPlan && data.actionPlan.sections) {
         MOCK_PREDICTION_DATA.actionPlan = data.actionPlan;
+      }
+
+      // Save to AquaShieldSession
+      if (window.AquaShieldSession) {
+        window.AquaShieldSession.saveModuleResult('module6_prediction', reqPayload, data);
       }
       
       // Update UI badges
@@ -397,8 +419,6 @@
       const lat = latInput ? parseFloat(latInput.value) : MOCK_PREDICTION_DATA.input.latitude;
       const lon = lonInput ? parseFloat(lonInput.value) : MOCK_PREDICTION_DATA.input.longitude;
 
-      saveSession({ city: village, lat, lon });
-
       showLoading();
       await fetchPredictionFromBackend(village, lat, lon);
       
@@ -407,7 +427,6 @@
         renderSHAPChart();
         initRiskGauge(MOCK_PREDICTION_DATA.prediction.riskScore);
         renderActionPlan();
-        persistPredictionSession();
       }, 600);
     });
   }
@@ -430,25 +449,23 @@
     restoreInputs();
     setupRunButton();
 
-    showLoading();
-    
-    const villageSelect = document.getElementById('input-village');
-    const latInput = document.getElementById('input-lat');
-    const lonInput = document.getElementById('input-lon');
-    const village = villageSelect ? villageSelect.value : MOCK_PREDICTION_DATA.input.villageName;
-    const lat = latInput ? parseFloat(latInput.value) : MOCK_PREDICTION_DATA.input.latitude;
-    const lon = lonInput ? parseFloat(lonInput.value) : MOCK_PREDICTION_DATA.input.longitude;
+    const m6 = window.AquaShieldSession ? window.AquaShieldSession.getModuleResult('module6_prediction') : null;
+    if (m6 && m6.result) {
+      const d = m6.result;
+      MOCK_PREDICTION_DATA.prediction.riskScore = d.prediction.riskScore;
+      MOCK_PREDICTION_DATA.prediction.riskLevel = d.prediction.riskLevel;
+      if (d.shapValues) MOCK_PREDICTION_DATA.shapValues = d.shapValues;
+      if (d.actionPlan) MOCK_PREDICTION_DATA.actionPlan = d.actionPlan;
 
-    fetchPredictionFromBackend(village, lat, lon).then(() => {
-      setTimeout(() => {
-        hideLoading();
-        renderSHAPChart();
-        initRiskGauge(MOCK_PREDICTION_DATA.prediction.riskScore);
-        renderActionPlan();
-        initScrollAnimations();
-        persistPredictionSession();
-      }, 500);
-    });
+      renderSHAPChart();
+      initRiskGauge(MOCK_PREDICTION_DATA.prediction.riskScore);
+      renderActionPlan();
+      initScrollAnimations();
+    } else {
+      // Empty / Idle state
+      hideLoading();
+      initScrollAnimations();
+    }
   });
 })();
 

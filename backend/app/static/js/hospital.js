@@ -127,6 +127,11 @@ async function handleSubmit() {
 
 // ─── Render All Panels ──────────────────────────────────────────────────────
 function renderAllPanels(data) {
+  if (window.AquaShieldSession) {
+    window.AquaShieldSession.saveModuleResult('module3_hospital', {
+      village_name: data.village_name || 'Kottayam General Hospital'
+    }, data);
+  }
   renderMetricCards(data);
   renderTrendChart(data.historical_trend || []);
   renderCaseBreakdown(data);
