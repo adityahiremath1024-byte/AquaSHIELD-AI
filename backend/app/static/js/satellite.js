@@ -48,90 +48,287 @@
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       return diffDays;
     } catch {
-      return 329;
+      return 35; // Default fallback
+    }
+  }
+
+  // Render 12 Skeleton/Placeholder Cards
+  function renderSkeletons(message = 'Awaiting search...') {
+    const container = document.getElementById('scenes-grid-container');
+    if (!container) return;
+
+    container.innerHTML = '';
+    for (let i = 0; i < 12; i++) {
+      const card = document.createElement('div');
+      card.className = 'scene-card skeleton-card';
+      card.innerHTML = `
+        <div class="scene-thumbnail-wrapper skeleton-wrapper">
+          <div class="skeleton-image">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity: 0.3;">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <polyline points="21 15 16 10 5 21" />
+            </svg>
+            <span class="skeleton-msg">${message}</span>
+          </div>
+        </div>
+        <div class="scene-details skeleton-details">
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line medium"></div>
+        </div>
+      `;
+      container.appendChild(card);
+    }
+  }
+
+  // Render Search Error Message
+  function showError(msg) {
+    const statusPanel = document.getElementById('scenes-status-panel');
+    if (statusPanel) {
+      statusPanel.style.display = 'block';
+      statusPanel.style.borderColor = 'rgba(255, 75, 75, 0.3)';
+      statusPanel.style.background = 'rgba(255, 75, 75, 0.02)';
+      
+      const title = document.getElementById('status-title');
+      const desc = document.getElementById('status-desc');
+      if (title) {
+        title.textContent = "Unable to retrieve satellite imagery";
+        title.style.color = "var(--accent-red, #ff4b4b)";
+      }
+      if (desc) {
+        desc.innerHTML = `
+          ${msg}<br/><br/>
+          Please verify:<br/>
+          • Location / Coordinates<br/>
+          • Date range (start date &le; end date)<br/>
+          • Planet API key configuration in backend .env<br/><br/>
+          <button id="status-retry-btn" class="search-btn" style="display: inline-flex; margin-top: 10px; padding: 6px 16px; font-size: 0.75rem; border-radius: 4px; background: rgba(255,255,255,0.05); color: #fff; cursor: pointer;">Retry Search</button>
+        `;
+        
+        // Add retry listener
+        const retryBtn = document.getElementById('status-retry-btn');
+        if (retryBtn) {
+          retryBtn.addEventListener('click', performSearch);
+        }
+      }
     }
   }
 
   // ─── Search Planet Satellite Scenes ───────────────────────────────────────
   async function performSearch() {
     showLoading();
+    
+    // Show Searching state in Status Panel
+    const statusPanel = document.getElementById('scenes-status-panel');
+    if (statusPanel) {
+      statusPanel.style.display = 'block';
+      statusPanel.style.borderColor = 'rgba(0, 242, 254, 0.3)';
+      statusPanel.style.background = 'rgba(0, 242, 254, 0.01)';
+      
+      const title = document.getElementById('status-title');
+      const desc = document.getElementById('status-desc');
+      if (title) {
+        title.textContent = "Searching satellite data...";
+        title.style.color = "var(--accent-cyan, #00f2fe)";
+      }
+      if (desc) {
+        desc.textContent = "Connecting to Planet Scope API and fetching high-resolution scenes...";
+      }
+    }
+
+    renderSkeletons("Fetching satellite imagery...");
+
+    const village = document.getElementById('input-village').value;
     const lat = parseFloat(document.getElementById('input-lat').value);
     const lon = parseFloat(document.getElementById('input-lon').value);
     const radius = parseFloat(document.getElementById('input-radius').value);
-    const startDate = document.getElementById('input-start-date').value;
-    const endDate = document.getElementById('input-end-date').value;
+    const startDate = document.getElementById('input-start-date').value.trim();
+    const endDate = document.getElementById('input-end-date').value.trim();
+
+    // Input Validation
+    if (isNaN(lat) || lat < -90 || lat > 90) {
+      showError("Latitude must be a valid number between -90 and 90.");
+      hideLoading();
+      return;
+    }
+    if (isNaN(lon) || lon < -180 || lon > 180) {
+      showError("Longitude must be a valid number between -180 and 180.");
+      hideLoading();
+      return;
+    }
+
+    // Convert date format from DD-MM-YYYY to YYYY-MM-DD for API call if needed
+    let formattedStartDate = startDate;
+    let formattedEndDate = endDate;
+    
+    const datePartsStart = startDate.split('-');
+    if (datePartsStart.length === 3 && datePartsStart[2].length === 4) {
+      formattedStartDate = `${datePartsStart[2]}-${datePartsStart[1]}-${datePartsStart[0]}`;
+    }
+    const datePartsEnd = endDate.split('-');
+    if (datePartsEnd.length === 3 && datePartsEnd[2].length === 4) {
+      formattedEndDate = `${datePartsEnd[2]}-${datePartsEnd[1]}-${datePartsEnd[0]}`;
+    }
 
     try {
-      // Search scenes matching parameters
-      const url = `/api/satellite/search?latitude=${lat}&longitude=${lon}&radius_km=${radius}&start_date=2025-01-01`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("Search API failed");
-      const data = await res.json();
-
-      // Ensure we have at least 6 scenes in the list for beautiful layout (matching screenshot)
-      // Normalize scenes list from backend API response
-      scenesList = (data.scenes || []).map(item => {
-        const sid = item.image_id || item.id;
-        const acq = item.acquisition_date || item.acquired || "2026-08-01T05:27:12Z";
-        const cloudPct = item.cloud_cover_percent !== undefined ? item.cloud_cover_percent : ((item.cloud_cover || 0) * 100);
-        const gsdVal = item.ground_resolution_m !== undefined ? item.ground_resolution_m : (item.gsd || 3.0);
-        return {
-          id: sid,
-          image_id: sid,
-          acquired: acq,
-          acquisition_date: acq,
-          cloud_cover: cloudPct / 100.0,
-          cloud_cover_percent: cloudPct,
-          gsd: gsdVal,
-          ground_resolution_m: gsdVal,
-          thumbnail_url: item.thumbnail_url || `/api/satellite/thumbnail/${sid}`
-        };
+      const res = await fetch('/api/module2/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location_name: village,
+          latitude: lat,
+          longitude: lon,
+          start_date: formattedStartDate,
+          end_date: formattedEndDate
+        })
       });
 
-      const defaultScenes = [
-        { id: "20250831_054315_14_351d_PSScene", acquired: "2025-08-31T05:43:15Z", cloud_cover: 0.15, cloud_cover_percent: 15.0, gsd: 3.0, ground_resolution_m: 3.0 },
-        { id: "20250821_055136_94_26ad_PSScene", acquired: "2025-08-21T05:51:36Z", cloud_cover: 0.18, cloud_cover_percent: 18.0, gsd: 3.0, ground_resolution_m: 3.0 },
-        { id: "20250820_055223_07_250c_PSScene", acquired: "2025-08-20T05:52:23Z", cloud_cover: 0.12, cloud_cover_percent: 12.0, gsd: 3.0, ground_resolution_m: 3.0 },
-        { id: "20250810_053124_11_253b_PSScene", acquired: "2025-08-10T05:31:24Z", cloud_cover: 0.05, cloud_cover_percent: 5.0, gsd: 3.0, ground_resolution_m: 3.0 },
-        { id: "20250805_052918_12_2504_PSScene", acquired: "2025-08-05T05:29:18Z", cloud_cover: 0.07, cloud_cover_percent: 7.0, gsd: 3.0, ground_resolution_m: 3.0 },
-        { id: "20250801_052712_10_2501_PSScene", acquired: "2025-08-01T05:27:12Z", cloud_cover: 0.04, cloud_cover_percent: 4.0, gsd: 3.0, ground_resolution_m: 3.0 }
-      ];
-
-      while (scenesList.length < 6) {
-        const dummy = defaultScenes[scenesList.length % defaultScenes.length];
-        const sid = dummy.id;
-        scenesList.push({
-          id: sid,
-          image_id: sid,
-          acquired: dummy.acquired,
-          acquisition_date: dummy.acquired,
-          cloud_cover: dummy.cloud_cover,
-          cloud_cover_percent: dummy.cloud_cover_percent,
-          gsd: dummy.gsd,
-          ground_resolution_m: dummy.ground_resolution_m,
-          thumbnail_url: `/api/satellite/thumbnail/${sid}`
-        });
+      if (!res.ok) {
+        const errDetail = await res.json();
+        throw new Error(errDetail.detail || "Search request failed");
       }
 
-      // Update total count
-      document.getElementById('scenes-count').textContent = scenesList.length;
-
-      // Populate Scenes Grid
-      renderScenesGrid();
-
-      // Automatically analyze the first scene as "flood" and the last scene as "baseline"
-      selectedFloodId = scenesList[0].id;
-      selectedBaselineId = scenesList[scenesList.length - 1].id;
-
-      await triggerAnalysis(selectedFloodId, 'flood');
-      await triggerAnalysis(selectedBaselineId, 'baseline');
-      await updateComparisonMatrix();
+      const data = await res.json();
+      updateUIWithResults(data);
 
     } catch (err) {
       console.error("Search failed:", err);
+      showError(err.message || "An unexpected error occurred during search.");
     } finally {
       hideLoading();
     }
+  }
+
+  // ─── Update UI with Results Payload ───────────────────────────────────────
+  function updateUIWithResults(data) {
+    // Hide status panel
+    const statusPanel = document.getElementById('scenes-status-panel');
+    if (statusPanel) statusPanel.style.display = 'none';
+
+    // Update scenes count
+    document.getElementById('scenes-count').textContent = data.count;
+
+    // Render scenes grid
+    scenesList = data.results;
+    renderScenesGrid();
+
+    // Update Active Assessment Parameters
+    document.getElementById('active-location').textContent = data.search.location_name;
+    document.getElementById('active-latitude').textContent = data.search.latitude.toFixed(4);
+    document.getElementById('active-longitude').textContent = data.search.longitude.toFixed(4);
+    document.getElementById('active-start-date').textContent = data.search.start_date;
+    document.getElementById('active-end-date').textContent = data.search.end_date;
+
+    selectedBaselineId = data.baseline.id;
+    selectedFloodId = data.post_flood.id;
+
+    // Update Side-by-Side Comparison Panel Images & Values
+    const imgBaseline = document.getElementById('img-baseline');
+    if (imgBaseline) imgBaseline.src = data.results[0].image_url;
+    const overlayBasePct = document.getElementById('overlay-baseline-pct');
+    if (overlayBasePct) overlayBasePct.textContent = data.baseline.water_percentage.toFixed(1) + '%';
+    const infoBaseArea = document.getElementById('info-baseline-area');
+    if (infoBaseArea) infoBaseArea.textContent = `${data.baseline.flooded_area_sq_km.toFixed(1)} sq km`;
+
+    const imgPostflood = document.getElementById('img-postflood');
+    if (imgPostflood) imgPostflood.src = data.results[data.results.length - 1].ndwi_url;
+    const overlayPostPct = document.getElementById('overlay-postflood-pct');
+    if (overlayPostPct) overlayPostPct.textContent = data.post_flood.water_percentage.toFixed(1) + '%';
+    const infoPostArea = document.getElementById('info-postflood-area');
+    if (infoPostArea) infoPostArea.textContent = `${data.post_flood.flooded_area_sq_km.toFixed(1)} sq km`;
+
+    // Render Matrix Values
+    document.getElementById('matrix-before-val').textContent = data.baseline.water_percentage.toFixed(1) + '%';
+    document.getElementById('matrix-before-area').textContent = `~${data.baseline.flooded_area_sq_km.toFixed(1)} sq km`;
+
+    document.getElementById('matrix-after-val').textContent = data.post_flood.water_percentage.toFixed(1) + '%';
+    document.getElementById('matrix-after-area').textContent = `~${data.post_flood.flooded_area_sq_km.toFixed(1)} sq km`;
+
+    const sign = data.comparison.water_expansion_percentage >= 0 ? '+' : '';
+    document.getElementById('matrix-expansion-val').textContent = `${sign}${data.comparison.water_expansion_percentage.toFixed(1)}%`;
+
+    const badge = document.getElementById('matrix-severity-badge');
+    if (badge) {
+      badge.textContent = `${data.comparison.severity} RISK 🟢`;
+      badge.className = `badge badge-${data.comparison.severity.toLowerCase().replace(' ', '-')}`;
+      badge.style.display = 'inline-block';
+    }
+
+    document.getElementById('matrix-severity-desc').innerHTML = `
+      Surface water expanded by ${sign}${data.comparison.water_expansion_percentage.toFixed(1)}% 
+      (Baseline: ${data.baseline.water_percentage.toFixed(1)}% &rarr; Post-Flood: ${data.post_flood.water_percentage.toFixed(1)}%), 
+      expanding power ${sign}${data.comparison.expanded_inundation_area_sq_km.toFixed(1)} sq km (Severity: ${data.comparison.severity}).
+    `;
+
+    // Update Quality Control Gate
+    const latestScene = data.results[data.results.length - 1];
+    const cloudPassed = latestScene.cloud_cover <= 0.20;
+    const resPassed = latestScene.gsd <= 5.0;
+    const ageDays = calculateAgeInDays(latestScene.acquired);
+    const agePassed = ageDays <= 90;
+
+    document.getElementById('gate-cloud').innerHTML = `
+      <span class="gate-metric-label">Cloud Cover Limit (&le;20%)</span>
+      <span class="gate-metric-value">${(latestScene.cloud_cover * 100).toFixed(1)}% avg 
+        <span class="badge ${cloudPassed ? 'badge-pass' : 'badge-fail'}">${cloudPassed ? 'PASSED 🟢' : 'FAILED 🔴'}</span>
+      </span>
+    `;
+
+    document.getElementById('gate-resolution').innerHTML = `
+      <span class="gate-metric-label">Spatial Resolution (&le;5m)</span>
+      <span class="gate-metric-value">${latestScene.gsd.toFixed(1)}m GSD 
+        <span class="badge ${resPassed ? 'badge-pass' : 'badge-fail'}">${resPassed ? 'PASSED 🟢' : 'FAILED 🔴'}</span>
+      </span>
+    `;
+
+    document.getElementById('gate-recency').innerHTML = `
+      <span class="gate-metric-label">Imagery Recency (&le;90 days)</span>
+      <span class="gate-metric-value">${ageDays}d newest 
+        <span class="badge ${agePassed ? 'badge-pass' : 'badge-fail'}">${agePassed ? 'PASSED 🟢' : 'FAILED 🔴'}</span>
+      </span>
+    `;
+
+    document.getElementById('gate-confidence-val').textContent = latestScene.detection_confidence.toFixed(1) + '%';
+
+    const warningBox = document.getElementById('gate-warning');
+    if (warningBox) {
+      if (!cloudPassed || !resPassed || !agePassed) {
+        warningBox.style.display = 'block';
+      } else {
+        warningBox.style.display = 'none';
+      }
+    }
+
+    // Update Assessment Summary Table
+    document.getElementById('summary-base-val').textContent = data.baseline.water_percentage.toFixed(1) + '%';
+    document.getElementById('summary-base-detail').textContent = `${data.baseline.flooded_area_sq_km.toFixed(1)} sq km`;
+    
+    document.getElementById('summary-post-val').textContent = data.post_flood.water_percentage.toFixed(1) + '%';
+    document.getElementById('summary-post-detail').textContent = `${data.post_flood.flooded_area_sq_km.toFixed(1)} sq km`;
+    
+    document.getElementById('summary-expansion-val').textContent = `${sign}${data.comparison.water_expansion_percentage.toFixed(1)}%`;
+    document.getElementById('summary-expansion-detail').textContent = data.comparison.water_expansion_percentage >= 50.0 ? 'Critical increase' : 'Moderate increase';
+
+    document.getElementById('summary-severity-val').innerHTML = `<span class="badge badge-${data.comparison.severity.toLowerCase().replace(' ', '-')}">${data.comparison.severity}</span>`;
+    document.getElementById('summary-severity-detail').textContent = 'Epidemic alert threshold evaluation';
+
+    document.getElementById('summary-confidence-val').textContent = latestScene.detection_confidence.toFixed(1) + '%';
+    document.getElementById('summary-confidence-detail').textContent = `Cloud: ${(latestScene.cloud_cover * 100).toFixed(0)}% · GSD: ${latestScene.gsd.toFixed(1)}m/pixel`;
+
+    // Save to localStorage session state
+    saveSession({
+      village:             data.search.location_name,
+      latitude:            data.search.latitude,
+      longitude:           data.search.longitude,
+      start_date:          data.search.start_date,
+      end_date:            data.search.end_date,
+      flood_water_pct:     data.post_flood.water_percentage,
+      flood_increase_pct:  data.comparison.water_expansion_percentage,
+      flood_baseline_pct:  data.baseline.water_percentage,
+      flood_severity:      data.comparison.severity,
+      stagnant_pockets:    data.disease_vector.standing_water_detected ? 12 : 3,
+    });
   }
 
   // ─── Render Satellite Scenes Grid ──────────────────────────────────────────
@@ -140,12 +337,18 @@
     if (!container) return;
 
     container.innerHTML = '';
-    scenesList.forEach((scene, index) => {
+    scenesList.forEach((scene) => {
       const sceneId = scene.id || scene.image_id;
       const dateObj = new Date(scene.acquired || scene.acquisition_date);
-      const dateDisplay = isNaN(dateObj.getTime()) ? 'Aug 8, 2025' : dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-      const cloudPct = (scene.cloud_cover_percent !== undefined ? scene.cloud_cover_percent : ((scene.cloud_cover || 0) * 100)).toFixed(1);
-      const gsdVal = (scene.ground_resolution_m !== undefined ? scene.ground_resolution_m : (scene.gsd || 3.0)).toFixed(1);
+      const dateDisplay = isNaN(dateObj.getTime())
+        ? 'Aug 8, 2025'
+        : dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const cloudPct = (scene.cloud_cover_percent !== undefined
+        ? scene.cloud_cover_percent
+        : ((scene.cloud_cover || 0) * 100)).toFixed(1);
+      const gsdVal = (scene.ground_resolution_m !== undefined
+        ? scene.ground_resolution_m
+        : (scene.gsd || 3.0)).toFixed(1);
       const thumbUrl = scene.thumbnail_url || `/api/satellite/thumbnail/${sceneId}`;
 
       const card = document.createElement('div');
@@ -154,14 +357,20 @@
 
       card.innerHTML = `
         <div class="scene-thumbnail-wrapper" id="wrapper-${sceneId}">
-          <img class="scene-thumbnail" id="thumb-${sceneId}" src="${thumbUrl}" alt="Satellite preview" loading="lazy" />
-          <img class="scene-mask-overlay" id="mask-${sceneId}" src="" alt="NDWI Water Mask" />
-          <span class="ndwi-label-badge">NDWI Mask</span>
+          <img class="scene-thumbnail loaded" id="thumb-${sceneId}"
+               src="${thumbUrl}" alt="Satellite scene ${dateDisplay}"
+               loading="lazy" decoding="async" />
+          <img class="scene-mask-overlay" id="mask-${sceneId}"
+               src="" alt="NDWI water mask" aria-hidden="true" />
+          <span class="ndwi-label-badge">● NDWI MASK ON</span>
         </div>
         <div class="scene-details">
           <div class="scene-id-row">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
-            <span>${sceneId}</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+              <polyline points="13 2 13 9 20 9"/>
+            </svg>
+            <span title="${sceneId}">${sceneId.length > 28 ? sceneId.substring(0, 28) + '…' : sceneId}</span>
           </div>
           <div class="scene-meta-row">
             <div class="meta-col">
@@ -179,11 +388,16 @@
           </div>
           <div class="scene-actions">
             <button class="btn-run-ndwi" id="btn-run-${sceneId}">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
               RUN NDWI ANALYSIS
             </button>
-            <button class="btn-toggle-mask" id="btn-mask-${sceneId}" disabled title="Run NDWI first">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <button class="btn-toggle-mask" id="btn-mask-${sceneId}" disabled title="Run NDWI analysis first">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
               TOGGLE MASK
             </button>
           </div>
@@ -193,33 +407,51 @@
 
       container.appendChild(card);
 
-      // RUN NDWI button
-      const runBtn = card.querySelector(`#btn-run-${sceneId}`);
-      const maskBtn = card.querySelector(`#btn-mask-${sceneId}`);
-      const maskImg = card.querySelector(`#mask-${sceneId}`);
-      const wrapper = card.querySelector(`#wrapper-${sceneId}`);
+      const runBtn   = card.querySelector(`#btn-run-${sceneId}`);
+      const maskBtn  = card.querySelector(`#btn-mask-${sceneId}`);
+      const maskImg  = card.querySelector(`#mask-${sceneId}`);
+      const wrapper  = card.querySelector(`#wrapper-${sceneId}`);
 
+      // RUN NDWI ANALYSIS
       if (runBtn) {
         runBtn.addEventListener('click', async () => {
+          runBtn.disabled = true;
+          runBtn.textContent = '⏳ Analyzing…';
           selectedFloodId = sceneId;
+
           await triggerAnalysis(sceneId, 'flood');
-          // Load mask image src after analysis fills the cache
-          maskImg.src = `/api/ndwi/mask/${sceneId}?t=${Date.now()}`;
-          // Enable toggle button
-          if (maskBtn) {
-            maskBtn.disabled = false;
-            maskBtn.title = '';
-          }
+
+          // Set mask src only after the backend has cached it
+          maskImg.src = `/api/satellite/ndwi/mask/${sceneId}?t=${Date.now()}`;
+
+          // Enable toggle once mask image loads successfully
+          maskImg.onload = () => {
+            if (maskBtn) {
+              maskBtn.disabled = false;
+              maskBtn.title = '';
+            }
+          };
+
+          runBtn.disabled = false;
+          runBtn.innerHTML = `
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            RE-RUN NDWI
+          `;
+          runBtn.classList.add('active');
+
           await updateComparisonMatrix();
         });
       }
 
-      // TOGGLE MASK button
+      // TOGGLE MASK (on/off)
       if (maskBtn) {
         maskBtn.addEventListener('click', () => {
           const isActive = maskImg.classList.toggle('active');
           wrapper.classList.toggle('mask-active', isActive);
           maskBtn.classList.toggle('active', isActive);
+          maskBtn.title = isActive ? 'Click to hide NDWI mask' : 'Click to show NDWI mask';
         });
       }
     });
@@ -232,7 +464,7 @@
     if (!resultsContainer) return;
 
     try {
-      const res = await fetch(`/api/ndwi/analyze?image_id=${imageId}`);
+      const res = await fetch(`/api/satellite/ndwi/analyze?image_id=${imageId}`);
       if (!res.ok) throw new Error("NDWI Analysis endpoint error");
       const data = await res.json();
 
@@ -307,10 +539,12 @@
 
         // Toggle warning box
         const warningBox = document.getElementById('gate-warning');
-        if (!cloudPassed || !resPassed || !agePassed) {
-          warningBox.style.display = 'block';
-        } else {
-          warningBox.style.display = 'none';
+        if (warningBox) {
+          if (!cloudPassed || !resPassed || !agePassed) {
+            warningBox.style.display = 'block';
+          } else {
+            warningBox.style.display = 'none';
+          }
         }
       }
 
@@ -328,7 +562,7 @@
       const lon = parseFloat(document.getElementById('input-lon').value);
       const radius = parseFloat(document.getElementById('input-radius').value);
 
-      const res = await fetch(`/api/ndwi/compare?baseline_image_id=${selectedBaselineId}&flood_image_id=${selectedFloodId}&radius_km=${radius}`);
+      const res = await fetch(`/api/satellite/ndwi/compare?baseline_image_id=${selectedBaselineId}&flood_image_id=${selectedFloodId}&radius_km=${radius}`);
       if (!res.ok) throw new Error("Compare API error");
       const data = await res.json();
 
@@ -337,7 +571,7 @@
       if (imgBaseline) imgBaseline.src = `/api/satellite/thumbnail/${selectedBaselineId}?lat=${lat}&lon=${lon}`;
       
       const imgPostflood = document.getElementById('img-postflood');
-      if (imgPostflood) imgPostflood.src = `/api/ndwi/mask/${selectedFloodId}`;
+      if (imgPostflood) imgPostflood.src = `/api/satellite/ndwi/mask/${selectedFloodId}`;
 
       const overlayBasePct = document.getElementById('overlay-baseline-pct');
       if (overlayBasePct) overlayBasePct.textContent = data.baseline_water_pct.toFixed(1) + '%';
@@ -365,8 +599,10 @@
       document.getElementById('matrix-expansion-val').textContent = `${sign}${data.water_expansion_rate_pct.toFixed(1)}%`;
 
       const badge = document.getElementById('matrix-severity-badge');
-      badge.textContent = `${data.severity_level} RISK 🟢`;
-      badge.className = `badge badge-${data.severity_level.toLowerCase().replace(' ', '-')}`;
+      if (badge) {
+        badge.textContent = `${data.severity_level} RISK 🟢`;
+        badge.className = `badge badge-${data.severity_level.toLowerCase().replace(' ', '-')}`;
+      }
 
       document.getElementById('matrix-severity-desc').innerHTML = `
         Surface water expanded by ${sign}${data.water_expansion_rate_pct.toFixed(1)}% 
@@ -421,8 +657,21 @@
       dropdown.addEventListener('change', onVillageChange);
     }
 
-    // Load initial values on DOM ready
-    performSearch();
+    // Load initial values from session if present
+    const session = loadSession();
+    if (session.village) {
+      if (dropdown) dropdown.value = session.village;
+      document.getElementById('input-lat').value = session.latitude || '';
+      document.getElementById('input-lon').value = session.longitude || '';
+      document.getElementById('input-start-date').value = session.start_date || '';
+      document.getElementById('input-end-date').value = session.end_date || '';
+    }
+
+    // Initially render empty skeletons
+    renderSkeletons("Awaiting search...");
   });
 
 })();
+
+
+

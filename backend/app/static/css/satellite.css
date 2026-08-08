@@ -553,46 +553,80 @@
 
 .scenes-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  align-items: start;
 }
 
-@media (max-width: 1024px) {
-  .scenes-grid { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 1100px) {
+  .scenes-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-@media (max-width: 700px) {
-  .scenes-grid { grid-template-columns: 1fr; }
+@media (max-width: 680px) {
+  .scenes-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
 .scene-card {
-  background: rgba(14, 22, 40, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 16px;
+  background: rgba(14, 22, 40, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s, border-color 0.3s;
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), border-color 0.3s, box-shadow 0.3s;
 }
 
 .scene-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-3px);
+  border-color: rgba(0, 242, 254, 0.2);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,242,254,0.06);
 }
 
+/* ── Thumbnail wrapper: fixed 16:10 to match satellite image proportions ── */
 .scene-thumbnail-wrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  padding-top: 62.5%;   /* 16:10 = 62.5% */
   overflow: hidden;
   background: #06080f;
+  flex-shrink: 0;
+}
+
+/* Loading shimmer while image loads */
+.scene-thumbnail-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.03) 0%,
+    rgba(255,255,255,0.07) 50%,
+    rgba(255,255,255,0.03) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
+  z-index: 0;
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
 }
 
 .scene-thumbnail {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s;
+  object-position: center top;
+  display: block;
+  z-index: 1;
+  transition: transform 0.4s ease, opacity 0.3s;
+  opacity: 0;
+}
+
+.scene-thumbnail.loaded {
+  opacity: 1;
 }
 
 .scene-card:hover .scene-thumbnail {
@@ -602,39 +636,49 @@
 .scene-mask-overlay {
   position: absolute;
   inset: 0;
-  pointer-events: none;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: center top;
   opacity: 0;
   transition: opacity 0.35s ease;
   z-index: 2;
+  pointer-events: none;
   display: block;
+  /* Hide browser's broken-img icon when src is empty */
+  color: transparent;
+}
+
+/* Prevent broken-img icon for empty src */
+.scene-mask-overlay:not([src]),
+.scene-mask-overlay[src=''] {
+  visibility: hidden;
 }
 
 .scene-mask-overlay.active {
-  opacity: 0.82;
+  opacity: 0.85;
+  visibility: visible;
 }
 
-/* NDWI label badge on thumbnail */
+/* NDWI active badge */
 .ndwi-label-badge {
   position: absolute;
   top: 8px;
   left: 8px;
-  background: rgba(0, 242, 254, 0.12);
-  border: 1px solid rgba(0, 242, 254, 0.3);
-  color: var(--accent-cyan, #00f2fe);
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(0, 242, 254, 0.5);
+  color: #00f2fe;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 3px 8px;
   border-radius: 4px;
   z-index: 3;
-  transition: opacity 0.3s;
   opacity: 0;
   pointer-events: none;
+  transition: opacity 0.3s;
+  white-space: nowrap;
 }
 
 .scene-thumbnail-wrapper.mask-active .ndwi-label-badge {
@@ -805,3 +849,72 @@
   font-weight: 600;
   color: var(--text-primary, #ffffff);
 }
+
+/* ---------- Skeleton Loading Cards ---------- */
+.skeleton-card {
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+.skeleton-wrapper {
+  background: rgba(255, 255, 255, 0.02) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 180px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted, #7a8ba8);
+}
+
+.skeleton-msg {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.skeleton-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+}
+
+.skeleton-line {
+  height: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-line.short { width: 40%; }
+.skeleton-line.medium { width: 70%; }
+
+/* Pulse Animation */
+.skeleton-wrapper::after,
+.skeleton-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
+  animation: skeleton-pulse 2s infinite;
+}
+
+@keyframes skeleton-pulse {
+  0% { left: -150%; }
+  50% { left: 100%; }
+  100% { left: 100%; }
+}
+
+

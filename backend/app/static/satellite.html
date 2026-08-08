@@ -119,22 +119,19 @@
             <div class="gate-grid">
               <div class="gate-metric-card" id="gate-cloud">
                 <span class="gate-metric-label">Cloud Cover Limit (&le;20%)</span>
-                <span class="gate-metric-value" id="gate-cloud-val">15.0% avg <span class="badge badge-pass">PASSED
-                    🟢</span></span>
+                <span class="gate-metric-value" id="gate-cloud-val">—</span>
               </div>
               <div class="gate-metric-card" id="gate-resolution">
                 <span class="gate-metric-label">Spatial Resolution (&le;5m)</span>
-                <span class="gate-metric-value" id="gate-res-val">3.0m GSD <span class="badge badge-pass">PASSED
-                    🟢</span></span>
+                <span class="gate-metric-value" id="gate-res-val">—</span>
               </div>
               <div class="gate-metric-card" id="gate-recency">
                 <span class="gate-metric-label">Imagery Recency (&le;90 days)</span>
-                <span class="gate-metric-value" id="gate-age-val">329d newest <span class="badge badge-fail">FAILED
-                    🔴</span></span>
+                <span class="gate-metric-value" id="gate-age-val">—</span>
               </div>
               <div class="gate-metric-card" id="gate-confidence">
                 <span class="gate-metric-label">Detection Confidence Score</span>
-                <span class="gate-metric-value glow-text text-cyan" id="gate-confidence-val">86.4%</span>
+                <span class="gate-metric-value glow-text text-cyan" id="gate-confidence-val">—</span>
               </div>
             </div>
           </div>
@@ -180,43 +177,71 @@
               <div class="pipeline-step-box">
                 <span class="step-num">STEP 6</span>
                 <h4 class="step-title">Flood Statistics &amp; Risk</h4>
-                <p class="step-text">Compute surface water %, flooded area sq km, mean NDWI, stagnant water pockets, and
-                  flood severity from the cleaned mask.</p>
+                <p class="step-text">Compute surface water %, flooded area sq km, stagnant water pockets, and
+                  outbreak triggers from the final water mask.</p>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- SECTION 4: WATER EXPANSION MATRIX -->
+        <!-- SECTION 3: COMPARATIVE WATER INUNDATION MATRIX -->
         <section aria-labelledby="matrix-heading">
           <div class="glass-card matrix-card">
             <h3 class="panel-heading" id="matrix-heading">
-              <span class="dot"></span> Water Expansion Matrix (Before vs After Flood)
+              <span class="dot"></span> Comparative Water Inundation Matrix (PlanetScope vs Sentinel/Baseline)
             </h3>
             <div class="matrix-grid">
-              <div class="matrix-data-card">
-                <span class="matrix-label">Water Area Before (Pre-Flood)</span>
-                <span class="matrix-value text-green" id="matrix-before-val">11.9%</span>
-                <span class="matrix-subtext" id="matrix-before-area">~84.1 sq km</span>
+              <div class="matrix-col">
+                <div class="matrix-label">Surface Water (Baseline)</div>
+                <div class="matrix-value text-green" id="matrix-before-val">—</div>
+                <div class="matrix-sub-label" id="matrix-before-area">—</div>
               </div>
-              <div class="matrix-data-card">
-                <span class="matrix-label">Water Area After (Post-Flood)</span>
-                <span class="matrix-value text-red" id="matrix-after-val">6.5%</span>
-                <span class="matrix-subtext" id="matrix-after-area">~45.7 sq km</span>
+              <div class="matrix-col">
+                <div class="matrix-label">Surface Water (Post-Flood)</div>
+                <div class="matrix-value text-red" id="matrix-after-val">—</div>
+                <div class="matrix-sub-label" id="matrix-after-area">—</div>
               </div>
-              <div class="matrix-data-card">
-                <span class="matrix-label">Surface Water Expansion %</span>
-                <span class="matrix-value text-cyan" id="matrix-expansion-val">-45.6%</span>
-                <span class="matrix-subtext">Inundation decrease</span>
-              </div>
-              <div class="matrix-data-card">
-                <span class="matrix-label">Flood Severity Tier</span>
-                <div class="matrix-badge-row">
-                  <span class="badge badge-low" id="matrix-severity-badge">LOW RISK 🟢</span>
+              <div class="matrix-col">
+                <div class="matrix-label">Water Expansion Rate</div>
+                <div class="matrix-value text-red" id="matrix-expansion-val">—</div>
+                <div class="matrix-sub-label">
+                  <span class="badge" id="matrix-severity-badge" style="display: none;">—</span>
                 </div>
-                <p class="matrix-desc-text" id="matrix-severity-desc">
-                  Surface water expanded by -45.6% (Before: 11.9% -> After: 6.5%), expanding power <-3.0 sq km (Low
-                    Severity). </p>
+              </div>
+            </div>
+            <div class="matrix-description" id="matrix-severity-desc">
+              Awaiting satellite search and analysis to compute comparative inundation matrix.
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 4: SIDE-BY-SIDE INUNDATION ANALYSIS -->
+        <section aria-labelledby="compare-heading">
+          <h2 class="section-heading" id="compare-heading">
+            <span class="dot"></span>
+            Side-by-Side Inundation Analysis
+          </h2>
+          <div class="compare-panels">
+            <div class="glass-card panel-card">
+              <div class="panel-header text-green">PRE-FLOOD BASELINE VIEW</div>
+              <div class="panel-media-wrapper">
+                <img id="img-baseline" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300' fill='%23111'><rect width='400' height='300' rx='8'/><text x='50% ' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%23555' font-family='sans-serif'>Baseline thumbnail awaiting search</text></svg>" alt="Pre-flood baseline" />
+                <div class="overlay-badge base-badge" id="overlay-baseline-pct">—</div>
+              </div>
+              <div class="panel-footer">
+                <span class="panel-info-label">Footprint Area:</span>
+                <span class="panel-info-val" id="info-baseline-area">—</span>
+              </div>
+            </div>
+            <div class="glass-card panel-card">
+              <div class="panel-header text-red">POST-FLOOD ACTIVE VIEW</div>
+              <div class="panel-media-wrapper">
+                <img id="img-postflood" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300' fill='%23111'><rect width='400' height='300' rx='8'/><text x='50% ' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%23555' font-family='sans-serif'>Post-flood thumbnail awaiting search</text></svg>" alt="Post-flood active" />
+                <div class="overlay-badge flood-badge" id="overlay-postflood-pct">—</div>
+              </div>
+              <div class="panel-footer">
+                <span class="panel-info-label">Footprint Area:</span>
+                <span class="panel-info-val" id="info-postflood-area">—</span>
               </div>
             </div>
           </div>
@@ -230,9 +255,16 @@
                 <span class="dot"></span> Satellite Scenes Found (<span id="scenes-count">0</span>)
               </h3>
               <div class="api-status-tag" id="api-status-badge">
-                Planet API: Active (Key: PLAKe95c...)
+                Planet API: Active
               </div>
             </div>
+
+            <!-- Status Panel for Empty / Loading / Error States -->
+            <div id="scenes-status-panel" class="status-panel" style="margin-bottom: 20px; padding: 18px; border-radius: 8px; background: rgba(255,255,255,0.01); border: 1px dashed rgba(255,255,255,0.08); text-align: center;">
+              <h4 id="status-title" style="font-size: 0.95rem; font-weight: 700; color: var(--accent-cyan); margin-bottom: 6px;">No satellite data loaded</h4>
+              <p id="status-desc" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0;">Enter a location and date range to retrieve satellite imagery.</p>
+            </div>
+
             <div class="scenes-grid" id="scenes-grid-container">
               <!-- Dynamically populated via JS -->
             </div>
@@ -261,49 +293,34 @@
                 <tbody>
                   <tr>
                     <td class="td-metric">Baseline water coverage</td>
-                    <td class="td-value text-green">18.0%</td>
-                    <td class="td-detail">127.2 sq km</td>
+                    <td class="td-value text-green" id="summary-base-val">—</td>
+                    <td class="td-detail" id="summary-base-detail">—</td>
                   </tr>
                   <tr>
                     <td class="td-metric">Post-flood water coverage</td>
-                    <td class="td-value text-red">36.0%</td>
-                    <td class="td-detail">254.4 sq km</td>
+                    <td class="td-value text-red" id="summary-post-val">—</td>
+                    <td class="td-detail" id="summary-post-detail">—</td>
                   </tr>
                   <tr>
                     <td class="td-metric">Water expansion rate</td>
-                    <td class="td-value text-red">+100.0%</td>
-                    <td class="td-detail">Catastrophic increase</td>
+                    <td class="td-value text-red" id="summary-expansion-val">—</td>
+                    <td class="td-detail" id="summary-expansion-detail">—</td>
                   </tr>
                   <tr>
                     <td class="td-metric">Severity level</td>
-                    <td class="td-value">
-                      <span class="badge badge-very-high">VERY HIGH</span>
-                    </td>
-                    <td class="td-detail">Epidemic alert threshold</td>
+                    <td class="td-value" id="summary-severity-val">—</td>
+                    <td class="td-detail" id="summary-severity-detail">—</td>
                   </tr>
                   <tr>
                     <td class="td-metric">Detection confidence</td>
-                    <td class="td-value text-cyan">95.25%</td>
-                    <td class="td-detail">Cloud: 5% · GSD: 3.0 m/pixel</td>
+                    <td class="td-value text-cyan" id="summary-confidence-val">—</td>
+                    <td class="td-detail" id="summary-confidence-detail">—</td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
         </section>
-
-        <!-- FOOTER NAVIGATION -->
-        <nav class="page-nav-footer" aria-label="Navigation">
-          <a href="/weather.html" class="nav-footer-btn secondary">
-            <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
-            Weather
-          </a>
-          <span class="nav-footer-label">Satellite Flood Inundation</span>
-          <a href="/hospital.html" class="nav-footer-btn primary">
-            Hospital
-            <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-          </a>
-        </nav>
 
 
       </div><!-- /.page-body -->
