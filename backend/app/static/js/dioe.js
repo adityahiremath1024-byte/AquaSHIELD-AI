@@ -282,22 +282,56 @@
     animateValue('imp-post', 0, 47.0, 1400, '', '%', 1);
   }
 
-  // 5. Backend Integration Call
+  // 5. FETCH DIOE OPTIMIZATION DATA FROM BACKEND
   async function fetchBackendData() {
     try {
+      let village_name = MOCK_DIOE_DATA.location.villageName;
+      let lat = MOCK_DIOE_DATA.location.latitude;
+      let lon = MOCK_DIOE_DATA.location.longitude;
+      let riskScore = MOCK_DIOE_DATA.prediction.riskScore;
+      let riskLevel = MOCK_DIOE_DATA.prediction.riskLevel;
+      let totalBeds = MOCK_DIOE_DATA.hospitalStock.totalBeds;
+      let occupiedBeds = MOCK_DIOE_DATA.hospitalStock.occupiedBeds;
+      let doctorsDuty = MOCK_DIOE_DATA.hospitalStock.doctorsOnDuty;
+
+      if (window.AquaShieldSession) {
+        const run = window.AquaShieldSession.getRun();
+        if (run && run.location) {
+          village_name = run.location.village_name || village_name;
+          lat = run.location.latitude || lat;
+          lon = run.location.longitude || lon;
+        }
+
+        const m6 = window.AquaShieldSession.getModuleResult('module6_prediction');
+        if (m6 && m6.result && m6.result.prediction) {
+          riskScore = m6.result.prediction.riskScore || riskScore;
+          riskLevel = m6.result.prediction.riskLevel || riskLevel;
+        }
+
+        const m3 = window.AquaShieldSession.getModuleResult('module3_hospital');
+        if (m3 && m3.result) {
+          totalBeds = m3.result.total_beds || totalBeds;
+          occupiedBeds = m3.result.occupied_beds || occupiedBeds;
+          doctorsDuty = m3.result.doctors_on_duty || doctorsDuty;
+        }
+      }
+
+      MOCK_DIOE_DATA.prediction.riskScore = riskScore;
+      MOCK_DIOE_DATA.prediction.riskLevel = riskLevel;
+
       const payload = {
-        village_name: MOCK_DIOE_DATA.location.villageName,
-        latitude: MOCK_DIOE_DATA.location.latitude,
-        longitude: MOCK_DIOE_DATA.location.longitude,
-        risk_score: MOCK_DIOE_DATA.prediction.riskScore,
-        risk_level: MOCK_DIOE_DATA.prediction.riskLevel,
+        village_name: village_name,
+        latitude: lat,
+        longitude: lon,
+        risk_score: riskScore,
+        risk_level: riskLevel,
         disease_type: MOCK_DIOE_DATA.prediction.diseaseType,
         confidence_pct: MOCK_DIOE_DATA.prediction.confidencePct,
         population: MOCK_DIOE_DATA.location.population,
         hospital: {
-          total_beds: MOCK_DIOE_DATA.hospitalStock.totalBeds,
-          occupied_beds: MOCK_DIOE_DATA.hospitalStock.occupiedBeds,
-          doctors_on_duty: MOCK_DIOE_DATA.hospitalStock.doctorsOnDuty,
+          total_beds: totalBeds,
+          occupied_beds: occupiedBeds,
+          doctors_on_duty: doctorsDuty,
           ors_stock_packets: MOCK_DIOE_DATA.hospitalStock.orsStockPackets,
           chlorine_stock_tablets: MOCK_DIOE_DATA.hospitalStock.chlorineStockTablets
         }
@@ -311,6 +345,10 @@
 
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
+
+      if (window.AquaShieldSession) {
+        window.AquaShieldSession.saveModuleResult('module7_dioe', payload, data);
+      }
 
       if (data.executive_narrative?.sections) {
         MOCK_DIOE_DATA.narrative = data.executive_narrative.sections;

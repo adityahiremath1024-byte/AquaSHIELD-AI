@@ -180,14 +180,50 @@
 
   // 5. FETCH AND PROCESS FUSION SIGNAL
   function processFusionSignal() {
+    let village_name = 'Alappuzha, Kerala, India';
+    let lat = 9.4981;
+    let lon = 76.3388;
+    let rain_7d = 180.0;
+    let flood_pct = 34.0;
+    let hosp_cases = 120;
+    let surge_pct = 47.0;
+    let citizen_count = 18;
+
+    if (window.AquaShieldSession) {
+      const run = window.AquaShieldSession.getRun();
+      if (run && run.location) {
+        village_name = run.location.village_name || village_name;
+        lat = run.location.latitude || lat;
+        lon = run.location.longitude || lon;
+      }
+      const m1 = window.AquaShieldSession.getModuleResult('module1_weather');
+      if (m1 && m1.result && m1.result.precipitation) {
+        rain_7d = m1.result.precipitation.past7_mm || rain_7d;
+      }
+      const m2 = window.AquaShieldSession.getModuleResult('module2_satellite');
+      if (m2 && m2.result) {
+        flood_pct = m2.result.flood_water_pct || m2.result.surface_water_pct || flood_pct;
+      }
+      const m3 = window.AquaShieldSession.getModuleResult('module3_hospital');
+      if (m3 && m3.result && m3.result.summary) {
+        hosp_cases = m3.result.summary.total_cases || hosp_cases;
+        surge_pct = m3.result.summary.growth_rate_pct || surge_pct;
+      }
+      const m4 = window.AquaShieldSession.getModuleResult('module4_citizen');
+      if (m4 && m4.result) {
+        citizen_count = m4.result.total_reports || citizen_count;
+      }
+    }
+
     const payload = {
-      village_name: sessionData.city || 'Alappuzha, Kerala, India',
-      latitude: parseFloat(sessionData.lat) || 9.4981,
-      longitude: parseFloat(sessionData.lon) || 76.3388,
-      flood_water_pct: parseFloat(sessionData.flood_water_pct) || 40.0,
-      hospital_cases_7d: parseInt(sessionData.hospital_cases_count) || 118,
-      case_surge_pct: parseFloat(sessionData.case_surge_pct) || 47.0,
-      citizen_reports_count: parseInt(sessionData.citizen_reports_count) || 18
+      village_name: village_name,
+      latitude: lat,
+      longitude: lon,
+      rain_7d_mm: rain_7d,
+      flood_water_pct: flood_pct,
+      hospital_cases_7d: hosp_cases,
+      case_surge_pct: surge_pct,
+      citizen_reports_count: citizen_count
     };
 
     // Show loading overlay
@@ -206,17 +242,18 @@
       return res.json();
     })
     .then(data => {
-      // Save fusion response into the session state
-      sessionData.fusion_raw_response = data;
-      localStorage.setItem('aquashield_session', JSON.stringify(sessionData));
+      // Save fusion response into AquaShieldSession
+      if (window.AquaShieldSession) {
+        window.AquaShieldSession.saveModuleResult('module5_fusion', payload, data);
+      }
 
       // Update UI with response data
       updateUI(data, payload);
     })
     .catch(err => {
       console.error("Fusion processing error:", err);
-      // Fallback UI with mock data
-      updateUI({
+      // Fallback UI
+      const fallback = {
         village_name: payload.village_name,
         normalized_metrics: {
           rainfall_score: 92.0,
@@ -235,7 +272,11 @@
           community_exposure_risk: 84.0
         },
         unified_fusion_score: 78.4
-      }, payload);
+      };
+      if (window.AquaShieldSession) {
+        window.AquaShieldSession.saveModuleResult('module5_fusion', payload, fallback);
+      }
+      updateUI(fallback, payload);
     })
     .finally(() => {
       if (loader) {

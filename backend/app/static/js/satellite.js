@@ -610,7 +610,32 @@
         expanding power ${sign}${data.expanded_area_sq_km.toFixed(1)} sq km (${data.severity_description}).
       `;
 
-      // Save to localStorage session state
+      // Save to AquaShieldSession
+      if (window.AquaShieldSession) {
+        const lat = parseFloat(document.getElementById('input-lat').value) || 9.4981;
+        const lon = parseFloat(document.getElementById('input-lon').value) || 76.3388;
+        const village = document.getElementById('input-village').value || 'Kuttanad, Kerala';
+
+        window.AquaShieldSession.saveModuleResult('module2_satellite', {
+          village_name: village,
+          latitude: lat,
+          longitude: lon,
+          selected_baseline_id: selectedBaselineId,
+          selected_flood_id: selectedFloodId
+        }, {
+          surface_water_pct: data.flood_water_pct,
+          flood_water_pct: data.flood_water_pct,
+          water_expansion_rate_pct: data.water_expansion_rate_pct,
+          flood_pct_increase: data.water_expansion_rate_pct,
+          baseline_water_pct: data.baseline_water_pct,
+          severity_level: data.severity_level,
+          stagnant_water_pockets: data.stagnant_water_pockets,
+          expanded_area_sq_km: data.expanded_area_sq_km,
+          severity_description: data.severity_description
+        });
+      }
+
+      // Also save to legacy storage if needed
       saveSession({
         flood_water_pct:     data.flood_water_pct,
         flood_increase_pct:  data.water_expansion_rate_pct,

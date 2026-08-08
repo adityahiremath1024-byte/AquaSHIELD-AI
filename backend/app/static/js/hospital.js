@@ -29,8 +29,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // Wire up submit button
   document.getElementById('submit-data-btn').addEventListener('click', handleSubmit);
 
+  // Wire up hospital dropdown change listener
+  const hospitalSelect = document.getElementById('input-hospital');
+  if (hospitalSelect) {
+    hospitalSelect.addEventListener('change', (e) => {
+      fetchSurgeData(e.target.value);
+    });
+  }
+
   // Load initial data
-  fetchSurgeData('Kottayam');
+  fetchSurgeData(hospitalSelect ? hospitalSelect.value : 'Kottayam');
 });
 
 
@@ -119,6 +127,11 @@ async function handleSubmit() {
 
 // ─── Render All Panels ──────────────────────────────────────────────────────
 function renderAllPanels(data) {
+  if (window.AquaShieldSession) {
+    window.AquaShieldSession.saveModuleResult('module3_hospital', {
+      village_name: data.village_name || 'Kottayam General Hospital'
+    }, data);
+  }
   renderMetricCards(data);
   renderTrendChart(data.historical_trend || []);
   renderCaseBreakdown(data);

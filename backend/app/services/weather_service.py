@@ -279,57 +279,57 @@ class WeatherService:
         hi_c = temp_c + 0.5555 * (e - 10.0)
         hi_c_rounded = round(hi_c, 1)
         
-        hi_formula = f"e = 6.11 × 10^(7.5×{temp_c} / (237.7+{temp_c})) × {humidity}/100 = {vapor_pressure} hPa\n"
-        hi_formula += f"HI = {temp_c} + 0.5555 × ({vapor_pressure} − 10.0) = {hi_c_rounded}°C"
+        hi_formula = f"e = 6.11 x 10^(7.5x{temp_c} / (237.7+{temp_c})) x {humidity}/100 = {vapor_pressure} hPa\n"
+        hi_formula += f"HI = {temp_c} + 0.5555 x ({vapor_pressure} - 10.0) = {hi_c_rounded}°C"
         
         # 4.6 Feature 6: 6-Variable Weighted Score Matrix calculations
         # 1. Temperature Score
         if temp_c <= 15:
-            s_t, t_cond = 10, "T ≤ 15°C"
+            s_t, t_cond = 10, "T <= 15°C"
         elif temp_c <= 20:
-            s_t, t_cond = 30, "15°C < T ≤ 20°C"
+            s_t, t_cond = 30, "15°C < T <= 20°C"
         elif temp_c <= 25:
-            s_t, t_cond = 50, "20°C < T ≤ 25°C"
+            s_t, t_cond = 50, "20°C < T <= 25°C"
         elif temp_c <= 30:
-            s_t, t_cond = 70, "25°C < T ≤ 30°C"
+            s_t, t_cond = 70, "25°C < T <= 30°C"
         elif temp_c <= 35:
-            s_t, t_cond = 90, "30°C < T ≤ 35°C"
+            s_t, t_cond = 90, "30°C < T <= 35°C"
         else:
             s_t, t_cond = 100, "T > 35°C"
             
         # 2. Relative Humidity Score
         if humidity <= 50:
-            s_h, h_cond = 20, "H ≤ 50%"
+            s_h, h_cond = 20, "H <= 50%"
         elif humidity <= 65:
-            s_h, h_cond = 40, "50% < H ≤ 65%"
+            s_h, h_cond = 40, "50% < H <= 65%"
         elif humidity <= 75:
-            s_h, h_cond = 60, "65% < H ≤ 75%"
+            s_h, h_cond = 60, "65% < H <= 75%"
         elif humidity <= 85:
-            s_h, h_cond = 80, "75% < H ≤ 85%"
+            s_h, h_cond = 80, "75% < H <= 85%"
         else:
             s_h, h_cond = 100, "H > 85%"
             
         # 3. Heat Index Score
         if hi_c_rounded <= 27:
-            s_hi, hi_cond = 20, "HI ≤ 27°C"
+            s_hi, hi_cond = 20, "HI <= 27°C"
         elif hi_c_rounded <= 32:
-            s_hi, hi_cond = 50, "27°C < HI ≤ 32°C"
+            s_hi, hi_cond = 50, "27°C < HI <= 32°C"
         elif hi_c_rounded <= 38:
-            s_hi, hi_cond = 80, "32°C < HI ≤ 38°C"
+            s_hi, hi_cond = 80, "32°C < HI <= 38°C"
         else:
             s_hi, hi_cond = 100, "HI > 38°C"
             
         # 4. Past 30-Day Rain Score
         if past30 <= 50:
-            s_r30, r30_cond = 10, "R₃₀ ≤ 50 mm"
+            s_r30, r30_cond = 10, "R30 <= 50 mm"
         elif past30 <= 100:
-            s_r30, r30_cond = 30, "50 < R₃₀ ≤ 100 mm"
+            s_r30, r30_cond = 30, "50 < R30 <= 100 mm"
         elif past30 <= 200:
-            s_r30, r30_cond = 60, "100 < R₃₀ ≤ 200 mm"
+            s_r30, r30_cond = 60, "100 < R30 <= 200 mm"
         elif past30 <= 300:
-            s_r30, r30_cond = 80, "200 < R₃₀ ≤ 300 mm"
+            s_r30, r30_cond = 80, "200 < R30 <= 300 mm"
         else:
-            s_r30, r30_cond = 100, "R₃₀ > 300 mm"
+            s_r30, r30_cond = 100, "R30 > 300 mm"
             
         # 5. Flood Surface Area (NDWI) Score - Estimated from 30d rain band
         if past30 <= 50:
@@ -405,10 +405,10 @@ class WeatherService:
         ]
         
         risk_tiers = [
-            { "range": "0%–30%", "level": "LOW", "badgeClass": "badge-low", "protocol": "Routine water monitoring" },
-            { "range": "31%–60%", "level": "MODERATE", "badgeClass": "badge-moderate", "protocol": "Test PHC water samples" },
-            { "range": "61%–80%", "level": "HIGH", "badgeClass": "badge-high", "protocol": "Pre-chlorinate public drinking water & alert medical teams" },
-            { "range": "81%–100%", "level": "CRITICAL", "badgeClass": "badge-critical", "protocol": "Issue emergency boil-water advisory" }
+            { "range": "0%-30%", "level": "LOW", "badgeClass": "badge-low", "protocol": "Routine water monitoring" },
+            { "range": "31%-60%", "level": "MODERATE", "badgeClass": "badge-moderate", "protocol": "Test PHC water samples" },
+            { "range": "61%-80%", "level": "HIGH", "badgeClass": "badge-high", "protocol": "Pre-chlorinate public drinking water & alert medical teams" },
+            { "range": "81%-100%", "level": "CRITICAL", "badgeClass": "badge-critical", "protocol": "Issue emergency boil-water advisory" }
         ]
         
         return {
