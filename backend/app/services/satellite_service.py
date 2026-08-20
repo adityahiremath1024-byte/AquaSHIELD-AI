@@ -20,8 +20,10 @@ import numpy as np
 import cv2
 from PIL import Image
 
-PLANET_API_KEY = os.getenv("PLANET_API_KEY", "PLAK4539d7d566d0422ca3606fa90e9d6ff5")
-PLANET_BASE_URL = "https://api.planet.com/data/v1"
+from app.config.settings import settings
+
+PLANET_API_KEY = settings.PLANET_API_KEY or os.getenv("PLANET_API_KEY", "")
+PLANET_BASE_URL = settings.PLANET_BASE_URL
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Configurable Thresholds (tuned for general PlanetScope / ArcGIS optical scenes)

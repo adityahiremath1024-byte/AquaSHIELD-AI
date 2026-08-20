@@ -131,32 +131,36 @@
 }
 
 .btn-submit {
-  background: var(--gradient-accent);
-  border: none;
-  border-radius: var(--radius-sm);
-  color: var(--bg-primary);
-  font-family: var(--font-heading);
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  padding: 10px 24px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  height: 40px;
-  transition: all var(--transition-fast);
+  background: var(--gradient-accent) !important;
+  border: 1px solid var(--color-accent) !important;
+  border-radius: var(--radius-md) !important;
+  color: var(--btn-primary-text) !important;
+  font-family: var(--font-heading) !important;
+  font-size: 0.85rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.05em !important;
+  padding: 10px 24px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  min-height: 44px !important;
+  box-shadow: 0 4px 15px var(--neon-glow) !important;
+  transition: all var(--transition-fast) !important;
 }
 
 .btn-submit svg {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
+  stroke: var(--btn-primary-text) !important;
+  fill: none;
 }
 
 .btn-submit:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px var(--neon-glow-strong);
+  filter: brightness(1.15);
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px var(--neon-glow-strong) !important;
 }
 
 /* Photo Upload Box */
