@@ -408,6 +408,148 @@
   }
 
   /* ================================================================
+     AUTO-GEOCODING & LOCATION AUTOFILL
+     ================================================================ */
+  function setupAutoGeocoding() {
+    const elVillage = document.getElementById('input-village');
+    const elLat = document.getElementById('input-lat');
+    const elLon = document.getElementById('input-lon');
+    const dropdown = document.getElementById('location-suggestions-pred');
+    if (!elVillage || !dropdown) return;
+
+    let debounceTimer = null;
+
+    async function queryGeocode(text, autoSelectSingle = false) {
+      if (!text || text.trim().length < 2) {
+        dropdown.style.display = 'none';
+        return [];
+      }
+
+      try {
+        const res = await fetch(`/api/weather/geocode?query=${encodeURIComponent(text.trim())}`);
+        if (!res.ok) return [];
+        const data = await res.json();
+        const results = data.results || [];
+
+        if (results.length === 0) {
+          dropdown.style.display = 'none';
+          return [];
+        }
+
+        if (autoSelectSingle && results.length >= 1) {
+          applyLocation(results[0]);
+          dropdown.style.display = 'none';
+          return results;
+        }
+
+        renderDropdown(results);
+        return results;
+      } catch (err) {
+        console.warn('Geocoding fetch error:', err);
+        dropdown.style.display = 'none';
+        return [];
+      }
+    }
+
+    function renderDropdown(items) {
+      dropdown.innerHTML = '';
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'suggestion-item';
+        div.innerHTML = `
+          <span class="suggestion-name">${item.display_name}</span>
+          <span class="suggestion-coords">${item.latitude}° N, ${item.longitude}° E</span>
+        `;
+        div.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          applyLocation(item);
+          dropdown.style.display = 'none';
+        });
+        dropdown.appendChild(div);
+      });
+      dropdown.style.display = 'block';
+    }
+
+    function applyLocation(item) {
+      if (elVillage) elVillage.value = item.display_name;
+      if (elLat) {
+        elLat.value = item.latitude;
+        elLat.classList.remove('field-highlight-autofill');
+        void elLat.offsetWidth;
+        elLat.classList.add('field-highlight-autofill');
+      }
+      if (elLon) {
+        elLon.value = item.longitude;
+        elLon.classList.remove('field-highlight-autofill');
+        void elLon.offsetWidth;
+        elLon.classList.add('field-highlight-autofill');
+      }
+      if (window.AquaShieldSession) {
+        window.AquaShieldSession.setAssessmentParams({
+          village_name: item.display_name,
+          latitude: item.latitude,
+          longitude: item.longitude
+        });
+      }
+    }
+
+    elVillage.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      const val = elVillage.value.trim();
+      if (val.length < 2) {
+        dropdown.style.display = 'none';
+        return;
+      }
+      debounceTimer = setTimeout(() => {
+        queryGeocode(val, false);
+      }, 250);
+    });
+
+    elVillage.addEventListener('blur', () => {
+      setTimeout(() => {
+        dropdown.style.display = 'none';
+      }, 200);
+      const val = elVillage.value.trim();
+      if (val && (!elLat.value || !elLon.value)) {
+        queryGeocode(val, true);
+      }
+    });
+
+    elVillage.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const val = elVillage.value.trim();
+        if (val) {
+          queryGeocode(val, true);
+        }
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!elVillage.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.style.display = 'none';
+      }
+    });
+  }
+
+  function restoreInputs() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const centralParams = window.AquaShieldSession ? window.AquaShieldSession.getAssessmentParams() : {};
+
+    const village = urlParams.get('village_name') || urlParams.get('location') || centralParams.village_name || '';
+    const lat = urlParams.get('latitude') || urlParams.get('lat') || centralParams.latitude || '';
+    const lon = urlParams.get('longitude') || urlParams.get('lon') || centralParams.longitude || '';
+
+    const elVillage = document.getElementById('input-village');
+    const elLat = document.getElementById('input-lat');
+    const elLon = document.getElementById('input-lon');
+
+    if (elVillage && village) elVillage.value = village;
+    if (elLat && lat) elLat.value = lat;
+    if (elLon && lon) elLon.value = lon;
+  }
+
+  /* ================================================================
      RUN ENGINE BUTTON EVENT HANDLER
      ================================================================ */
   function setupRunButton() {
@@ -419,9 +561,44 @@
       const latInput = document.getElementById('input-lat');
       const lonInput = document.getElementById('input-lon');
 
-      const village = villageSelect ? villageSelect.value : MOCK_PREDICTION_DATA.input.villageName;
-      const lat = latInput ? parseFloat(latInput.value) : MOCK_PREDICTION_DATA.input.latitude;
-      const lon = lonInput ? parseFloat(lonInput.value) : MOCK_PREDICTION_DATA.input.longitude;
+      let village = villageSelect ? villageSelect.value.trim() : '';
+      let lat = latInput && latInput.value.trim() ? parseFloat(latInput.value) : null;
+      let lon = lonInput && lonInput.value.trim() ? parseFloat(lonInput.value) : null;
+
+      // Auto geocode if location name was entered without coordinates
+      if ((lat === null || isNaN(lat) || lon === null || isNaN(lon)) && village) {
+        try {
+          const res = await fetch(`/api/weather/geocode?query=${encodeURIComponent(village)}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.results && data.results.length > 0) {
+              const top = data.results[0];
+              village = top.display_name;
+              lat = top.latitude;
+              lon = top.longitude;
+              if (villageSelect) villageSelect.value = village;
+              if (latInput) latInput.value = lat;
+              if (lonInput) lonInput.value = lon;
+            }
+          }
+        } catch (e) {
+          console.warn('Geocoding error before prediction:', e);
+        }
+      }
+
+      if (lat === null || isNaN(lat) || lon === null || isNaN(lon)) {
+        if (window.AquaShieldUtils) {
+          window.AquaShieldUtils.showErrorToast('Please enter a location name or coordinates to run outbreak prediction.', 'warning');
+        } else {
+          alert('Please enter a location name to run outbreak prediction.');
+        }
+        if (villageSelect) villageSelect.focus();
+        return;
+      }
+
+      if (window.AquaShieldSession) {
+        window.AquaShieldSession.setAssessmentParams({ village_name: village, latitude: lat, longitude: lon });
+      }
 
       showLoading();
       try {
@@ -450,6 +627,7 @@
       });
     }
 
+    setupAutoGeocoding();
     restoreInputs();
     setupRunButton();
 

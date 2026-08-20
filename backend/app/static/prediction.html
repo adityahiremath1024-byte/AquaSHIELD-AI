@@ -41,17 +41,18 @@
              ───────────────────────────────────────────── -->
         <section aria-labelledby="input-heading">
           <div class="glass-card prediction-input-bar">
-            <div class="input-group">
-              <label for="input-village" class="input-label">Village Name</label>
-              <input type="text" id="input-village" class="input-field" value="West Kainakary" placeholder="Enter village name" />
+            <div class="input-group" style="position: relative;">
+              <label for="input-village" class="input-label">Village / Location</label>
+              <input type="text" id="input-village" class="input-field" placeholder="Type location name..." autocomplete="off" />
+              <div id="location-suggestions-pred" class="location-suggestions-dropdown" style="display: none;"></div>
             </div>
             <div class="input-group">
               <label for="input-lat" class="input-label">Latitude</label>
-              <input type="text" id="input-lat" class="input-field" value="9.4981" />
+              <input type="text" id="input-lat" class="input-field" placeholder="Auto-fills on location entry" />
             </div>
             <div class="input-group">
               <label for="input-lon" class="input-label">Longitude</label>
-              <input type="text" id="input-lon" class="input-field" value="76.3388" />
+              <input type="text" id="input-lon" class="input-field" placeholder="Auto-fills on location entry" />
             </div>
             <button id="run-prediction-btn" class="run-prediction-btn">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">

@@ -115,8 +115,174 @@
     }
   }
 
+  // ─── Auto-Geocoding for Satellite Module ──────────────────────────────
+  function setupAutoGeocoding() {
+    const elVillage = document.getElementById('input-village');
+    const elLat = document.getElementById('input-lat');
+    const elLon = document.getElementById('input-lon');
+    const dropdown = document.getElementById('location-suggestions-sat');
+    if (!elVillage || !dropdown) return;
+
+    let debounceTimer = null;
+
+    async function queryGeocode(text, autoSelectSingle = false) {
+      if (!text || text.trim().length < 2) {
+        dropdown.style.display = 'none';
+        return [];
+      }
+
+      try {
+        const res = await fetch(`/api/weather/geocode?query=${encodeURIComponent(text.trim())}`);
+        if (!res.ok) return [];
+        const data = await res.json();
+        const results = data.results || [];
+
+        if (results.length === 0) {
+          dropdown.style.display = 'none';
+          return [];
+        }
+
+        if (autoSelectSingle && results.length >= 1) {
+          applyLocation(results[0]);
+          dropdown.style.display = 'none';
+          return results;
+        }
+
+        renderDropdown(results);
+        return results;
+      } catch (err) {
+        console.warn('Geocoding fetch error:', err);
+        dropdown.style.display = 'none';
+        return [];
+      }
+    }
+
+    function renderDropdown(items) {
+      dropdown.innerHTML = '';
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'suggestion-item';
+        div.innerHTML = `
+          <span class="suggestion-name">${item.display_name}</span>
+          <span class="suggestion-coords">${item.latitude}° N, ${item.longitude}° E</span>
+        `;
+        div.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          applyLocation(item);
+          dropdown.style.display = 'none';
+        });
+        dropdown.appendChild(div);
+      });
+      dropdown.style.display = 'block';
+    }
+
+    function applyLocation(item) {
+      if (elVillage) elVillage.value = item.display_name;
+      if (elLat) {
+        elLat.value = item.latitude;
+        elLat.classList.remove('field-highlight-autofill');
+        void elLat.offsetWidth;
+        elLat.classList.add('field-highlight-autofill');
+      }
+      if (elLon) {
+        elLon.value = item.longitude;
+        elLon.classList.remove('field-highlight-autofill');
+        void elLon.offsetWidth;
+        elLon.classList.add('field-highlight-autofill');
+      }
+      saveSession({ village: item.display_name, latitude: item.latitude, longitude: item.longitude });
+    }
+
+    elVillage.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      const val = elVillage.value.trim();
+      if (val.length < 2) {
+        dropdown.style.display = 'none';
+        return;
+      }
+      debounceTimer = setTimeout(() => {
+        queryGeocode(val, false);
+      }, 250);
+    });
+
+    elVillage.addEventListener('blur', () => {
+      setTimeout(() => {
+        dropdown.style.display = 'none';
+      }, 200);
+      const val = elVillage.value.trim();
+      if (val && (!elLat.value || !elLon.value)) {
+        queryGeocode(val, true);
+      }
+    });
+
+    elVillage.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const val = elVillage.value.trim();
+        if (val) {
+          queryGeocode(val, true);
+        }
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!elVillage.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.style.display = 'none';
+      }
+    });
+  }
+
   // ─── Search Planet Satellite Scenes ───────────────────────────────────────
   async function performSearch() {
+    const elVillage = document.getElementById('input-village');
+    const elLat = document.getElementById('input-lat');
+    const elLon = document.getElementById('input-lon');
+    const elRadius = document.getElementById('input-radius');
+    const elStart = document.getElementById('input-start-date');
+    const elEnd = document.getElementById('input-end-date');
+
+    let village = elVillage ? elVillage.value.trim() : '';
+    let lat = elLat && elLat.value.trim() ? parseFloat(elLat.value) : NaN;
+    let lon = elLon && elLon.value.trim() ? parseFloat(elLon.value) : NaN;
+    let radius = elRadius && elRadius.value.trim() ? parseFloat(elRadius.value) : 15.0;
+    let startDate = elStart ? elStart.value.trim() : '';
+    let endDate = elEnd ? elEnd.value.trim() : '';
+
+    // If user entered a location name but lat/lon are empty, auto-geocode first
+    if ((isNaN(lat) || isNaN(lon)) && village) {
+      try {
+        const res = await fetch(`/api/weather/geocode?query=${encodeURIComponent(village)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.results && data.results.length > 0) {
+            const top = data.results[0];
+            village = top.display_name;
+            lat = top.latitude;
+            lon = top.longitude;
+            if (elVillage) elVillage.value = village;
+            if (elLat) elLat.value = lat;
+            if (elLon) elLon.value = lon;
+          }
+        }
+      } catch (e) {
+        console.warn('Geocoding before search error:', e);
+      }
+    }
+
+    // Input Validation
+    if (isNaN(lat) || lat < -90 || lat > 90 || isNaN(lon) || lon < -180 || lon > 180) {
+      if (window.AquaShieldUtils) {
+        window.AquaShieldUtils.showErrorToast("Please enter a valid location name or coordinates (Lat: -90 to 90, Lon: -180 to 180).", "warning");
+      } else {
+        alert("Please enter a valid location name or coordinates.");
+      }
+      if (elVillage) elVillage.focus();
+      return;
+    }
+
+    if (!startDate) startDate = '01-08-2025';
+    if (!endDate) endDate = '31-08-2025';
+
     showLoading();
     
     // Show Searching state in Status Panel
@@ -138,25 +304,6 @@
     }
 
     renderSkeletons("Fetching satellite imagery...");
-
-    const village = document.getElementById('input-village').value;
-    const lat = parseFloat(document.getElementById('input-lat').value);
-    const lon = parseFloat(document.getElementById('input-lon').value);
-    const radius = parseFloat(document.getElementById('input-radius').value);
-    const startDate = document.getElementById('input-start-date').value.trim();
-    const endDate = document.getElementById('input-end-date').value.trim();
-
-    // Input Validation
-    if (isNaN(lat) || lat < -90 || lat > 90) {
-      showError("Latitude must be a valid number between -90 and 90.");
-      hideLoading();
-      return;
-    }
-    if (isNaN(lon) || lon < -180 || lon > 180) {
-      showError("Longitude must be a valid number between -180 and 180.");
-      hideLoading();
-      return;
-    }
 
     // Convert date format from DD-MM-YYYY to YYYY-MM-DD for API call if needed
     let formattedStartDate = startDate;
@@ -680,24 +827,65 @@
       searchBtn.addEventListener('click', performSearch);
     }
 
-    // Bind quick selection
-    const dropdown = document.getElementById('input-village');
-    if (dropdown) {
-      dropdown.addEventListener('change', onVillageChange);
+    // Setup Location Auto-Geocoding
+    setupAutoGeocoding();
+
+    // Load initial values from URL params or central session (sync across modules)
+    const urlParams = new URLSearchParams(window.location.search);
+    const centralParams = window.AquaShieldSession ? window.AquaShieldSession.getAssessmentParams() : {};
+
+    const village = urlParams.get('village_name') || urlParams.get('location') || centralParams.village_name || '';
+    const lat = urlParams.get('latitude') || urlParams.get('lat') || centralParams.latitude || '';
+    const lon = urlParams.get('longitude') || urlParams.get('lon') || centralParams.longitude || '';
+    const startDate = centralParams.start_date || '';
+    const endDate = centralParams.end_date || '';
+
+    const elVillage = document.getElementById('input-village');
+    const elLat = document.getElementById('input-lat');
+    const elLon = document.getElementById('input-lon');
+    const elStart = document.getElementById('input-start-date');
+    const elEnd = document.getElementById('input-end-date');
+
+    if (village && elVillage) elVillage.value = village;
+    if (lat && elLat) elLat.value = lat;
+    if (lon && elLon) elLon.value = lon;
+    if (startDate && elStart) elStart.value = startDate;
+    if (endDate && elEnd) elEnd.value = endDate;
+
+    // Attach sync listeners on date changes
+    if (elStart) {
+      elStart.addEventListener('change', () => {
+        if (window.AquaShieldSession) {
+          window.AquaShieldSession.setAssessmentParams({ start_date: elStart.value });
+        }
+      });
+    }
+    if (elEnd) {
+      elEnd.addEventListener('change', () => {
+        if (window.AquaShieldSession) {
+          window.AquaShieldSession.setAssessmentParams({ end_date: elEnd.value });
+        }
+      });
     }
 
-    // Load initial values from session if present
-    const session = loadSession();
-    if (session.village) {
-      if (dropdown) dropdown.value = session.village;
-      if (session.latitude) document.getElementById('input-lat').value = session.latitude;
-      if (session.longitude) document.getElementById('input-lon').value = session.longitude;
-      if (session.start_date) document.getElementById('input-start-date').value = session.start_date;
-      if (session.end_date) document.getElementById('input-end-date').value = session.end_date;
+    // Check if Module 2 result already exists in central session
+    const m2 = window.AquaShieldSession ? window.AquaShieldSession.getModuleResult('module2_satellite') : null;
+    if (m2 && m2.result && m2.result.scenes && m2.result.scenes.length > 0) {
+      scenesList = m2.result.scenes;
+      renderScenesGrid(scenesList);
+      updateGateMetrics(m2.result);
+      updateMatrixValues(m2.result);
+    } else {
+      // Clean initial state: Awaiting search
+      const statusPanel = document.getElementById('scenes-status-panel');
+      if (statusPanel) {
+        statusPanel.style.display = 'block';
+        const title = document.getElementById('status-title');
+        const desc = document.getElementById('status-desc');
+        if (title) title.textContent = "Awaiting Satellite Search";
+        if (desc) desc.textContent = "Enter target region and click SEARCH PLANET SATELLITE SCENES to fetch satellite scenes.";
+      }
     }
-
-    // Auto-search on page load to generate satellite imagery immediately
-    performSearch();
   });
 
 })();

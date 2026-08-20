@@ -22,7 +22,7 @@ window.AquaShieldSession = (function () {
   }
 
   /**
-   * Start a brand new assessment run, purging any prior session data completely.
+   * Start a brand new assessment run, purging prior module results.
    */
   function startNewRun(initialVillage, initialLat, initialLon) {
     const runId = 'RUN-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
@@ -31,20 +31,81 @@ window.AquaShieldSession = (function () {
       status: 'IN_PROGRESS',
       created_at: new Date().toISOString(),
       location: {
-        village_name: initialVillage || 'Alappuzha, Kerala, India',
-        latitude: initialLat !== undefined ? initialLat : 9.4981,
-        longitude: initialLon !== undefined ? initialLon : 76.3388
+        village_name: initialVillage || '',
+        latitude: initialLat !== undefined && initialLat !== null ? initialLat : '',
+        longitude: initialLon !== undefined && initialLon !== null ? initialLon : '',
+        start_date: '',
+        end_date: ''
       },
       modules: {}
     };
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(newRun));
-      // Also clear legacy session key if present
-      localStorage.removeItem('aquashield_session');
     } catch (e) {
       console.error('AquaShieldSession: Error saving new run', e);
     }
     return newRun;
+  }
+
+  /**
+   * Get active assessment parameters (location, coordinates, date range).
+   */
+  function getAssessmentParams() {
+    const run = getRun();
+    let legacy = {};
+    try {
+      legacy = JSON.parse(localStorage.getItem('aquashield_session') || '{}');
+    } catch {}
+
+    const loc = (run && run.location) ? run.location : {};
+    return {
+      village_name: loc.village_name || legacy.city || legacy.village || '',
+      latitude: loc.latitude !== undefined && loc.latitude !== '' ? loc.latitude : (legacy.lat || legacy.latitude || ''),
+      longitude: loc.longitude !== undefined && loc.longitude !== '' ? loc.longitude : (legacy.lon || legacy.longitude || ''),
+      start_date: loc.start_date || legacy.start_date || '',
+      end_date: loc.end_date || legacy.end_date || ''
+    };
+  }
+
+  /**
+   * Update active assessment parameters across all modules.
+   */
+  function setAssessmentParams(params) {
+    if (!params) return;
+    let run = getRun();
+    if (!run) {
+      run = startNewRun(params.village_name || params.city || params.village, params.latitude || params.lat, params.longitude || params.lon);
+    }
+    run.location = run.location || {};
+    if (params.village_name || params.city || params.village) {
+      run.location.village_name = params.village_name || params.city || params.village;
+    }
+    if ((params.latitude ?? params.lat) !== undefined && (params.latitude ?? params.lat) !== '') {
+      run.location.latitude = parseFloat(params.latitude ?? params.lat);
+    }
+    if ((params.longitude ?? params.lon) !== undefined && (params.longitude ?? params.lon) !== '') {
+      run.location.longitude = parseFloat(params.longitude ?? params.lon);
+    }
+    if (params.start_date) run.location.start_date = params.start_date;
+    if (params.end_date) run.location.end_date = params.end_date;
+
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(run));
+      // Sync legacy storage
+      const legacy = {
+        city: run.location.village_name,
+        village: run.location.village_name,
+        lat: run.location.latitude,
+        latitude: run.location.latitude,
+        lon: run.location.longitude,
+        longitude: run.location.longitude,
+        start_date: run.location.start_date,
+        end_date: run.location.end_date
+      };
+      localStorage.setItem('aquashield_session', JSON.stringify(legacy));
+    } catch (e) {
+      console.error('AquaShieldSession: Error updating assessment params', e);
+    }
   }
 
   /**
@@ -157,6 +218,8 @@ window.AquaShieldSession = (function () {
     getRun: getRun,
     startNewRun: startNewRun,
     resetRun: resetRun,
+    getAssessmentParams: getAssessmentParams,
+    setAssessmentParams: setAssessmentParams,
     saveModuleResult: saveModuleResult,
     getModuleResult: getModuleResult,
     getAccumulatedVectorForPrediction: getAccumulatedVectorForPrediction

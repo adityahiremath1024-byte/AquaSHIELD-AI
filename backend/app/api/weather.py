@@ -19,6 +19,18 @@ async def check_weather_health():
         raise HTTPException(status_code=500, detail=f"Weather health check failed: {str(e)}")
 
 
+@router.get("/geocode")
+async def geocode_location(
+    query: str = Query(..., min_length=2, description="Location, city, district or village name")
+):
+    """Geocode a place or village name to latitude and longitude coordinates."""
+    try:
+        results = await weather_service.geocode_location(query)
+        return {"query": query, "results": results}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Geocoding failed: {str(e)}")
+
+
 @router.get("/current", response_model=WeatherResponse)
 async def get_current_weather_data(
     latitude: float = Query(..., description="Latitude of location", ge=-90.0, le=90.0),

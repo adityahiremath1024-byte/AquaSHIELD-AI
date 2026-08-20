@@ -61,29 +61,30 @@
               <span class="dot"></span> Search Satellite Imagery for Target Region
             </h3>
             <div class="search-form-grid">
-              <div class="input-group">
+              <div class="input-group" style="position: relative;">
                 <label for="input-village" class="input-label">City / Region Name</label>
-                <input type="text" id="input-village" class="input-field" value="Kuttanad, Kerala" placeholder="Enter city or region name" />
+                <input type="text" id="input-village" class="input-field" placeholder="Type city or region name..." autocomplete="off" />
+                <div id="location-suggestions-sat" class="location-suggestions-dropdown" style="display: none;"></div>
               </div>
               <div class="input-group">
                 <label for="input-lat" class="input-label">Latitude</label>
-                <input type="text" id="input-lat" class="input-field" value="9.3500" />
+                <input type="text" id="input-lat" class="input-field" placeholder="Auto-fills on location entry" />
               </div>
               <div class="input-group">
                 <label for="input-lon" class="input-label">Longitude</label>
-                <input type="text" id="input-lon" class="input-field" value="76.4300" />
+                <input type="text" id="input-lon" class="input-field" placeholder="Auto-fills on location entry" />
               </div>
               <div class="input-group">
                 <label for="input-radius" class="input-label">Buffer Radius (KM)</label>
-                <input type="text" id="input-radius" class="input-field" value="15.0" />
+                <input type="text" id="input-radius" class="input-field" placeholder="e.g. 15.0" />
               </div>
               <div class="input-group">
                 <label for="input-start-date" class="input-label">Start Date</label>
-                <input type="text" id="input-start-date" class="input-field" value="01-08-2025" />
+                <input type="text" id="input-start-date" class="input-field" placeholder="DD-MM-YYYY" />
               </div>
               <div class="input-group">
                 <label for="input-end-date" class="input-label">End Date</label>
-                <input type="text" id="input-end-date" class="input-field" value="31-08-2025" />
+                <input type="text" id="input-end-date" class="input-field" placeholder="DD-MM-YYYY" />
               </div>
             </div>
             <div class="search-action-row">

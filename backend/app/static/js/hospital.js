@@ -27,18 +27,34 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Wire up submit button
-  document.getElementById('submit-data-btn').addEventListener('click', handleSubmit);
+  const submitBtn = document.getElementById('submit-data-btn');
+  if (submitBtn) submitBtn.addEventListener('click', handleSubmit);
+
+  const hospitalSelect = document.getElementById('input-hospital');
+
+  // Check central session for location context from Module 1 / 2
+  const centralParams = window.AquaShieldSession ? window.AquaShieldSession.getAssessmentParams() : {};
+  if (hospitalSelect && centralParams.village_name) {
+    const locLower = centralParams.village_name.toLowerCase();
+    for (let opt of hospitalSelect.options) {
+      if (locLower.includes(opt.value.toLowerCase()) || opt.value.toLowerCase().includes(locLower)) {
+        hospitalSelect.value = opt.value;
+        break;
+      }
+    }
+  }
 
   // Wire up hospital dropdown change listener
-  const hospitalSelect = document.getElementById('input-hospital');
   if (hospitalSelect) {
     hospitalSelect.addEventListener('change', (e) => {
       fetchSurgeData(e.target.value);
     });
   }
 
-  // Load initial data
-  fetchSurgeData(hospitalSelect ? hospitalSelect.value : 'Kottayam');
+  // Fetch surge data for selected region
+  if (hospitalSelect && hospitalSelect.value) {
+    fetchSurgeData(hospitalSelect.value);
+  }
 });
 
 

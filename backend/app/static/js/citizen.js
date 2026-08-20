@@ -391,6 +391,13 @@
 
     setupUploadZone();
     setupFormSubmission();
+
+    // Auto-fill coordinates from central assessment session
+    const centralParams = window.AquaShieldSession ? window.AquaShieldSession.getAssessmentParams() : {};
+    const elLat = document.getElementById('input-lat');
+    const elLon = document.getElementById('input-lon');
+    if (elLat && centralParams.latitude) elLat.value = centralParams.latitude;
+    if (elLon && centralParams.longitude) elLon.value = centralParams.longitude;
     
     // Initial fetch from backend database
     await fetchDashboardData();

@@ -628,6 +628,67 @@ class WeatherService:
                 "latency_ms": latency
             }
 
+    async def geocode_location(self, query: str) -> List[Dict[str, Any]]:
+        """Geocodes a location name to latitude and longitude coordinates using Open-Meteo Geocoding API."""
+        if not query or len(query.strip()) < 2:
+            return []
+        
+        url = "https://geocoding-api.open-meteo.com/v1/search"
+        params = {
+            "name": query.strip(),
+            "count": 6,
+            "language": "en",
+            "format": "json"
+        }
+        
+        try:
+            async with httpx.AsyncClient() as client:
+                resp = await client.get(url, params=params, timeout=5.0)
+                if resp.status_code == 200:
+                    data = resp.json()
+                    results = []
+                    for item in data.get("results", []):
+                        name = item.get("name", "")
+                        admin1 = item.get("admin1", "")
+                        country = item.get("country", "")
+                        label_parts = [p for p in [name, admin1, country] if p]
+                        display_name = ", ".join(label_parts)
+                        results.append({
+                            "name": name,
+                            "display_name": display_name,
+                            "latitude": round(float(item.get("latitude", 0.0)), 4),
+                            "longitude": round(float(item.get("longitude", 0.0)), 4),
+                            "country": country,
+                            "admin1": admin1,
+                            "elevation": item.get("elevation")
+                        })
+                    if results:
+                        return results
+        except Exception as e:
+            logger.warning(f"Geocoding error for '{query}': {e}")
+        
+        # Fallback dictionary for known locations
+        known_places = {
+            "kuttanad": {"name": "Kuttanad", "display_name": "Kuttanad, Alappuzha, Kerala, India", "latitude": 9.3500, "longitude": 76.4300},
+            "alappuzha": {"name": "Alappuzha", "display_name": "Alappuzha, Kerala, India", "latitude": 9.4981, "longitude": 76.3388},
+            "kochi": {"name": "Kochi", "display_name": "Kochi, Kerala, India", "latitude": 9.9312, "longitude": 76.2673},
+            "thiruvananthapuram": {"name": "Thiruvananthapuram", "display_name": "Thiruvananthapuram, Kerala, India", "latitude": 8.5241, "longitude": 76.9366},
+            "munnar": {"name": "Munnar", "display_name": "Munnar, Idukki, Kerala, India", "latitude": 10.0889, "longitude": 77.0595},
+            "wayanad": {"name": "Wayanad", "display_name": "Wayanad, Kerala, India", "latitude": 11.6854, "longitude": 76.1320},
+            "kozhikode": {"name": "Kozhikode", "display_name": "Kozhikode, Kerala, India", "latitude": 11.2588, "longitude": 75.7804},
+            "mumbai": {"name": "Mumbai", "display_name": "Mumbai, Maharashtra, India", "latitude": 19.0760, "longitude": 72.8777},
+            "delhi": {"name": "Delhi", "display_name": "Delhi, India", "latitude": 28.6139, "longitude": 77.2090},
+            "bangalore": {"name": "Bengaluru", "display_name": "Bengaluru, Karnataka, India", "latitude": 12.9716, "longitude": 77.5946},
+            "chennai": {"name": "Chennai", "display_name": "Chennai, Tamil Nadu, India", "latitude": 13.0827, "longitude": 80.2707},
+            "kolkata": {"name": "Kolkata", "display_name": "Kolkata, West Bengal, India", "latitude": 22.5726, "longitude": 88.3639}
+        }
+        q_lower = query.strip().lower()
+        matched = []
+        for k, v in known_places.items():
+            if k in q_lower or q_lower in k:
+                matched.append(v)
+        return matched
+
 
 # Singleton service instance
 weather_service = WeatherService()

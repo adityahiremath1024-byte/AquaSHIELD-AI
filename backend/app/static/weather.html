@@ -48,31 +48,33 @@
             
             <div class="input-row-grid">
               <!-- Location Name -->
-              <div class="input-box-group location-name-box">
+              <div class="input-box-group location-name-box" style="position: relative;">
                 <label for="input-village" class="input-label">Location Name</label>
                 <div class="input-icon-wrapper">
-                  <input type="text" id="input-village" class="input-field" value="Alappuzha, Kerala, India" />
+                  <input type="text" id="input-village" class="input-field" placeholder="Type city, village, or district name..." autocomplete="off" />
                   <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                 </div>
+                <!-- Autocomplete suggestions popup -->
+                <div id="location-suggestions" class="location-suggestions-dropdown" style="display: none;"></div>
               </div>
 
               <!-- Latitude -->
               <div class="input-box-group">
                 <label for="input-lat" class="input-label">Latitude</label>
-                <input type="text" id="input-lat" class="input-field mono" value="9.4981" />
+                <input type="text" id="input-lat" class="input-field mono" placeholder="Auto-fills on location entry" />
               </div>
 
               <!-- Longitude -->
               <div class="input-box-group">
                 <label for="input-lon" class="input-label">Longitude</label>
-                <input type="text" id="input-lon" class="input-field mono" value="76.3388" />
+                <input type="text" id="input-lon" class="input-field mono" placeholder="Auto-fills on location entry" />
               </div>
 
               <!-- Start Date -->
               <div class="input-box-group">
                 <label for="input-start-date" class="input-label">Start Date</label>
                 <div class="input-icon-wrapper">
-                  <input type="text" id="input-start-date" class="input-field" value="28 May 2025" />
+                  <input type="text" id="input-start-date" class="input-field" placeholder="DD Mon YYYY" />
                   <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
                 </div>
               </div>
@@ -81,7 +83,7 @@
               <div class="input-box-group">
                 <label for="input-end-date" class="input-label">End Date</label>
                 <div class="input-icon-wrapper">
-                  <input type="text" id="input-end-date" class="input-field" value="04 Jun 2025" />
+                  <input type="text" id="input-end-date" class="input-field" placeholder="DD Mon YYYY" />
                   <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
                 </div>
               </div>
@@ -391,6 +393,7 @@
                 <canvas id="bgi-gauge-canvas"></canvas>
                 <div class="bgi-gauge-center">
                   <span class="bgi-gauge-val">64.0%</span>
+                  <span class="bgi-gauge-unit">Index Score</span>
                 </div>
               </div>
               <span class="badge badge-high" style="margin-top: 16px; font-size: 0.85rem;">● HIGH RISK LEVEL</span>

@@ -26,13 +26,12 @@
   }
 
   function restoreInputs() {
-    const session = loadSession();
-    const params = new URLSearchParams(window.location.search);
-    const data = window.MOCK_WEATHER_DATA.input;
+    const urlParams = new URLSearchParams(window.location.search);
+    const centralParams = window.AquaShieldSession ? window.AquaShieldSession.getAssessmentParams() : {};
 
-    const village = params.get('village_name') || session.city || data.villageName;
-    const lat = params.get('latitude') || params.get('lat') || session.lat || data.latitude;
-    const lon = params.get('longitude') || params.get('lon') || session.lon || data.longitude;
+    const village = urlParams.get('village_name') || urlParams.get('location') || centralParams.village_name || '';
+    const lat = urlParams.get('latitude') || urlParams.get('lat') || centralParams.latitude || '';
+    const lon = urlParams.get('longitude') || urlParams.get('lon') || centralParams.longitude || '';
 
     const elVillage = document.getElementById('input-village');
     const elLat = document.getElementById('input-lat');
@@ -41,6 +40,32 @@
     if (elVillage) elVillage.value = village;
     if (elLat) elLat.value = lat;
     if (elLon) elLon.value = lon;
+
+    const elStart = document.getElementById('input-start-date');
+    const elEnd = document.getElementById('input-end-date');
+
+    if (centralParams.start_date && elStart) {
+      elStart.value = centralParams.start_date;
+    }
+    if (centralParams.end_date && elEnd) {
+      elEnd.value = centralParams.end_date;
+    }
+
+    // Attach sync listeners on date changes
+    if (elStart) {
+      elStart.addEventListener('change', () => {
+        if (window.AquaShieldSession) {
+          window.AquaShieldSession.setAssessmentParams({ start_date: elStart.value });
+        }
+      });
+    }
+    if (elEnd) {
+      elEnd.addEventListener('change', () => {
+        if (window.AquaShieldSession) {
+          window.AquaShieldSession.setAssessmentParams({ end_date: elEnd.value });
+        }
+      });
+    }
   }
 
   /* ================================================================
@@ -213,8 +238,19 @@
   }
 
   /* ================================================================
-     CANVAS SEMI-GAUGE DRAWING
+     CANVAS SEMI-GAUGE DRAWING (Sci-Fi / Modern Geospatial Instrument)
      ================================================================ */
+  function hexToRgba(hex, alpha) {
+    if (!hex) return `rgba(6, 214, 214, ${alpha})`;
+    if (hex.startsWith('rgb')) return hex.replace(')', `, ${alpha})`).replace('rgb', 'rgba');
+    let c = hex.replace('#', '');
+    if (c.length === 3) c = c.split('').map(x => x + x).join('');
+    const r = parseInt(c.substring(0, 2), 16) || 0;
+    const g = parseInt(c.substring(2, 4), 16) || 0;
+    const b = parseInt(c.substring(4, 6), 16) || 0;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
   function drawSemiGauge(canvasId, value, min, max, zones) {
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
@@ -232,40 +268,124 @@
     const w = rect.width;
     const h = rect.height;
     const cx = w / 2;
-    const cy = h - 10;
-    const radius = Math.min(cx - 15, cy - 10);
-    const lineWidth = 14;
+    const cy = h - 20;
+    const radius = Math.min(cx - 30, cy - 14);
+    const lineWidth = 12;
 
     const startAngle = Math.PI;
     const endAngle = 2 * Math.PI;
 
-    // Track
-    ctx.beginPath();
-    ctx.arc(cx, cy, radius, startAngle, endAngle);
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
-    ctx.lineWidth = lineWidth;
-    ctx.lineCap = 'round';
-    ctx.stroke();
+    ctx.clearRect(0, 0, w, h);
 
-    // Active Arc
-    const valAngle = startAngle + ((Math.min(value, max) - min) / (max - min)) * Math.PI;
+    const currentPct = Math.max(0, Math.min((value - min) / (max - min), 1));
     const activeZone = zones.find(z => value >= z.min && value <= z.max) || zones[zones.length - 1];
 
+    // 1. Soft Ambient Radial Glow Backdrop inside the arch
+    const bgGlowGrad = ctx.createRadialGradient(cx, cy, 4, cx, cy, radius);
+    bgGlowGrad.addColorStop(0, hexToRgba(activeZone.color, 0.16));
+    bgGlowGrad.addColorStop(0.85, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = bgGlowGrad;
     ctx.beginPath();
-    ctx.arc(cx, cy, radius, startAngle, valAngle);
-    ctx.strokeStyle = activeZone.color;
-    ctx.lineWidth = lineWidth;
-    ctx.lineCap = 'round';
-    ctx.stroke();
+    ctx.arc(cx, cy, radius, startAngle, endAngle);
+    ctx.fill();
 
-    // Glow
+    // 2. Base Background Segmented Tracks
+    zones.forEach(zone => {
+      const zStart = startAngle + ((Math.max(zone.min, min) - min) / (max - min)) * Math.PI;
+      const zEnd = startAngle + ((Math.min(zone.max, max) - min) / (max - min)) * Math.PI;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, zStart, zEnd);
+      ctx.strokeStyle = hexToRgba(zone.color, 0.18);
+      ctx.lineWidth = lineWidth;
+      ctx.lineCap = 'butt';
+      ctx.stroke();
+    });
+
+    // 3. Precision Radial Tick Marks (20 Ticks)
+    const numTicks = 20;
+    for (let i = 0; i <= numTicks; i++) {
+      const tickAngle = startAngle + (i / numTicks) * Math.PI;
+      const isMajor = i % 5 === 0;
+      const tickInner = radius + (isMajor ? 8 : 10);
+      const tickOuter = radius + (isMajor ? 16 : 13);
+
+      const x1 = cx + Math.cos(tickAngle) * tickInner;
+      const y1 = cy + Math.sin(tickAngle) * tickInner;
+      const x2 = cx + Math.cos(tickAngle) * tickOuter;
+      const y2 = cy + Math.sin(tickAngle) * tickOuter;
+
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.strokeStyle = isMajor ? 'rgba(255, 255, 255, 0.45)' : 'rgba(255, 255, 255, 0.15)';
+      ctx.lineWidth = isMajor ? 1.5 : 1;
+      ctx.stroke();
+    }
+
+    // 4. Active Glowing Gradient Arc
+    const valAngle = startAngle + currentPct * Math.PI;
+    
+    // Outer Neon Glow Layer
     ctx.save();
     ctx.beginPath();
     ctx.arc(cx, cy, radius, startAngle, valAngle);
     ctx.strokeStyle = activeZone.color;
-    ctx.lineWidth = lineWidth + 4;
-    ctx.globalAlpha = 0.2;
+    ctx.lineWidth = lineWidth + 6;
+    ctx.globalAlpha = 0.35;
+    ctx.lineCap = 'round';
+    ctx.shadowBlur = 18;
+    ctx.shadowColor = activeZone.color;
     ctx.stroke();
+    ctx.restore();
+
+    // Sharp Core Active Arc
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, startAngle, valAngle);
+    ctx.strokeStyle = activeZone.color;
+    ctx.lineWidth = lineWidth;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+    ctx.restore();
+
+    // 5. Sleek Needle / Pointer with pivot hub
+    const needleLength = radius - 16;
+    const needleX = cx + Math.cos(valAngle) * needleLength;
+    const needleY = cy + Math.sin(valAngle) * needleLength;
+
+    // Needle stroke
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(needleX, needleY);
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2.5;
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = activeZone.color;
+    ctx.stroke();
+
+    // Needle tip glow dot
+    ctx.beginPath();
+    ctx.arc(needleX, needleY, 3.5, 0, 2 * Math.PI);
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = activeZone.color;
+    ctx.fill();
+
+    // Center Pivot Hub Ring
+    ctx.beginPath();
+    ctx.arc(cx, cy, 7, 0, 2 * Math.PI);
+    ctx.fillStyle = '#1a1f2e';
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = activeZone.color;
+    ctx.stroke();
+
+    // Inner Hub Dot
+    ctx.beginPath();
+    ctx.arc(cx, cy, 3, 0, 2 * Math.PI);
+    ctx.fillStyle = activeZone.color;
+    ctx.fill();
     ctx.restore();
   }
 
@@ -353,7 +473,12 @@
       
       // Update BGI gauge text
       const valEl = document.querySelector('.bgi-gauge-val');
-      if (valEl) valEl.textContent = `${currentBGIVal.toFixed(1)}%`;
+      const activeZone = zones.find(z => currentBGIVal >= z.min && currentBGIVal <= z.max) || zones[zones.length - 1];
+      if (valEl) {
+        valEl.textContent = `${currentBGIVal.toFixed(1)}%`;
+        valEl.style.color = activeZone.color;
+        valEl.style.textShadow = `0 0 20px ${hexToRgba(activeZone.color, 0.45)}`;
+      }
       
       if (progress < 1) {
         animFrameId = requestAnimationFrame(step);
@@ -480,20 +605,194 @@
 
 
 
+  /* ================================================================
+     AUTO-GEOCODING & LOCATION AUTOFILL
+     ================================================================ */
+  function setupAutoGeocoding() {
+    const elVillage = document.getElementById('input-village');
+    const elLat = document.getElementById('input-lat');
+    const elLon = document.getElementById('input-lon');
+    const dropdown = document.getElementById('location-suggestions');
+    if (!elVillage || !dropdown) return;
+
+    let debounceTimer = null;
+
+    async function queryGeocode(text, autoSelectSingle = false) {
+      if (!text || text.trim().length < 2) {
+        dropdown.style.display = 'none';
+        return [];
+      }
+
+      try {
+        const res = await fetch(`/api/weather/geocode?query=${encodeURIComponent(text.trim())}`);
+        if (!res.ok) return [];
+        const data = await res.json();
+        const results = data.results || [];
+
+        if (results.length === 0) {
+          dropdown.style.display = 'none';
+          return [];
+        }
+
+        if (autoSelectSingle && results.length >= 1) {
+          applyLocation(results[0]);
+          dropdown.style.display = 'none';
+          return results;
+        }
+
+        renderDropdown(results);
+        return results;
+      } catch (err) {
+        console.warn('Geocoding fetch error:', err);
+        dropdown.style.display = 'none';
+        return [];
+      }
+    }
+
+    function renderDropdown(items) {
+      dropdown.innerHTML = '';
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'suggestion-item';
+        div.innerHTML = `
+          <span class="suggestion-name">${item.display_name}</span>
+          <span class="suggestion-coords">${item.latitude}° N, ${item.longitude}° E</span>
+        `;
+        div.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          applyLocation(item);
+          dropdown.style.display = 'none';
+        });
+        dropdown.appendChild(div);
+      });
+      dropdown.style.display = 'block';
+    }
+
+    function applyLocation(item) {
+      if (elVillage) elVillage.value = item.display_name;
+      if (elLat) {
+        elLat.value = item.latitude;
+        elLat.classList.remove('field-highlight-autofill');
+        void elLat.offsetWidth;
+        elLat.classList.add('field-highlight-autofill');
+      }
+      if (elLon) {
+        elLon.value = item.longitude;
+        elLon.classList.remove('field-highlight-autofill');
+        void elLon.offsetWidth;
+        elLon.classList.add('field-highlight-autofill');
+      }
+      saveSession({ city: item.display_name, lat: item.latitude, lon: item.longitude });
+      if (window.AquaShieldSession) {
+        const elStart = document.getElementById('input-start-date');
+        const elEnd = document.getElementById('input-end-date');
+        window.AquaShieldSession.setAssessmentParams({
+          village_name: item.display_name,
+          latitude: item.latitude,
+          longitude: item.longitude,
+          start_date: elStart ? elStart.value : '',
+          end_date: elEnd ? elEnd.value : ''
+        });
+      }
+    }
+
+    elVillage.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      const val = elVillage.value.trim();
+      if (val.length < 2) {
+        dropdown.style.display = 'none';
+        return;
+      }
+      debounceTimer = setTimeout(() => {
+        queryGeocode(val, false);
+      }, 250);
+    });
+
+    elVillage.addEventListener('blur', () => {
+      setTimeout(() => {
+        dropdown.style.display = 'none';
+      }, 200);
+      const val = elVillage.value.trim();
+      if (val && (!elLat.value || !elLon.value)) {
+        queryGeocode(val, true);
+      }
+    });
+
+    elVillage.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const val = elVillage.value.trim();
+        if (val) {
+          queryGeocode(val, true);
+        }
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!elVillage.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.style.display = 'none';
+      }
+    });
+  }
+
   function setupFetchButton() {
     const btn = document.getElementById('fetch-weather-btn');
     if (!btn) return;
 
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       const elCity = document.getElementById('input-village');
       const elLat = document.getElementById('input-lat');
       const elLon = document.getElementById('input-lon');
+      const elStart = document.getElementById('input-start-date');
+      const elEnd = document.getElementById('input-end-date');
 
-      const city = elCity ? elCity.value : 'Alappuzha, Kerala, India';
-      const lat = elLat ? parseFloat(elLat.value) : 9.4981;
-      const lon = elLon ? parseFloat(elLon.value) : 76.3388;
+      let city = elCity ? elCity.value.trim() : '';
+      let lat = elLat && elLat.value.trim() ? parseFloat(elLat.value) : null;
+      let lon = elLon && elLon.value.trim() ? parseFloat(elLon.value) : null;
+      const startDate = elStart ? elStart.value.trim() : '';
+      const endDate = elEnd ? elEnd.value.trim() : '';
+
+      // If user typed location name but lat/lon are not yet populated, auto-geocode first
+      if ((lat === null || isNaN(lat) || lon === null || isNaN(lon)) && city) {
+        try {
+          const res = await fetch(`/api/weather/geocode?query=${encodeURIComponent(city)}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.results && data.results.length > 0) {
+              const top = data.results[0];
+              city = top.display_name;
+              lat = top.latitude;
+              lon = top.longitude;
+              if (elCity) elCity.value = city;
+              if (elLat) elLat.value = lat;
+              if (elLon) elLon.value = lon;
+            }
+          }
+        } catch (e) {
+          console.warn('Auto-geocoding error before fetch:', e);
+        }
+      }
+
+      if (lat === null || isNaN(lat) || lon === null || isNaN(lon)) {
+        if (window.AquaShieldUtils) {
+          window.AquaShieldUtils.showErrorToast('Please enter a location name to evaluate meteorological risk.', 'warning');
+        } else {
+          alert('Please enter a location name to evaluate meteorological risk.');
+        }
+        if (elCity) elCity.focus();
+        return;
+      }
 
       saveSession({ city, lat, lon });
+      if (window.AquaShieldSession) {
+        window.AquaShieldSession.setAssessmentParams({
+          village_name: city,
+          latitude: lat,
+          longitude: lon,
+          start_date: startDate,
+          end_date: endDate
+        });
+      }
       fetchAndRender(lat, lon, city);
     });
   }
@@ -610,12 +909,20 @@
     renderAccumulatedChart();
 
     if (data.heatIndex) {
-      drawSemiGauge('heat-gauge-canvas', data.heatIndex.heatIndex_c, 20, 55, [
+      const heatZones = [
         { min: 20, max: 27, color: '#10b981' },
         { min: 27, max: 32, color: '#f59e0b' },
         { min: 32, max: 40, color: '#f97316' },
         { min: 40, max: 55, color: '#ef4444' }
-      ]);
+      ];
+      drawSemiGauge('heat-gauge-canvas', data.heatIndex.heatIndex_c, 20, 55, heatZones);
+      const heatValEl = document.querySelector('.heat-gauge-num');
+      const activeHeatZone = heatZones.find(z => data.heatIndex.heatIndex_c >= z.min && data.heatIndex.heatIndex_c <= z.max) || heatZones[heatZones.length - 1];
+      if (heatValEl) {
+        heatValEl.textContent = `${data.heatIndex.heatIndex_c.toFixed(1)}°C`;
+        heatValEl.style.color = activeHeatZone.color;
+        heatValEl.style.textShadow = `0 0 20px ${hexToRgba(activeHeatZone.color, 0.45)}`;
+      }
     }
     if (data.assessment) {
       currentBGIVal = 0;
@@ -669,6 +976,7 @@
     }
 
     restoreInputs();
+    setupAutoGeocoding();
     setupFetchButton();
     initWaveCanvas();
 
