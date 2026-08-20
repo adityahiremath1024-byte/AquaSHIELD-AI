@@ -192,7 +192,7 @@ async def search_module2(payload: Module2SearchRequest):
         raise HTTPException(status_code=400, detail="Start date must be before or equal to end date.")
 
     # Enforce Planet API key configuration check
-    if not settings.PLANET_API_KEY or settings.PLANET_API_KEY == "PLAKe95cd5d349be4379a4524382dadf4568" or settings.PLANET_API_KEY.strip() == "":
+    if not settings.PLANET_API_KEY or settings.PLANET_API_KEY.strip() == "":
         raise HTTPException(status_code=500, detail="Planet API key is not configured on the server.")
 
     # Search satellite scenes
@@ -233,8 +233,8 @@ async def search_module2(payload: Module2SearchRequest):
     if not valid_scenes:
         valid_scenes = scenes
 
-    # Keep up to 12 scenes
-    valid_scenes = valid_scenes[:12]
+    # Keep 10 clearest scenes for responsive grid
+    valid_scenes = valid_scenes[:10]
 
     processed_scenes = []
     for sc in valid_scenes:

@@ -295,10 +295,6 @@ def _seed_citizen_data():
         db.close()
 
 
-STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
-if os.path.exists(STATIC_DIR):
-    app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")
-
 @app.get("/health")
 def health_check():
     return {
@@ -312,6 +308,10 @@ def health_check():
             "Module 7: DIOE"
         ]
     }
+
+STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+if os.path.exists(STATIC_DIR):
+    app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")
 
 if __name__ == "__main__":
     import uvicorn

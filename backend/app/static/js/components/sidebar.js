@@ -1,7 +1,6 @@
 /**
- * AquaShield AI — Sidebar Navigation Component
- * Renders the left sidebar with module navigation links.
- * Automatically highlights the active page based on the current URL.
+ * AquaShield AI — Sidebar Navigation Component v2.0
+ * Responsive drawer with mobile hamburger toggle and backdrop.
  */
 
 const SIDEBAR_NAV_ITEMS = [
@@ -29,19 +28,37 @@ const SIDEBAR_ICONS = {
 const SHIELD_SVG = `<svg class="shield-icon" viewBox="0 0 24 24"><path d="M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z"/><path d="M12 8v4"/><circle cx="12" cy="15" r="0.5" fill="currentColor"/></svg>`;
 
 /**
- * Renders the sidebar into the DOM.
+ * Renders the responsive sidebar into the DOM.
  * @param {string} activePage - The href fragment (e.g. '/satellite.html') to mark as active.
  */
 function renderSidebar(activePage) {
+  // Prevent duplicate rendering
+  if (document.getElementById('app-sidebar')) return;
+
   const sidebar = document.createElement('aside');
   sidebar.className = 'sidebar';
   sidebar.id = 'app-sidebar';
   sidebar.setAttribute('role', 'navigation');
   sidebar.setAttribute('aria-label', 'Main navigation');
 
+  // Backdrop overlay for mobile drawer
+  let backdrop = document.getElementById('sidebar-backdrop');
+  if (!backdrop) {
+    backdrop = document.createElement('div');
+    backdrop.id = 'sidebar-backdrop';
+    backdrop.className = 'sidebar-backdrop';
+    document.body.appendChild(backdrop);
+    backdrop.addEventListener('click', () => {
+      sidebar.classList.remove('mobile-open');
+      backdrop.classList.remove('active');
+    });
+  }
+
   // Logo
-  const logoDiv = document.createElement('div');
+  const logoDiv = document.createElement('a');
   logoDiv.className = 'sidebar-logo';
+  logoDiv.href = '/index.html';
+  logoDiv.title = 'AquaShield AI — Overview';
   logoDiv.innerHTML = SHIELD_SVG;
   sidebar.appendChild(logoDiv);
 
@@ -64,6 +81,12 @@ function renderSidebar(activePage) {
       ${SIDEBAR_ICONS[item.icon]}
       <span class="tooltip">${item.label}</span>
     `;
+
+    a.addEventListener('click', () => {
+      sidebar.classList.remove('mobile-open');
+      backdrop.classList.remove('active');
+    });
+
     nav.appendChild(a);
   });
 
@@ -71,6 +94,17 @@ function renderSidebar(activePage) {
   document.body.prepend(sidebar);
 }
 
+// Toggle drawer for mobile viewports
+function toggleMobileSidebar() {
+  const sidebar = document.getElementById('app-sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  if (sidebar && backdrop) {
+    const isOpen = sidebar.classList.toggle('mobile-open');
+    backdrop.classList.toggle('active', isOpen);
+  }
+}
+
 // Export for use in pages
 window.AquaShield = window.AquaShield || {};
 window.AquaShield.renderSidebar = renderSidebar;
+window.AquaShield.toggleMobileSidebar = toggleMobileSidebar;

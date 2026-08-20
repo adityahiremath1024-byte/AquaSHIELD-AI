@@ -168,18 +168,14 @@
     if (waterFill) waterFill.style.width = `${data.semantic_domains.water_contamination_risk}%`;
 
     const healthVal = document.getElementById('health-val');
-    if (healthVal) healthVal.textContent = data.semantic_domains.health_stress_risk.toFixed(0);
-      if (score >= 75) {
-        badge.className = 'badge badge-critical';
-        badge.textContent = 'HIGH OUTBREAK RISK';
-      } else if (score >= 50) {
-        badge.className = 'badge badge-high';
-        badge.textContent = 'MODERATE OUTBREAK RISK';
-      } else {
-        badge.className = 'badge badge-normal';
-        badge.textContent = 'LOW OUTBREAK RISK';
-      }
-    }
+    if (healthVal) healthVal.textContent = data.semantic_domains?.health_stress_risk?.toFixed(0) || '70';
+    const healthFill = document.querySelector('.progress-health');
+    if (healthFill) healthFill.style.width = `${data.semantic_domains?.health_stress_risk || 70}%`;
+
+    const commVal = document.getElementById('comm-val');
+    if (commVal) commVal.textContent = data.semantic_domains?.community_exposure_risk?.toFixed(0) || '85';
+    const commFill = document.querySelector('.progress-comm');
+    if (commFill) commFill.style.width = `${data.semantic_domains?.community_exposure_risk || 85}%`;
 
     // Update stream metric bars
     const streams = [

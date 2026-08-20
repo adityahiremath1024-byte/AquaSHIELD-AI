@@ -1,18 +1,12 @@
 /**
- * AquaShield AI — Global Header Component
- * Renders the top header bar with page title, live indicator, sync time,
- * alerts badge, step progress, and profile avatar.
+ * AquaShield AI — Global Header Component v2.0
+ * Decluttered topbar with title, status, IST clock, step badge, reset action,
+ * theme toggle, and mobile menu button.
  */
 
-/**
- * @param {Object} options
- * @param {string} options.title       - Page title text
- * @param {string} options.subtitle    - Page subtitle text
- * @param {string} options.stepCurrent - Current step number (e.g. '2')
- * @param {string} options.stepTotal   - Total steps (e.g. '7')
- * @param {number} [options.alertCount=12] - Number of active alerts
- */
 function renderHeader({ title, subtitle, stepCurrent, stepTotal, alertCount = 12 }) {
+  if (document.getElementById('app-header')) return;
+
   const now = new Date();
   const formatTime = (d) => {
     return d.toLocaleString('en-IN', {
@@ -30,6 +24,13 @@ function renderHeader({ title, subtitle, stepCurrent, stepTotal, alertCount = 12
 
   header.innerHTML = `
     <div class="header-left">
+      <button class="mobile-menu-toggle" id="mobile-menu-btn" aria-label="Toggle navigation menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
       <h1 class="header-title">${title}</h1>
     </div>
     <div class="header-right">
@@ -37,10 +38,7 @@ function renderHeader({ title, subtitle, stepCurrent, stepTotal, alertCount = 12
         <span class="live-dot"></span>
         LIVE
       </div>
-<<<<<<< HEAD
       <span class="header-sync" aria-label="Current date and time" id="header-current-clock">${syncTime}</span>
-=======
-      <span class="header-sync" aria-label="Last sync time">Last Sync: ${syncTime}</span>
       <button class="header-alerts-badge" aria-label="${alertCount} active alerts" id="header-alerts-btn">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
@@ -48,24 +46,32 @@ function renderHeader({ title, subtitle, stepCurrent, stepTotal, alertCount = 12
         </svg>
         ALERTS ${alertCount}
       </button>
-      <button class="header-reset-btn" id="header-reset-run-btn" title="Reset Session / Start New Assessment" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 4px; font-family: Inter, sans-serif; font-weight: 500;">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+      <button class="header-reset-btn" id="header-reset-run-btn" title="Reset Session / Start New Assessment" style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
         Reset Run
       </button>
       <span class="header-step-badge">Step ${stepCurrent} of ${stepTotal}</span>
       <div class="header-profile" title="User Profile" aria-label="User profile">
-        DP
+        AS
       </div>
->>>>>>> 39e2e8c0f242d544bb272b71bd28545be9ad1df2
     </div>
   `;
 
-  // Bind click listener to Reset Run button
+  // Bind mobile menu toggle
   setTimeout(() => {
-    const btn = document.getElementById('header-reset-run-btn');
-    if (btn) {
-      btn.addEventListener('click', () => {
-        if (confirm('Start a new assessment run? This will clear all data from current Modules 1–7 run.')) {
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    if (menuBtn) {
+      menuBtn.addEventListener('click', () => {
+        if (window.AquaShield && typeof window.AquaShield.toggleMobileSidebar === 'function') {
+          window.AquaShield.toggleMobileSidebar();
+        }
+      });
+    }
+
+    const resetBtn = document.getElementById('header-reset-run-btn');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        if (confirm('Start a new assessment run? This will reset all current session inputs across Modules 1–7.')) {
           if (window.AquaShieldSession) {
             window.AquaShieldSession.resetRun();
           } else {
@@ -76,9 +82,9 @@ function renderHeader({ title, subtitle, stepCurrent, stepTotal, alertCount = 12
         }
       });
     }
-  }, 100);
+  }, 50);
 
-  // Insert after sidebar, before main content
+  // Prepend to main content
   const mainContent = document.querySelector('.main-content');
   if (mainContent) {
     mainContent.prepend(header);
@@ -86,12 +92,12 @@ function renderHeader({ title, subtitle, stepCurrent, stepTotal, alertCount = 12
     document.body.appendChild(header);
   }
 
-  // Inject theme toggle button if component is loaded
+  // Inject theme toggle button
   if (window.AquaShield && typeof window.AquaShield.renderThemeToggle === 'function') {
     window.AquaShield.renderThemeToggle();
   }
 
-  // Live ticking clock updating the current date/time every second
+  // Live ticking clock updating every second
   setInterval(() => {
     const clockEl = document.getElementById('header-current-clock');
     if (clockEl) {

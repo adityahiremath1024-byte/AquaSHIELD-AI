@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AquaShield AI — District Health Intelligence Platform</title>
-  <meta name="description" content="Predict waterborne outbreaks before the first ward fills. One continuous assessment workflow across seven intelligence engines." />
+  <meta name="description" content="Predict waterborne disease outbreaks before they become widespread. Continuous assessment workflow across seven intelligence engines." />
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/global.css" />
@@ -12,160 +12,300 @@
   <link rel="stylesheet" href="css/index.css" />
 
   <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300ffaa' stroke-width='2'><path d='M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z'/></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2306B6D4' stroke-width='2'><path d='M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z'/></svg>" />
 
-  <!-- Apply theme before paint to prevent FOUC -->
+  <!-- Theme init before paint -->
   <script src="js/components/theme-toggle.js"></script>
 </head>
 <body class="home-page">
 
-  <!-- Navbar -->
+  <!-- Top Navbar -->
   <nav class="home-nav">
-    <div class="logo-wrapper">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z" />
-        <path d="M9 12l2 2 4-4" />
-      </svg>
-      AquaShield AI
-    </div>
-    <div class="home-nav-right">
-      <!-- Theme Toggle -->
-      <button class="theme-toggle" id="home-theme-toggle" aria-label="Toggle dark/light theme" title="Toggle theme">
-        <div class="theme-toggle-icons">
-          <span class="theme-icon-sun">
-            <svg viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="5"/>
-              <line x1="12" y1="1" x2="12" y2="3"/>
-              <line x1="12" y1="21" x2="12" y2="23"/>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-              <line x1="1" y1="12" x2="3" y2="12"/>
-              <line x1="21" y1="12" x2="23" y2="12"/>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-            </svg>
-          </span>
-          <span class="theme-icon-moon">
-            <svg viewBox="0 0 24 24">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-            </svg>
-          </span>
+    <div class="home-nav-container">
+      <a href="index.html" class="brand-link">
+        <div class="logo-wrapper">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V6l7-4z" />
+            <path d="M9 12l2 2 4-4" />
+          </svg>
         </div>
-      </button>
-      <a href="weather.html" class="nav-link">Open Platform</a>
+        <span class="brand-title">AquaShield AI</span>
+        <span class="version-tag">v2.0 PRO</span>
+      </a>
+
+      <div class="home-nav-right">
+        <div class="live-indicator">
+          <span class="live-dot"></span>
+          OPERATIONAL
+        </div>
+        <a href="weather.html" class="nav-cta-btn">Start Assessment →</a>
+        <!-- Theme Toggle -->
+        <button class="theme-toggle" id="home-theme-toggle" aria-label="Toggle dark/light theme" title="Toggle theme">
+          <div class="theme-toggle-icons">
+            <span class="theme-icon-sun">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            </span>
+            <span class="theme-icon-moon">
+              <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </span>
+          </div>
+        </button>
+      </div>
     </div>
   </nav>
 
-  <!-- Main Content -->
   <main class="home-main">
-
     <!-- Hero Section -->
     <section class="hero-section">
-      <h1 class="hero-title">
-        Predict waterborne outbreaks<br/>
-        <span class="highlight">before the first ward fills</span>
-      </h1>
-      <p class="hero-subtitle">
-        One continuous assessment workflow across seven intelligence engines — weather, satellite, hospital, citizen, fusion, prediction and decision optimization — producing an operational plan your district can execute in the next six hours.
-      </p>
-      <button class="btn-primary" onclick="window.location.href='weather.html'">
-        Start an Assessment
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 12h14"></path>
-          <path d="M12 5l7 7-7 7"></path>
-        </svg>
-      </button>
+      <div class="hero-glow-bg"></div>
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          EARLY OUTBREAK SURVEILLANCE &amp; DECISION ENGINE
+        </div>
+        <h1 class="hero-headline">
+          Predicting waterborne outbreaks<br class="desktop-br" />
+          <span class="gradient-text">before they become widespread.</span>
+        </h1>
+        <p class="hero-subtext">
+          AquaShield AI continuously fuses satellite remote sensing, weather anomaly tracking, hospital surge analytics, and citizen water reports into a unified epidemiological intelligence pipeline.
+        </p>
+
+        <!-- Feature chips -->
+        <div class="hero-chips-grid">
+          <div class="hero-chip">
+            <svg viewBox="0 0 24 24"><path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"/></svg>
+            <span>Meteorological Signals</span>
+          </div>
+          <div class="hero-chip">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M4.93 4.93l4.24 4.24"/><path d="M14.83 14.83l4.24 4.24"/></svg>
+            <span>PlanetScope 3m Inundation</span>
+          </div>
+          <div class="hero-chip">
+            <svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M10 10h4"/><path d="M12 8v4"/></svg>
+            <span>Hospital Surge Surveillance</span>
+          </div>
+          <div class="hero-chip">
+            <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-8"/></svg>
+            <span>XGBoost &amp; SHAP AI Risk</span>
+          </div>
+        </div>
+
+        <div class="hero-actions">
+          <a href="weather.html" class="hero-primary-btn">
+            <span>Launch Complete Assessment</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="fusion.html" class="hero-secondary-btn">
+            <span>Explore Risk Fusion Engine</span>
+          </a>
+        </div>
+      </div>
     </section>
 
-    <!-- Engines Grid (Modules 1 to 7) -->
-    <div class="engines-grid">
-
-      <!-- Card 1: Meteorological Signal -->
-      <a href="weather.html" class="engine-card">
-        <svg class="engine-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 16.2A4.5 4.5 0 0 0 17.5 8h-1.8A7 7 0 1 0 4 14.9"></path>
-          <path d="M16 14v6"></path>
-          <path d="M8 14v6"></path>
-          <path d="M12 16v6"></path>
-        </svg>
-        <h3 class="engine-title">Meteorological Signal</h3>
-        <p class="engine-desc">Rainfall anomaly and bacteria growth index.</p>
-      </a>
-
-      <!-- Card 2: Satellite Inundation -->
-      <a href="satellite.html" class="engine-card">
-        <svg class="engine-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="2"/>
-          <path d="M4.93 4.93l4.24 4.24"/>
-          <path d="M14.83 14.83l4.24 4.24"/>
-          <path d="M14.83 9.17l4.24-4.24"/>
-          <path d="M4.93 19.07l4.24-4.24"/>
-        </svg>
-        <h3 class="engine-title">Satellite Inundation</h3>
-        <p class="engine-desc">NDWI flood extent and water expansion.</p>
-      </a>
-
-      <!-- Card 3: Hospital Surveillance -->
-      <a href="hospital.html" class="engine-card">
-        <svg class="engine-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-        </svg>
-        <h3 class="engine-title">Hospital Surveillance</h3>
-        <p class="engine-desc">Case velocity, capacity and stock risk.</p>
-      </a>
-
-      <!-- Card 4: Citizen Reports -->
-      <a href="citizen.html" class="engine-card">
-        <svg class="engine-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-          <circle cx="9" cy="7" r="4"></circle>
-          <path d="M23 21v-2a4 4 0 0 1-3-3.87"></path>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-        </svg>
-        <h3 class="engine-title">Citizen Reports</h3>
-        <p class="engine-desc">Validated contamination clusters on the ground.</p>
-      </a>
-
-      <!-- Card 5: Multi-signal Fusion -->
-      <a href="fusion.html" class="engine-card">
-        <svg class="engine-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
-          <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
-          <line x1="6" y1="6" x2="6.01" y2="6"></line>
-          <line x1="6" y1="18" x2="6.01" y2="18"></line>
-        </svg>
-        <h3 class="engine-title">Multi-Signal Fusion</h3>
-        <p class="engine-desc">Four domains merged into one unified score.</p>
-      </a>
-
-      <!-- Card 6: AI Outbreak Prediction -->
-      <a href="prediction.html" class="engine-card highlight-card">
-        <svg class="engine-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 3v18h18"></path>
-          <path d="M7 16l4-8 4 4 4-8"></path>
-        </svg>
-        <h3 class="engine-title">AI Outbreak Prediction</h3>
-        <p class="engine-desc">XGBoost 7-day outbreak risk with SHAP XAI drivers.</p>
-      </a>
-
-      <!-- Card 7: AI Decision Intelligence (DIOE) -->
-      <a href="dioe.html" class="engine-card highlight-card">
-        <svg class="engine-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>
-        </svg>
-        <div class="engine-card-text">
-          <h3 class="engine-title">AI Decision Intelligence (DIOE)</h3>
-          <p class="engine-desc">7-stage WHO resource estimator & intervention optimizer.</p>
+    <!-- Live Platform System Health Card -->
+    <section class="system-status-section">
+      <div class="card system-status-card">
+        <div class="panel-heading">
+          <span class="dot"></span> Live Platform Status &amp; Data Pipeline
         </div>
-      </a>
+        <div class="grid grid-4 kpi-status-grid">
+          <div class="kpi-mini-card">
+            <span class="kpi-mini-label">SYSTEM HEALTH</span>
+            <div class="kpi-mini-val text-green">99.8%</div>
+            <span class="kpi-mini-sub">All engines operational</span>
+          </div>
+          <div class="kpi-mini-card">
+            <span class="kpi-mini-label">ACTIVE PIPELINES</span>
+            <div class="kpi-mini-val text-cyan">4 / 4</div>
+            <span class="kpi-mini-sub">Meteo, Satellite, Hospital, Citizen</span>
+          </div>
+          <div class="kpi-mini-card">
+            <span class="kpi-mini-label">HOTSPOT REGIONS</span>
+            <div class="kpi-mini-val">14 Districts</div>
+            <span class="kpi-mini-sub">Kerala High-Risk Basin</span>
+          </div>
+          <div class="kpi-mini-card">
+            <span class="kpi-mini-label">PREDICTION HORIZON</span>
+            <div class="kpi-mini-val text-amber">7 Days</div>
+            <span class="kpi-mini-sub">Lead time before peak surge</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    </div>
+    <!-- 7 Intelligence Engines Matrix -->
+    <section class="modules-section">
+      <div class="section-title-wrapper">
+        <h2 class="section-heading">Intelligence Modules (1 – 7)</h2>
+        <p class="section-subtext">Each engine operates autonomously or feeds the unified epidemiological fusion pipeline.</p>
+      </div>
 
+      <div class="engines-grid">
+        <!-- Module 1: Meteorological Intelligence -->
+        <a href="weather.html" class="engine-card">
+          <div class="engine-badge step-1">MODULE 1</div>
+          <div class="engine-icon-box">
+            <svg viewBox="0 0 24 24"><path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"/><path d="M8 16h.01"/><path d="M8 20h.01"/><path d="M12 18h.01"/><path d="M12 22h.01"/><path d="M16 16h.01"/><path d="M16 20h.01"/></svg>
+          </div>
+          <h3 class="engine-title">Meteorological Intelligence</h3>
+          <p class="engine-desc">7-day &amp; 30-day rainfall anomalies, precipitation streak tracking, and Bacteria Growth Index (BGI) computation.</p>
+          <div class="engine-footer">
+            <span class="engine-stat">Open-Meteo &amp; ERA5</span>
+            <span class="engine-arrow">→</span>
+          </div>
+        </a>
 
+        <!-- Module 2: Satellite Flood Detection -->
+        <a href="satellite.html" class="engine-card">
+          <div class="engine-badge step-2">MODULE 2</div>
+          <div class="engine-icon-box">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M4.93 4.93l4.24 4.24"/><path d="M14.83 14.83l4.24 4.24"/><path d="M14.83 9.17l4.24-4.24"/><path d="M4.93 19.07l4.24-4.24"/><path d="M12 2v4"/><path d="M12 18v4"/><path d="M2 12h4"/><path d="M18 12h4"/></svg>
+          </div>
+          <h3 class="engine-title">Satellite Flood Inundation</h3>
+          <p class="engine-desc">PlanetScope 3m resolution multispectral scenes, automated NDWI water masking, and comparative expansion rates.</p>
+          <div class="engine-footer">
+            <span class="engine-stat">Planet &amp; ArcGIS</span>
+            <span class="engine-arrow">→</span>
+          </div>
+        </a>
 
+        <!-- Module 3: Hospital Outbreak Surveillance -->
+        <a href="hospital.html" class="engine-card">
+          <div class="engine-badge step-3">MODULE 3</div>
+          <div class="engine-icon-box">
+            <svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-4h6v4"/><path d="M10 10h4"/><path d="M12 8v4"/></svg>
+          </div>
+          <h3 class="engine-title">Hospital Surveillance</h3>
+          <p class="engine-desc">Syndromic admission tracking (diarrhea, cholera, typhoid), dynamic outbreak threshold alerts, and bed risk scores.</p>
+          <div class="engine-footer">
+            <span class="engine-stat">EMR Surge Index</span>
+            <span class="engine-arrow">→</span>
+          </div>
+        </a>
+
+        <!-- Module 4: Citizen Water Quality Reports -->
+        <a href="citizen.html" class="engine-card">
+          <div class="engine-badge step-4">MODULE 4</div>
+          <div class="engine-icon-box">
+            <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3 class="engine-title">Citizen Water Reports</h3>
+          <p class="engine-desc">Crowdsourced water turbidity reporting with Laplacian blur verification, color segmentation, and spatial clustering.</p>
+          <div class="engine-footer">
+            <span class="engine-stat">DBSCAN Clusters</span>
+            <span class="engine-arrow">→</span>
+          </div>
+        </a>
+
+        <!-- Module 5: Multi-Signal Data Fusion -->
+        <a href="fusion.html" class="engine-card highlight-card">
+          <div class="engine-badge step-5">MODULE 5</div>
+          <div class="engine-icon-box">
+            <svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-1.4 3.58-3.25 3.93"/><path d="M8 6a4 4 0 0 1 7.54-1.83"/><path d="M18.2 9.8a3 3 0 0 1-.2 5.42"/><path d="M6 10a3 3 0 0 0 .2 5.22"/><path d="M12 22v-8"/><path d="M8 18h8"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <h3 class="engine-title">Risk Fusion Engine</h3>
+          <p class="engine-desc">Unified 0–100 Outbreak Score synthesizing Environmental, Water, Clinical, and Community exposure domains.</p>
+          <div class="engine-footer">
+            <span class="engine-stat">4 Semantic Domains</span>
+            <span class="engine-arrow">→</span>
+          </div>
+        </a>
+
+        <!-- Module 6: XGBoost Outbreak Prediction -->
+        <a href="prediction.html" class="engine-card highlight-card">
+          <div class="engine-badge step-6">MODULE 6</div>
+          <div class="engine-icon-box">
+            <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-8"/></svg>
+          </div>
+          <h3 class="engine-title">AI Outbreak Prediction</h3>
+          <p class="engine-desc">Trained XGBoost Regressor forecasting 7-day forward outbreak risk with SHAP explainability and confidence intervals.</p>
+          <div class="engine-footer">
+            <span class="engine-stat">XGBoost &amp; SHAP</span>
+            <span class="engine-arrow">→</span>
+          </div>
+        </a>
+
+        <!-- Module 7: Decision Intelligence (DIOE) -->
+        <a href="dioe.html" class="engine-card highlight-card span-full">
+          <div class="engine-badge step-7">MODULE 7</div>
+          <div class="engine-icon-box">
+            <svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div class="engine-content-wrapper">
+            <h3 class="engine-title">AI Decision Intelligence (DIOE)</h3>
+            <p class="engine-desc">7-stage WHO/UNICEF resource estimator and multi-agency response coordinator optimizing chlorine, ORS packets, medical personnel, and containment advisories.</p>
+          </div>
+          <div class="engine-footer">
+            <span class="engine-stat">WHO Intervention Matrix</span>
+            <span class="engine-arrow">→</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Multi-Signal Pipeline Flow Diagram -->
+    <section class="fusion-flow-section">
+      <div class="card flow-card">
+        <div class="panel-heading">
+          <span class="dot"></span> Multi-Signal Intelligence Pipeline Flow
+        </div>
+        <p class="flow-subtext">How cross-domain intelligence transforms raw telemetry into proactive public health intervention.</p>
+        
+        <div class="flow-steps-container">
+          <div class="flow-step">
+            <div class="flow-step-icon cyan">
+              <svg viewBox="0 0 24 24"><path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"/></svg>
+            </div>
+            <div class="flow-step-title">1. Telemetry Ingest</div>
+            <div class="flow-step-desc">Weather + Satellite + Clinical records</div>
+          </div>
+          
+          <div class="flow-arrow">→</div>
+
+          <div class="flow-step">
+            <div class="flow-step-icon violet">
+              <svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-1.4 3.58-3.25 3.93"/></svg>
+            </div>
+            <div class="flow-step-title">2. Signal Fusion</div>
+            <div class="flow-step-desc">4 Semantic Risk Domains (0-100)</div>
+          </div>
+
+          <div class="flow-arrow">→</div>
+
+          <div class="flow-step">
+            <div class="flow-step-icon amber">
+              <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-8"/></svg>
+            </div>
+            <div class="flow-step-title">3. XGBoost Forecast</div>
+            <div class="flow-step-desc">7-day outbreak probability + SHAP</div>
+          </div>
+
+          <div class="flow-arrow">→</div>
+
+          <div class="flow-step">
+            <div class="flow-step-icon green">
+              <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div class="flow-step-title">4. Action &amp; DIOE</div>
+            <div class="flow-step-desc">Automated supply &amp; ward allocation</div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- Home page toggle script -->
+  <footer class="home-footer">
+    <div class="footer-container">
+      <div class="footer-left">
+        <span>AquaShield AI • National Epidemic Early Warning &amp; Response System</span>
+      </div>
+      <div class="footer-right">
+        <span>Open-Meteo • PlanetScope • Sentinel-1 • Gemini 2.0 Flash</span>
+      </div>
+    </div>
+  </footer>
+
   <script>
     document.getElementById('home-theme-toggle').addEventListener('click', function() {
       if (window.AquaShield && typeof window.AquaShield.toggleTheme === 'function') {
